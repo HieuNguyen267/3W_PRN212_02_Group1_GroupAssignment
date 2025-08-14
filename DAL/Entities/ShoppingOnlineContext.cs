@@ -57,13 +57,13 @@ public partial class ShoppingOnlineContext : DbContext
     {
         modelBuilder.Entity<Account>(entity =>
         {
-            entity.HasKey(e => e.AccountId).HasName("PK__Account__349DA586F8F3CDB9");
+            entity.HasKey(e => e.AccountId).HasName("PK__Account__349DA5866C769189");
 
             entity.ToTable("Account");
 
-            entity.HasIndex(e => e.Username, "UQ__Account__536C85E41376335B").IsUnique();
+            entity.HasIndex(e => e.Username, "UQ__Account__536C85E4EC101831").IsUnique();
 
-            entity.HasIndex(e => e.Email, "UQ__Account__A9D10534DE043B6E").IsUnique();
+            entity.HasIndex(e => e.Email, "UQ__Account__A9D1053442AC4A8E").IsUnique();
 
             entity.Property(e => e.AccountId).HasColumnName("AccountID");
             entity.Property(e => e.AccountType).HasMaxLength(20);
@@ -78,7 +78,7 @@ public partial class ShoppingOnlineContext : DbContext
 
         modelBuilder.Entity<Admin>(entity =>
         {
-            entity.HasKey(e => e.AdminId).HasName("PK__Admin__719FE4E89E543E9D");
+            entity.HasKey(e => e.AdminId).HasName("PK__Admin__719FE4E8723FE1DA");
 
             entity.ToTable("Admin");
 
@@ -97,7 +97,7 @@ public partial class ShoppingOnlineContext : DbContext
 
         modelBuilder.Entity<Carrier>(entity =>
         {
-            entity.HasKey(e => e.CarrierId).HasName("PK__Carrier__CB8205790B39E17B");
+            entity.HasKey(e => e.CarrierId).HasName("PK__Carrier__CB8205799AE098B6");
 
             entity.ToTable("Carrier");
 
@@ -118,9 +118,11 @@ public partial class ShoppingOnlineContext : DbContext
 
         modelBuilder.Entity<Category>(entity =>
         {
-            entity.HasKey(e => e.CategoryId).HasName("PK__Categori__19093A2B51AC88D3");
+            entity.HasKey(e => e.CategoryId).HasName("PK__Categori__19093A2B11A3AEF8");
 
-            entity.Property(e => e.CategoryId).HasColumnName("CategoryID");
+            entity.Property(e => e.CategoryId)
+                .HasMaxLength(20)
+                .HasColumnName("CategoryID");
             entity.Property(e => e.CategoryName).HasMaxLength(100);
             entity.Property(e => e.Description).HasMaxLength(500);
             entity.Property(e => e.IsActive).HasDefaultValue(true);
@@ -128,7 +130,7 @@ public partial class ShoppingOnlineContext : DbContext
 
         modelBuilder.Entity<Customer>(entity =>
         {
-            entity.HasKey(e => e.CustomerId).HasName("PK__Customer__A4AE64B8C9D37502");
+            entity.HasKey(e => e.CustomerId).HasName("PK__Customer__A4AE64B86F4ED049");
 
             entity.Property(e => e.CustomerId).HasColumnName("CustomerID");
             entity.Property(e => e.AccountId).HasColumnName("AccountID");
@@ -149,7 +151,7 @@ public partial class ShoppingOnlineContext : DbContext
 
         modelBuilder.Entity<Order>(entity =>
         {
-            entity.HasKey(e => e.OrderId).HasName("PK__Orders__C3905BAF5CBC94F3");
+            entity.HasKey(e => e.OrderId).HasName("PK__Orders__C3905BAF1AFC12B5");
 
             entity.Property(e => e.OrderId).HasColumnName("OrderID");
             entity.Property(e => e.CarrierId).HasColumnName("CarrierID");
@@ -167,38 +169,44 @@ public partial class ShoppingOnlineContext : DbContext
 
             entity.HasOne(d => d.Carrier).WithMany(p => p.Orders)
                 .HasForeignKey(d => d.CarrierId)
-                .HasConstraintName("FK__Orders__CarrierI__5AEE82B9");
+                .HasConstraintName("FK__Orders__CarrierI__5BE2A6F2");
 
             entity.HasOne(d => d.Customer).WithMany(p => p.Orders)
                 .HasForeignKey(d => d.CustomerId)
-                .HasConstraintName("FK__Orders__Customer__59FA5E80");
+                .HasConstraintName("FK__Orders__Customer__5AEE82B9");
         });
 
         modelBuilder.Entity<OrderDetail>(entity =>
         {
-            entity.HasKey(e => e.OrderDetailId).HasName("PK__OrderDet__D3B9D30CE2F77FE5");
+            entity.HasKey(e => e.OrderDetailId).HasName("PK__OrderDet__D3B9D30C811D5826");
 
             entity.Property(e => e.OrderDetailId).HasColumnName("OrderDetailID");
             entity.Property(e => e.OrderId).HasColumnName("OrderID");
-            entity.Property(e => e.ProductId).HasColumnName("ProductID");
+            entity.Property(e => e.ProductId)
+                .HasMaxLength(20)
+                .HasColumnName("ProductID");
             entity.Property(e => e.SubTotal).HasColumnType("decimal(18, 2)");
             entity.Property(e => e.UnitPrice).HasColumnType("decimal(18, 2)");
 
             entity.HasOne(d => d.Order).WithMany(p => p.OrderDetails)
                 .HasForeignKey(d => d.OrderId)
-                .HasConstraintName("FK__OrderDeta__Order__60A75C0F");
+                .HasConstraintName("FK__OrderDeta__Order__628FA481");
 
             entity.HasOne(d => d.Product).WithMany(p => p.OrderDetails)
                 .HasForeignKey(d => d.ProductId)
-                .HasConstraintName("FK__OrderDeta__Produ__619B8048");
+                .HasConstraintName("FK__OrderDeta__Produ__6383C8BA");
         });
 
         modelBuilder.Entity<Product>(entity =>
         {
-            entity.HasKey(e => e.ProductId).HasName("PK__Products__B40CC6ED6B371FDF");
+            entity.HasKey(e => e.ProductId).HasName("PK__Products__B40CC6ED26670628");
 
-            entity.Property(e => e.ProductId).HasColumnName("ProductID");
-            entity.Property(e => e.CategoryId).HasColumnName("CategoryID");
+            entity.Property(e => e.ProductId)
+                .HasMaxLength(20)
+                .HasColumnName("ProductID");
+            entity.Property(e => e.CategoryId)
+                .HasMaxLength(20)
+                .HasColumnName("CategoryID");
             entity.Property(e => e.CreatedDate)
                 .HasDefaultValueSql("(getdate())")
                 .HasColumnType("datetime");
@@ -206,7 +214,6 @@ public partial class ShoppingOnlineContext : DbContext
             entity.Property(e => e.IsActive).HasDefaultValue(true);
             entity.Property(e => e.Price).HasColumnType("decimal(18, 2)");
             entity.Property(e => e.ProductName).HasMaxLength(200);
-            entity.Property(e => e.StockQuantity).HasDefaultValue(0);
             entity.Property(e => e.UpdatedDate)
                 .HasDefaultValueSql("(getdate())")
                 .HasColumnType("datetime");
@@ -218,7 +225,7 @@ public partial class ShoppingOnlineContext : DbContext
 
         modelBuilder.Entity<ProductImage>(entity =>
         {
-            entity.HasKey(e => e.ImageId).HasName("PK__ProductI__7516F4EC3CD64A2A");
+            entity.HasKey(e => e.ImageId).HasName("PK__ProductI__7516F4ECBD9D7CBE");
 
             entity.Property(e => e.ImageId).HasColumnName("ImageID");
             entity.Property(e => e.DisplayOrder).HasDefaultValue(0);
@@ -226,16 +233,18 @@ public partial class ShoppingOnlineContext : DbContext
                 .HasMaxLength(500)
                 .HasColumnName("ImageURL");
             entity.Property(e => e.IsPrimary).HasDefaultValue(false);
-            entity.Property(e => e.ProductId).HasColumnName("ProductID");
+            entity.Property(e => e.ProductId)
+                .HasMaxLength(20)
+                .HasColumnName("ProductID");
 
             entity.HasOne(d => d.Product).WithMany(p => p.ProductImages)
                 .HasForeignKey(d => d.ProductId)
-                .HasConstraintName("FK__ProductIm__Produ__5535A963");
+                .HasConstraintName("FK__ProductIm__Produ__5629CD9C");
         });
 
         modelBuilder.Entity<ShoppingCart>(entity =>
         {
-            entity.HasKey(e => e.CartId).HasName("PK__Shopping__51BCD7977C59BC54");
+            entity.HasKey(e => e.CartId).HasName("PK__Shopping__51BCD797BDF50735");
 
             entity.ToTable("ShoppingCart");
 
@@ -244,16 +253,18 @@ public partial class ShoppingOnlineContext : DbContext
                 .HasDefaultValueSql("(getdate())")
                 .HasColumnType("datetime");
             entity.Property(e => e.CustomerId).HasColumnName("CustomerID");
-            entity.Property(e => e.ProductId).HasColumnName("ProductID");
+            entity.Property(e => e.ProductId)
+                .HasMaxLength(20)
+                .HasColumnName("ProductID");
             entity.Property(e => e.Quantity).HasDefaultValue(1);
 
             entity.HasOne(d => d.Customer).WithMany(p => p.ShoppingCarts)
                 .HasForeignKey(d => d.CustomerId)
-                .HasConstraintName("FK__ShoppingC__Custo__6477ECF3");
+                .HasConstraintName("FK__ShoppingC__Custo__693CA210");
 
             entity.HasOne(d => d.Product).WithMany(p => p.ShoppingCarts)
                 .HasForeignKey(d => d.ProductId)
-                .HasConstraintName("FK__ShoppingC__Produ__656C112C");
+                .HasConstraintName("FK__ShoppingC__Produ__6A30C649");
         });
 
         OnModelCreatingPartial(modelBuilder);

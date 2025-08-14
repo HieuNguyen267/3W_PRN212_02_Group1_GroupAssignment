@@ -5,7 +5,7 @@ namespace DAL.Entities;
 
 public partial class Category
 {
-    public int CategoryId { get; set; }
+    public string CategoryId { get; set; } = null!;
 
     public string CategoryName { get; set; } = null!;
 
