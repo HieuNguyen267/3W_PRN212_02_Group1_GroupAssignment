@@ -337,7 +337,7 @@
                                         <DataGridTextColumn Header="ID" Binding="{Binding OrderId}" Width="60"/>
                                         <DataGridTextColumn Header="Khach hang" Binding="{Binding Customer.FullName}" Width="150"/>
                                         <DataGridTextColumn Header="Ngay" Binding="{Binding OrderDate, StringFormat=dd/MM/yyyy}" Width="100"/>
-                                        <DataGridTextColumn Header="Tong tien" Binding="{Binding TotalAmount, StringFormat=N0}" Width="120"/>
+                                        <DataGridTextColumn Header="Tong tien" Binding="{Binding TotalAmount, StringFormat={}{0:N0}d}" Width="120"/>
                                         <DataGridTextColumn Header="Trang thai" Binding="{Binding Status}" Width="100"/>
                                     </DataGrid.Columns>
                                 </DataGrid>
@@ -395,10 +395,175 @@
                 </StackPanel>
 
                 <StackPanel x:Name="OrdersContent" Visibility="Collapsed">
-                    <!-- Order management content will be added here -->
-                    <TextBlock Text="Order Management Coming Soon..." FontSize="20" 
-                             HorizontalAlignment="Center" VerticalAlignment="Center" 
-                             Foreground="#FF7F8C8D" Margin="50"/>
+                    <!-- Order Management Content -->
+                    <Border Background="White" Margin="20,20,20,0" CornerRadius="10" Padding="25">
+                        <StackPanel>
+                            <!-- Filter and Search Bar -->
+                            <Grid Margin="0,0,0,20">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+
+                                <!-- Search Box with Placeholder -->
+                                <Grid Grid.Column="0" Margin="0,0,10,0">
+                                    <TextBox x:Name="OrderSearchBox" Height="35" FontSize="14" 
+                                             Padding="10" VerticalContentAlignment="Center"
+                                             TextChanged="OrderSearch_TextChanged"
+                                             GotFocus="OrderSearchBox_GotFocus"
+                                             LostFocus="OrderSearchBox_LostFocus"/>
+                                    <TextBlock x:Name="SearchPlaceholder" Text="Tim kiem theo ID, ten khach hang, SDT..." 
+                                               FontSize="14" Foreground="Gray" Margin="15,0,0,0"
+                                               VerticalAlignment="Center" HorizontalAlignment="Left"
+                                               IsHitTestVisible="False"/>
+                                </Grid>
+
+                                <!-- Status Filter -->
+                                <ComboBox x:Name="StatusFilterComboBox" Grid.Column="1" Width="150" Height="35" 
+                                          FontSize="14" Margin="0,0,10,0"
+                                          SelectionChanged="StatusFilter_Changed">
+                                    <ComboBoxItem Content="Tat ca trang thai" IsSelected="True"/>
+                                    <ComboBoxItem Content="Pending"/>
+                                    <ComboBoxItem Content="Confirmed"/>
+                                    <ComboBoxItem Content="Shipping"/>
+                                    <ComboBoxItem Content="Delivered"/>
+                                    <ComboBoxItem Content="Cancelled"/>
+                                </ComboBox>
+
+                                <!-- Date Filter -->
+                                <ComboBox x:Name="DateFilterComboBox" Grid.Column="2" Width="120" Height="35" 
+                                          FontSize="14" Margin="0,0,10,0"
+                                          SelectionChanged="DateFilter_Changed">
+                                    <ComboBoxItem Content="Tat ca" IsSelected="True"/>
+                                    <ComboBoxItem Content="Hom nay"/>
+                                    <ComboBoxItem Content="7 ngay qua"/>
+                                    <ComboBoxItem Content="30 ngay qua"/>
+                                </ComboBox>
+
+                                <!-- Refresh Button -->
+                                <Button Grid.Column="3" Content="🔄 Refresh" Style="{StaticResource ModernButton}" 
+                                        Height="35" Click="RefreshOrders_Click"/>
+                            </Grid>
+
+                            <!-- Orders DataGrid -->
+                            <DataGrid x:Name="OrdersDataGrid" 
+                                    AutoGenerateColumns="False"
+                                    HeadersVisibility="Column"
+                                    GridLinesVisibility="Horizontal"
+                                    RowBackground="Transparent"
+                                    AlternatingRowBackground="#FFF8F9FA"
+                                    BorderThickness="1"
+                                    BorderBrush="#FFE0E0E0"
+                                    CanUserAddRows="False"
+                                    CanUserDeleteRows="False"
+                                    CanUserReorderColumns="False"
+                                    CanUserResizeRows="False"
+                                    SelectionMode="Single"
+                                    RowHeight="50">
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Header="ID" Binding="{Binding OrderId}" Width="80"/>
+                                    <DataGridTextColumn Header="Khách hàng" Binding="{Binding Customer.FullName}" Width="150"/>
+                                    <DataGridTextColumn Header="Ngày đặt" Binding="{Binding OrderDate, StringFormat=dd/MM/yyyy HH:mm}" Width="140"/>
+                                    <DataGridTextColumn Header="Tổng tiền" Binding="{Binding TotalAmount, StringFormat={}{0:N0}₫}" Width="120"/>
+                                    <DataGridTextColumn Header="Địa chỉ giao hàng" Binding="{Binding ShippingAddress}" Width="200"/>
+                                    <DataGridTextColumn Header="SĐT" Binding="{Binding Phone}" Width="100"/>
+                                    
+                                    <!-- Status Column with Color -->
+                                    <DataGridTemplateColumn Header="Trang thai" Width="120">
+                                        <DataGridTemplateColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <Border CornerRadius="15" Padding="8,4" HorizontalAlignment="Center">
+                                                    <Border.Style>
+                                                        <Style TargetType="Border">
+                                                            <Style.Triggers>
+                                                                <DataTrigger Binding="{Binding Status}" Value="Pending">
+                                                                    <Setter Property="Background" Value="#FFFFC107"/>
+                                                                </DataTrigger>
+                                                                <DataTrigger Binding="{Binding Status}" Value="Confirmed">
+                                                                    <Setter Property="Background" Value="#FF2196F3"/>
+                                                                </DataTrigger>
+                                                                <DataTrigger Binding="{Binding Status}" Value="Shipping">
+                                                                    <Setter Property="Background" Value="#FFFF9800"/>
+                                                                </DataTrigger>
+                                                                <DataTrigger Binding="{Binding Status}" Value="Delivered">
+                                                                    <Setter Property="Background" Value="#FF4CAF50"/>
+                                                                </DataTrigger>
+                                                                <DataTrigger Binding="{Binding Status}" Value="Cancelled">
+                                                                    <Setter Property="Background" Value="#FFF44336"/>
+                                                                </DataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </Border.Style>
+                                                    <TextBlock Text="{Binding Status}" Foreground="White" FontWeight="SemiBold" FontSize="11"/>
+                                                </Border>
+                                            </DataTemplate>
+                                        </DataGridTemplateColumn.CellTemplate>
+                                    </DataGridTemplateColumn>
+
+                                    <!-- Carrier Column -->
+                                    <DataGridTextColumn Header="Nguoi van chuyen" Binding="{Binding Carrier.FullName}" Width="150"/>
+
+                                    <!-- Actions Column -->
+                                    <DataGridTemplateColumn Header="Thao tac" Width="250">
+                                        <DataGridTemplateColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                                    <Button Content="Chi tiet" Style="{StaticResource ModernButton}" 
+                                                            Height="30" FontSize="11" Margin="2" Width="60"
+                                                            Click="ViewOrderDetail_Click" Tag="{Binding OrderId}"/>
+                                    
+                                                    <Button Content="Xac nhan" Height="30" FontSize="11" Margin="2" Width="70"
+                                                            Click="ConfirmOrder_Click" Tag="{Binding OrderId}">
+                                                        <Button.Style>
+                                                            <Style TargetType="Button" BasedOn="{StaticResource ModernButton}">
+                                                                <Setter Property="Background" Value="#FF4CAF50"/>
+                                                                <Style.Triggers>
+                                                                    <DataTrigger Binding="{Binding Status}" Value="Confirmed">
+                                                                        <Setter Property="IsEnabled" Value="False"/>
+                                                                    </DataTrigger>
+                                                                    <DataTrigger Binding="{Binding Status}" Value="Shipping">
+                                                                        <Setter Property="IsEnabled" Value="False"/>
+                                                                    </DataTrigger>
+                                                                    <DataTrigger Binding="{Binding Status}" Value="Delivered">
+                                                                        <Setter Property="IsEnabled" Value="False"/>
+                                                                    </DataTrigger>
+                                                                    <DataTrigger Binding="{Binding Status}" Value="Cancelled">
+                                                                        <Setter Property="IsEnabled" Value="False"/>
+                                                                    </DataTrigger>
+                                                                </Style.Triggers>
+                                                            </Style>
+                                                        </Button.Style>
+                                                    </Button>
+                                                
+                                                    <Button Content="Huy" Height="30" FontSize="11" Margin="2" Width="50"
+                                                            Click="CancelOrder_Click" Tag="{Binding OrderId}">
+                                                        <Button.Style>
+                                                            <Style TargetType="Button" BasedOn="{StaticResource ModernButton}">
+                                                                <Setter Property="Background" Value="#FFF44336"/>
+                                                                <Style.Triggers>
+                                                                    <DataTrigger Binding="{Binding Status}" Value="Shipping">
+                                                                        <Setter Property="IsEnabled" Value="False"/>
+                                                                    </DataTrigger>
+                                                                    <DataTrigger Binding="{Binding Status}" Value="Delivered">
+                                                                        <Setter Property="IsEnabled" Value="False"/>
+                                                                    </DataTrigger>
+                                                                    <DataTrigger Binding="{Binding Status}" Value="Cancelled">
+                                                                        <Setter Property="IsEnabled" Value="False"/>
+                                                                    </DataTrigger>
+                                                                </Style.Triggers>
+                                                            </Style>
+                                                        </Button.Style>
+                                                    </Button>
+                                                </StackPanel>
+                                            </DataTemplate>
+                                        </DataGridTemplateColumn.CellTemplate>
+                                    </DataGridTemplateColumn>
+                                </DataGrid.Columns>
+                            </DataGrid>
+                        </StackPanel>
+                    </Border>
                 </StackPanel>
 
                 <StackPanel x:Name="CategoriesContent" Visibility="Collapsed">

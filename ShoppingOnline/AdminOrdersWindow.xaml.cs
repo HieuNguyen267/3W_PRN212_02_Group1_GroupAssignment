@@ -1,39 +1,27 @@
 using BLL.Services;
 using DAL.Entities;
 using System;
-using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
-using System.Collections.ObjectModel;
-using System.Windows.Media;
 
 namespace ShoppingOnline
 {
-    public partial class AdminDashboardWindow : Window, INotifyPropertyChanged
+    public partial class AdminOrdersWindow : Window, INotifyPropertyChanged
     {
         private readonly IAdminService _adminService;
         private ObservableCollection<Order> _orders = new();
         private List<Order> _allOrders = new();
 
-        public AdminDashboardWindow()
+        public AdminOrdersWindow()
         {
             InitializeComponent();
             _adminService = new AdminService();
             DataContext = this;
             
-            // Check if admin is logged in
-            if (!AdminSession.IsLoggedIn)
-            {
-                MessageBox.Show("Vui long dang nhap voi tai khoan Admin!", "Thong bao", 
-                    MessageBoxButton.OK, MessageBoxImage.Warning);
-                this.Close();
-                return;
-            }
-            
-            InitializeAdminInfo();
-            LoadDashboardData();
+            LoadOrders();
         }
 
         public ObservableCollection<Order> Orders
@@ -46,183 +34,37 @@ namespace ShoppingOnline
             }
         }
 
-        private void InitializeAdminInfo()
-        {
-            AdminNameText.Text = AdminSession.AdminName ?? "Admin User";
-            AdminEmailText.Text = AdminSession.Email ?? "admin@shop.com";
-        }
-
-        private void LoadDashboardData()
+        private void LoadOrders()
         {
             try
             {
-                // Load statistics
-                var totalCustomers = _adminService.GetTotalCustomers();
-                var totalProducts = _adminService.GetTotalProducts();
-                var totalOrders = _adminService.GetTotalOrders();
-                var totalRevenue = _adminService.GetTotalRevenue();
-                var todayOrders = _adminService.GetTodayOrders();
-                var todayRevenue = _adminService.GetTodayRevenue();
-
-                // Update UI
-                TotalCustomersText.Text = totalCustomers.ToString("N0");
-                TotalProductsText.Text = totalProducts.ToString("N0");
-                TotalOrdersText.Text = totalOrders.ToString("N0");
-                TotalRevenueText.Text = $"{totalRevenue:N0}?";
-                TodayOrdersText.Text = todayOrders.ToString("N0");
-                TodayRevenueText.Text = $"{todayRevenue:N0}?";
-
-                // Load recent orders
-                var recentOrders = _adminService.GetRecentOrders(10);
-                RecentOrdersGrid.ItemsSource = recentOrders;
-
-                // Load low stock products
-                var lowStockProducts = _adminService.GetLowStockProducts(10);
-                LowStockGrid.ItemsSource = lowStockProducts;
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"L?i khi t?i d? li?u dashboard: {ex.Message}", "L?i", 
-                    MessageBoxButton.OK, MessageBoxImage.Error);
-            }
-        }
-
-        #region Navigation Methods
-        private void Dashboard_Click(object sender, RoutedEventArgs e)
-        {
-            ShowContent("Dashboard");
-            PageTitle.Text = "?? Dashboard";
-            PageSubtitle.Text = "T?ng quan h? th?ng";
-            LoadDashboardData();
-        }
-
-        private void Customers_Click(object sender, RoutedEventArgs e)
-        {
-            ShowContent("Customers");
-            PageTitle.Text = "?? Quan ly Khach hang";
-            PageSubtitle.Text = "Danh sach khach hang va thong tin";
-            LoadCustomersData();
-        }
-
-        private void Products_Click(object sender, RoutedEventArgs e)
-        {
-            ShowContent("Products");
-            PageTitle.Text = "?? Quan ly San pham";
-            PageSubtitle.Text = "Danh sach san pham va kho hang";
-            LoadProductsData();
-        }
-
-        private void Orders_Click(object sender, RoutedEventArgs e)
-        {
-            ShowContent("Orders");
-            PageTitle.Text = "??? Quan ly Don hang";
-            PageSubtitle.Text = "Danh sach va trang thai don hang";
-            LoadOrdersData();
-        }
-
-        private void Categories_Click(object sender, RoutedEventArgs e)
-        {
-            ShowContent("Categories");
-            PageTitle.Text = "?? Quan ly Danh muc";
-            PageSubtitle.Text = "Quan ly danh muc san pham";
-        }
-
-        private void Admins_Click(object sender, RoutedEventArgs e)
-        {
-            ShowContent("Admins");
-            PageTitle.Text = "????? Quan ly Admin";
-            PageSubtitle.Text = "Quan ly tai khoan admin";
-        }
-
-        private void Reports_Click(object sender, RoutedEventArgs e)
-        {
-            ShowContent("Reports");
-            PageTitle.Text = "?? Bao cao";
-            PageSubtitle.Text = "Bao cao va thong ke";
-        }
-
-        private void ShowContent(string contentName)
-        {
-            // Hide all content panels
-            DashboardContent.Visibility = Visibility.Collapsed;
-            if (CustomersContent != null) CustomersContent.Visibility = Visibility.Collapsed;
-            if (ProductsContent != null) ProductsContent.Visibility = Visibility.Collapsed;
-            if (OrdersContent != null) OrdersContent.Visibility = Visibility.Collapsed;
-            if (CategoriesContent != null) CategoriesContent.Visibility = Visibility.Collapsed;
-            if (AdminsContent != null) AdminsContent.Visibility = Visibility.Collapsed;
-            if (ReportsContent != null) ReportsContent.Visibility = Visibility.Collapsed;
-            
-            // Show selected content
-            switch (contentName)
-            {
-                case "Dashboard":
-                    DashboardContent.Visibility = Visibility.Visible;
-                    break;
-                case "Customers":
-                    if (CustomersContent != null) CustomersContent.Visibility = Visibility.Visible;
-                    break;
-                case "Products":
-                    if (ProductsContent != null) ProductsContent.Visibility = Visibility.Visible;
-                    break;
-                case "Orders":
-                    if (OrdersContent != null) OrdersContent.Visibility = Visibility.Visible;
-                    break;
-                case "Categories":
-                    if (CategoriesContent != null) CategoriesContent.Visibility = Visibility.Visible;
-                    break;
-                case "Admins":
-                    if (AdminsContent != null) AdminsContent.Visibility = Visibility.Visible;
-                    break;
-                case "Reports":
-                    if (ReportsContent != null) ReportsContent.Visibility = Visibility.Visible;
-                    break;
-            }
-        }
-        #endregion
-
-        #region Data Loading Methods
-        private void LoadCustomersData()
-        {
-            try
-            {
-                // Load customers data
-                var customers = _adminService.GetAllCustomers();
-                // TODO: Populate customers content
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"L?i khi t?i d? li?u khách hàng: {ex.Message}", "L?i", 
-                    MessageBoxButton.OK, MessageBoxImage.Error);
-            }
-        }
-
-        private void LoadProductsData()
-        {
-            try
-            {
-                // Load products data
-                var products = _adminService.GetAllProducts();
-                // TODO: Populate products content
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"L?i khi t?i d? li?u s?n ph?m: {ex.Message}", "L?i", 
-                    MessageBoxButton.OK, MessageBoxImage.Error);
-            }
-        }
-
-        private void LoadOrdersData()
-        {
-            try
-            {
-                // Load all orders data
                 _allOrders = _adminService.GetAllOrders();
                 
-                // Only apply filters if Orders panel is currently visible
-                if (OrdersContent?.Visibility == Visibility.Visible)
+                // Initialize search placeholder visibility
+                if (SearchPlaceholder != null && OrderSearchBox != null)
                 {
-                    ApplyOrderFilters();
+                    SearchPlaceholder.Visibility = string.IsNullOrWhiteSpace(OrderSearchBox.Text) 
+                        ? Visibility.Visible : Visibility.Hidden;
                 }
+                
+                // Reset filters to default
+                if (StatusFilterComboBox != null && StatusFilterComboBox.Items.Count > 0)
+                {
+                    StatusFilterComboBox.SelectedIndex = 0; // "Tat ca trang thai"
+                }
+                
+                if (DateFilterComboBox != null && DateFilterComboBox.Items.Count > 0)
+                {
+                    DateFilterComboBox.SelectedIndex = 0; // "Tat ca"
+                }
+                
+                // Clear search box
+                if (OrderSearchBox != null)
+                {
+                    OrderSearchBox.Text = "";
+                }
+                
+                ApplyOrderFilters();
             }
             catch (Exception ex)
             {
@@ -235,7 +77,7 @@ namespace ShoppingOnline
         {
             try
             {
-                // Check if controls are available (Orders panel might not be loaded yet)
+                // Check if controls are available
                 if (OrderSearchBox == null || StatusFilterComboBox == null || DateFilterComboBox == null || OrdersDataGrid == null)
                 {
                     return; // Exit if controls are not loaded yet
@@ -312,52 +154,7 @@ namespace ShoppingOnline
             }
         }
 
-        private void LoadCategoriesData()
-        {
-            try
-            {
-                // Load categories data
-                var categories = _adminService.GetAllCategories();
-                // TODO: Populate categories content
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"L?i khi t?i d? li?u danh m?c: {ex.Message}", "L?i", 
-                    MessageBoxButton.OK, MessageBoxImage.Error);
-            }
-        }
-
-        private void LoadAdminsData()
-        {
-            try
-            {
-                // Load admins data
-                var admins = _adminService.GetAllAdmins();
-                // TODO: Populate admins content
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"L?i khi t?i d? li?u admin: {ex.Message}", "L?i", 
-                    MessageBoxButton.OK, MessageBoxImage.Error);
-            }
-        }
-
-        private void LoadReportsData()
-        {
-            try
-            {
-                // Load reports data
-                // TODO: Populate reports content
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"L?i khi t?i d? li?u báo cáo: {ex.Message}", "L?i", 
-                    MessageBoxButton.OK, MessageBoxImage.Error);
-            }
-        }
-        #endregion
-
-        #region Order Management Event Handlers
+        #region Event Handlers
         private void OrderSearchBox_GotFocus(object sender, RoutedEventArgs e)
         {
             SearchPlaceholder.Visibility = Visibility.Hidden;
@@ -444,7 +241,7 @@ namespace ShoppingOnline
                     if (result == true)
                     {
                         // Refresh orders if changes were made
-                        LoadOrdersData();
+                        LoadOrders();
                     }
                 }
                 catch (Exception ex)
@@ -470,7 +267,7 @@ namespace ShoppingOnline
                         {
                             MessageBox.Show("?ã xác nh?n ??n hàng thành công!", "Thành công", 
                                 MessageBoxButton.OK, MessageBoxImage.Information);
-                            LoadOrdersData(); // Refresh
+                            LoadOrders(); // Refresh
                         }
                         else
                         {
@@ -502,7 +299,7 @@ namespace ShoppingOnline
                         {
                             MessageBox.Show("?ã h?y ??n hàng!", "Thành công", 
                                 MessageBoxButton.OK, MessageBoxImage.Information);
-                            LoadOrdersData(); // Refresh
+                            LoadOrders(); // Refresh
                         }
                         else
                         {
@@ -518,48 +315,10 @@ namespace ShoppingOnline
                 }
             }
         }
-        #endregion
 
-        #region Event Handlers
-        private void ViewAllOrders_Click(object sender, RoutedEventArgs e)
+        private void Close_Click(object sender, RoutedEventArgs e)
         {
-            Orders_Click(sender, e);
-        }
-
-        private void ManageStock_Click(object sender, RoutedEventArgs e)
-        {
-            Products_Click(sender, e);
-        }
-
-        private void Logout_Click(object sender, RoutedEventArgs e)
-        {
-            var result = MessageBox.Show("B?n có mu?n ??ng xu?t kh?i Admin Panel?", 
-                "Xác nh?n ??ng xu?t", MessageBoxButton.YesNo, MessageBoxImage.Question);
-            
-            if (result == MessageBoxResult.Yes)
-            {
-                AdminSession.Logout();
-                MessageBox.Show("?ã ??ng xu?t thành công!", "Thông báo", 
-                    MessageBoxButton.OK, MessageBoxImage.Information);
-                
-                // Close the current admin dashboard
-                this.Close();
-            }
-        }
-
-        protected override void OnClosing(CancelEventArgs e)
-        {
-            var result = MessageBox.Show("B?n có mu?n thoát Admin Dashboard?", 
-                "Xác nh?n thoát", MessageBoxButton.YesNo, MessageBoxImage.Question);
-            
-            if (result == MessageBoxResult.No)
-            {
-                e.Cancel = true;
-            }
-            else
-            {
-                AdminSession.Logout();
-            }
+            this.Close();
         }
         #endregion
 
