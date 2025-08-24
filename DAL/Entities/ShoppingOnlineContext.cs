@@ -158,7 +158,7 @@ public partial class ShoppingOnlineContext : DbContext
         {
             entity.HasKey(e => e.OrderId).HasName("PK__Orders__C3905BAF1AFC12B5");
 
-            entity.Property(e => e.OrderId).HasColumnName("OrderID");
+            entity.Property(e => e.OrderId).HasColumnName("OrderID").ValueGeneratedOnAdd();
             entity.Property(e => e.CarrierId).HasColumnName("CarrierID");
             entity.Property(e => e.CustomerId).HasColumnName("CustomerID");
             entity.Property(e => e.Notes).HasMaxLength(1000);
@@ -185,7 +185,7 @@ public partial class ShoppingOnlineContext : DbContext
         {
             entity.HasKey(e => e.OrderDetailId).HasName("PK__OrderDet__D3B9D30C811D5826");
 
-            entity.Property(e => e.OrderDetailId).HasColumnName("OrderDetailID");
+            entity.Property(e => e.OrderDetailId).HasColumnName("OrderDetailID").ValueGeneratedOnAdd();
             entity.Property(e => e.OrderId).HasColumnName("OrderID");
             entity.Property(e => e.ProductId)
                 .HasMaxLength(20)

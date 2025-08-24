@@ -242,6 +242,74 @@ namespace ShoppingOnline
             }
         }
 
+        private void CheckoutItem_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender is Button button && button.DataContext is CartItemViewModel item)
+            {
+                var result = MessageBox.Show($"Bạn có muốn thanh toán {item.Product.ProductName} với số lượng {item.Quantity}?", 
+                    "Xác nhận thanh toán", MessageBoxButton.YesNo, MessageBoxImage.Question);
+                
+                if (result == MessageBoxResult.Yes)
+                {
+                    try
+                    {
+                        // Debug logging
+                        System.Diagnostics.Debug.WriteLine($"Creating order for customer: {_customerId}");
+                        System.Diagnostics.Debug.WriteLine($"Product: {item.Product.ProductId}, Price: {item.Product.Price}, Quantity: {item.Quantity}");
+                        
+                        // Create order for this item
+                        var order = new Order
+                        {
+                            CustomerId = _customerId,
+                            OrderDate = DateTime.Now,
+                            TotalAmount = item.Product.Price * item.Quantity,
+                            Status = "Pending",
+                            ShippingAddress = "Địa chỉ giao hàng mặc định",
+                            Phone = "0901234567"
+                        };
+
+                        var orderService = new OrderService();
+                        System.Diagnostics.Debug.WriteLine($"Order created, attempting to save...");
+                        if (orderService.CreateOrder(order))
+                        {
+                            // Create order detail
+                            var orderDetail = new OrderDetail
+                            {
+                                OrderId = order.OrderId,
+                                ProductId = item.Product.ProductId,
+                                Quantity = item.Quantity,
+                                UnitPrice = item.Product.Price,
+                                SubTotal = item.Product.Price * item.Quantity
+                            };
+
+                            // Add order detail to database
+                            orderService.AddOrderDetail(orderDetail);
+
+                            // Remove item from cart
+                            if (item.CartId > 0)
+                            {
+                                _cartService.RemoveFromCart(item.CartId);
+                            }
+                            CartItems.Remove(item);
+                            CalculateTotals();
+
+                            MessageBox.Show($"Đã thanh toán thành công {item.Product.ProductName}!", 
+                                "Thành công", MessageBoxButton.OK, MessageBoxImage.Information);
+                        }
+                        else
+                        {
+                            System.Diagnostics.Debug.WriteLine("Failed to create order");
+                            MessageBox.Show("Lỗi khi tạo đơn hàng! Vui lòng thử lại.", "Lỗi", MessageBoxButton.OK, MessageBoxImage.Error);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"Lỗi khi thanh toán: {ex.Message}", "Lỗi", MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
+                }
+            }
+        }
+
         private void Checkout_Click(object sender, RoutedEventArgs e)
         {
             if (CartItems.Count == 0)
@@ -250,8 +318,67 @@ namespace ShoppingOnline
                 return;
             }
 
-            MessageBox.Show("Chức năng thanh toán sẽ được phát triển trong phiên bản tiếp theo!", 
-                "Thông báo", MessageBoxButton.OK, MessageBoxImage.Information);
+            var result = MessageBox.Show($"Bạn có muốn thanh toán toàn bộ giỏ hàng ({CartItems.Count} sản phẩm)?", 
+                "Xác nhận thanh toán", MessageBoxButton.YesNo, MessageBoxImage.Question);
+            
+            if (result == MessageBoxResult.Yes)
+            {
+                try
+                {
+                    var orderService = new OrderService();
+                    var totalAmount = CartItems.Sum(item => item.Product.Price * item.Quantity);
+
+                    // Create order for all items
+                    var order = new Order
+                    {
+                        CustomerId = _customerId,
+                        OrderDate = DateTime.Now,
+                        TotalAmount = totalAmount,
+                        Status = "Pending",
+                        ShippingAddress = "Địa chỉ giao hàng mặc định",
+                        Phone = "0901234567"
+                    };
+
+                    if (orderService.CreateOrder(order))
+                    {
+                        // Create order details for all items
+                        foreach (var item in CartItems.ToList())
+                        {
+                            var orderDetail = new OrderDetail
+                            {
+                                OrderId = order.OrderId,
+                                ProductId = item.Product.ProductId,
+                                Quantity = item.Quantity,
+                                UnitPrice = item.Product.Price,
+                                SubTotal = item.Product.Price * item.Quantity
+                            };
+
+                            orderService.AddOrderDetail(orderDetail);
+
+                            // Remove item from cart
+                            if (item.CartId > 0)
+                            {
+                                _cartService.RemoveFromCart(item.CartId);
+                            }
+                        }
+
+                        // Clear cart items from UI
+                        CartItems.Clear();
+                        CalculateTotals();
+
+                        MessageBox.Show($"Đã thanh toán thành công toàn bộ giỏ hàng! Tổng cộng: {totalAmount:N0}₫", 
+                            "Thành công", MessageBoxButton.OK, MessageBoxImage.Information);
+                    }
+                    else
+                    {
+                        MessageBox.Show("Lỗi khi tạo đơn hàng! Vui lòng thử lại.", "Lỗi", MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Lỗi khi thanh toán: {ex.Message}", "Lỗi", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }
         }
     }
 

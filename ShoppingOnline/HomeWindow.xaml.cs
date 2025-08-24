@@ -98,6 +98,9 @@ namespace ShoppingOnline
                     Products.Add(product);
                 }
 
+                // Apply current sort
+                ApplySorting();
+
                 // Load random products for banners
                 if (products.Count > 0)
                 {
@@ -172,27 +175,10 @@ namespace ShoppingOnline
 
         private void Login_Click(object sender, RoutedEventArgs e)
         {
-            if (UserSession.IsLoggedIn)
+            // Login only (logout is now handled by user menu)
+            if (UserSession.ShowLoginDialog())
             {
-                // Logout
-                var result = MessageBox.Show($"Bạn có muốn đăng xuất khỏi tài khoản {UserSession.CustomerName}?", 
-                    "Xác nhận đăng xuất", MessageBoxButton.YesNo, MessageBoxImage.Question);
-                
-                if (result == MessageBoxResult.Yes)
-                {
-                    UserSession.Logout();
-                    UpdateLoginButton();
-                    MessageBox.Show("Đã đăng xuất thành công!", "Thông báo", 
-                        MessageBoxButton.OK, MessageBoxImage.Information);
-                }
-            }
-            else
-            {
-                // Login
-                if (UserSession.ShowLoginDialog())
-                {
-                    UpdateLoginButton();
-                }
+                UpdateLoginButton();
             }
         }
 
@@ -200,11 +186,17 @@ namespace ShoppingOnline
         {
             if (UserSession.IsLoggedIn)
             {
-                LoginButton.Content = $"Xin chào, {UserSession.CustomerName}";
+                // Show user menu, hide login button
+                LoginPanel.Visibility = Visibility.Collapsed;
+                UserMenuPanel.Visibility = Visibility.Visible;
+                UserNameText.Text = $"Xin chào, {UserSession.CustomerName}";
             }
             else
             {
-                LoginButton.Content = "Đăng nhập";
+                // Show login button, hide user menu
+                LoginPanel.Visibility = Visibility.Visible;
+                UserMenuPanel.Visibility = Visibility.Collapsed;
+                UserMenuPopup.IsOpen = false;
             }
         }
 
@@ -280,6 +272,9 @@ namespace ShoppingOnline
                 {
                     Products.Add(product);
                 }
+
+                // Apply current sort
+                ApplySorting();
 
                 // Update banners with random products from the same category
                 if (products.Count > 0)
@@ -395,6 +390,9 @@ namespace ShoppingOnline
                     Products.Add(product);
                 }
 
+                // Apply current sort
+                ApplySorting();
+
                 // Update section title
                 SectionTitle.Text = $"Kết quả tìm kiếm: '{searchText}' ({searchResults.Count} sản phẩm)";
 
@@ -428,6 +426,83 @@ namespace ShoppingOnline
             catch (Exception ex)
             {
                 MessageBox.Show($"Lỗi khi tìm kiếm: {ex.Message}", "Lỗi", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private void SortComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            ApplySorting();
+        }
+
+        private void ApplySorting()
+        {
+            if (SortComboBox.SelectedItem is ComboBoxItem selectedItem)
+            {
+                var currentProducts = Products.ToList();
+                Products.Clear();
+
+                var sortedProducts = selectedItem.Content.ToString() switch
+                {
+                    "Giá: Thấp → Cao" => currentProducts.OrderBy(p => p.Price).ToList(),
+                    "Giá: Cao → Thấp" => currentProducts.OrderByDescending(p => p.Price).ToList(),
+                    _ => currentProducts // Default order
+                };
+
+                foreach (var product in sortedProducts)
+                {
+                    Products.Add(product);
+                }
+            }
+        }
+
+        private void UserMenuButton_Click(object sender, RoutedEventArgs e)
+        {
+            UserMenuPopup.IsOpen = !UserMenuPopup.IsOpen;
+        }
+
+        private void ViewProfile_Click(object sender, RoutedEventArgs e)
+        {
+            UserMenuPopup.IsOpen = false;
+            MessageBox.Show("Chức năng xem thông tin cá nhân sẽ được phát triển trong tương lai!", 
+                "Thông báo", MessageBoxButton.OK, MessageBoxImage.Information);
+        }
+
+        private void ViewOrders_Click(object sender, RoutedEventArgs e)
+        {
+            UserMenuPopup.IsOpen = false;
+            
+            if (!UserSession.IsLoggedIn || UserSession.CustomerId == null)
+            {
+                MessageBox.Show("Vui lòng đăng nhập để xem đơn hàng!", 
+                    "Thông báo", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            try
+            {
+                var orderHistoryWindow = new OrderHistoryWindow(UserSession.CustomerId.Value);
+                orderHistoryWindow.ShowDialog();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Lỗi khi mở lịch sử đơn hàng: {ex.Message}", 
+                    "Lỗi", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private void Logout_Click(object sender, RoutedEventArgs e)
+        {
+            UserMenuPopup.IsOpen = false;
+            
+            var result = MessageBox.Show($"Bạn có muốn đăng xuất khỏi tài khoản {UserSession.CustomerName}?", 
+                "Xác nhận đăng xuất", MessageBoxButton.YesNo, MessageBoxImage.Question);
+            
+            if (result == MessageBoxResult.Yes)
+            {
+                UserSession.Logout();
+                UpdateLoginButton();
+                MessageBox.Show("Đã đăng xuất thành công!", "Thông báo", 
+                    MessageBoxButton.OK, MessageBoxImage.Information);
             }
         }
     }

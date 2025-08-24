@@ -1,0 +1,133 @@
+<Window x:Class="ShoppingOnline.OrderHistoryWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Lịch sử đơn hàng" Height="700" Width="1000" 
+        WindowStartupLocation="CenterScreen">
+
+    <Window.Resources>
+        <!-- Colors -->
+        <SolidColorBrush x:Key="PrimaryRed" Color="#E31837"/>
+        <SolidColorBrush x:Key="DarkRed" Color="#C41230"/>
+        <SolidColorBrush x:Key="LightGray" Color="#F5F5F5"/>
+        <SolidColorBrush x:Key="MediumGray" Color="#E0E0E0"/>
+        <SolidColorBrush x:Key="DarkGray" Color="#666666"/>
+        <SolidColorBrush x:Key="SuccessGreen" Color="#28a745"/>
+        <SolidColorBrush x:Key="White" Color="White"/>
+
+        <!-- Styles -->
+        <Style x:Key="HeaderStyle" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="24"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Foreground" Value="{StaticResource PrimaryRed}"/>
+            <Setter Property="Margin" Value="0,0,0,20"/>
+        </Style>
+
+        <Style x:Key="OrderCardStyle" TargetType="Border">
+            <Setter Property="Background" Value="{StaticResource White}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource MediumGray}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="CornerRadius" Value="8"/>
+            <Setter Property="Margin" Value="0,0,0,10"/>
+            <Setter Property="Padding" Value="15"/>
+        </Style>
+
+        <Style x:Key="OrderNumberStyle" TargetType="TextBlock">
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Foreground" Value="{StaticResource PrimaryRed}"/>
+        </Style>
+
+        <Style x:Key="OrderDateStyle" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="Foreground" Value="{StaticResource DarkGray}"/>
+        </Style>
+
+        <Style x:Key="OrderTotalStyle" TargetType="TextBlock">
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="FontSize" Value="16"/>
+            <Setter Property="Foreground" Value="{StaticResource PrimaryRed}"/>
+        </Style>
+
+        <Style x:Key="BackButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="{StaticResource White}"/>
+            <Setter Property="Foreground" Value="{StaticResource PrimaryRed}"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding" Value="15,8"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" 
+                                CornerRadius="5" 
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" 
+                                              VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="EmptyStateStyle" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="16"/>
+            <Setter Property="Foreground" Value="{StaticResource DarkGray}"/>
+            <Setter Property="HorizontalAlignment" Value="Center"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+        </Style>
+    </Window.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- Header -->
+        <Grid Grid.Row="0" Background="{StaticResource PrimaryRed}">
+            <Grid Margin="20">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <TextBlock Grid.Column="0" Text="📋 Lịch sử đơn hàng" 
+                           Foreground="{StaticResource White}" FontSize="20" FontWeight="Bold" 
+                           VerticalAlignment="Center"/>
+
+                <Button Grid.Column="1" Content="← Quay lại" 
+                        Style="{StaticResource BackButtonStyle}"
+                        Click="BackButton_Click"/>
+            </Grid>
+        </Grid>
+
+        <!-- Content -->
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+            <StackPanel Margin="20">
+                <TextBlock Text="Các đơn hàng đã thanh toán" 
+                           Style="{StaticResource HeaderStyle}"/>
+
+                <!-- Orders List -->
+                <ItemsControl x:Name="OrdersItemsControl" ItemsSource="{Binding Orders}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Border Style="{StaticResource OrderCardStyle}">
+                                <StackPanel>
+                                    <TextBlock Text="{Binding ProductSummary}" 
+                                               Style="{StaticResource OrderNumberStyle}"/>
+                                    <TextBlock Text="{Binding OrderDate, StringFormat='Ngày đặt: {0:dd/MM/yyyy HH:mm}'}" 
+                                               Style="{StaticResource OrderDateStyle}"/>
+                                    <TextBlock Text="{Binding TotalAmount, StringFormat='Tổng tiền: {0:N0}₫'}" 
+                                               Style="{StaticResource OrderTotalStyle}"/>
+                                </StackPanel>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+
+                <!-- Empty State -->
+                <TextBlock x:Name="EmptyStateText" Text="Bạn chưa có đơn hàng nào đã thanh toán." 
+                           Style="{StaticResource EmptyStateStyle}" Visibility="Collapsed"/>
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</Window>
