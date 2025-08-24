@@ -1,26 +1,32 @@
 using BLL.Services;
 using DAL.Entities;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 
-namespace ShoppingOnline
+namespace ShoppingOnline.Views
 {
-    public partial class AdminOrdersWindow : Window, INotifyPropertyChanged
+    public partial class AdminOrdersView : UserControl, INotifyPropertyChanged
     {
         private readonly IAdminService _adminService;
         private ObservableCollection<Order> _orders = new();
         private List<Order> _allOrders = new();
 
-        public AdminOrdersWindow()
+        public AdminOrdersView()
         {
             InitializeComponent();
             _adminService = new AdminService();
             DataContext = this;
             
+            Loaded += AdminOrdersView_Loaded;
+        }
+
+        private void AdminOrdersView_Loaded(object sender, RoutedEventArgs e)
+        {
             LoadOrders();
         }
 
@@ -39,31 +45,6 @@ namespace ShoppingOnline
             try
             {
                 _allOrders = _adminService.GetAllOrders();
-                
-                // Initialize search placeholder visibility
-                if (SearchPlaceholder != null && OrderSearchBox != null)
-                {
-                    SearchPlaceholder.Visibility = string.IsNullOrWhiteSpace(OrderSearchBox.Text) 
-                        ? Visibility.Visible : Visibility.Hidden;
-                }
-                
-                // Reset filters to default
-                if (StatusFilterComboBox != null && StatusFilterComboBox.Items.Count > 0)
-                {
-                    StatusFilterComboBox.SelectedIndex = 0; // "Tat ca trang thai"
-                }
-                
-                if (DateFilterComboBox != null && DateFilterComboBox.Items.Count > 0)
-                {
-                    DateFilterComboBox.SelectedIndex = 0; // "Tat ca"
-                }
-                
-                // Clear search box
-                if (OrderSearchBox != null)
-                {
-                    OrderSearchBox.Text = "";
-                }
-                
                 ApplyOrderFilters();
             }
             catch (Exception ex)
@@ -77,16 +58,7 @@ namespace ShoppingOnline
         {
             try
             {
-                // Check if controls are available
-                if (OrderSearchBox == null || StatusFilterComboBox == null || DateFilterComboBox == null || OrdersDataGrid == null)
-                {
-                    return; // Exit if controls are not loaded yet
-                }
-
                 var filteredOrders = _allOrders.AsEnumerable();
-                
-                // Debug logging
-                System.Diagnostics.Debug.WriteLine($"Total orders before filtering: {_allOrders.Count}");
 
                 // Apply search filter
                 var searchText = OrderSearchBox?.Text?.Trim();
@@ -98,24 +70,17 @@ namespace ShoppingOnline
                         (o.Customer?.FullName?.ToLower().Contains(searchLower) == true) ||
                         (o.Phone?.ToLower().Contains(searchLower) == true) ||
                         (o.ShippingAddress?.ToLower().Contains(searchLower) == true));
-                    
-                    System.Diagnostics.Debug.WriteLine($"After search filter '{searchText}': {filteredOrders.Count()}");
                 }
 
                 // Apply status filter
                 var selectedStatus = (StatusFilterComboBox?.SelectedItem as ComboBoxItem)?.Content?.ToString();
-                System.Diagnostics.Debug.WriteLine($"Selected status: '{selectedStatus}'");
-                
                 if (!string.IsNullOrEmpty(selectedStatus) && selectedStatus != "Tat ca trang thai")
                 {
                     filteredOrders = filteredOrders.Where(o => o.Status == selectedStatus);
-                    System.Diagnostics.Debug.WriteLine($"After status filter '{selectedStatus}': {filteredOrders.Count()}");
                 }
 
                 // Apply date filter
                 var selectedDateFilter = (DateFilterComboBox?.SelectedItem as ComboBoxItem)?.Content?.ToString();
-                System.Diagnostics.Debug.WriteLine($"Selected date filter: '{selectedDateFilter}'");
-                
                 if (!string.IsNullOrEmpty(selectedDateFilter) && selectedDateFilter != "Tat ca")
                 {
                     var now = DateTime.Now;
@@ -126,7 +91,6 @@ namespace ShoppingOnline
                         "30 ngay qua" => filteredOrders.Where(o => o.OrderDate >= now.AddDays(-30)),
                         _ => filteredOrders
                     };
-                    System.Diagnostics.Debug.WriteLine($"After date filter '{selectedDateFilter}': {filteredOrders.Count()}");
                 }
 
                 // Update orders collection
@@ -137,37 +101,19 @@ namespace ShoppingOnline
                 }
 
                 // Update DataGrid
-                OrdersDataGrid.ItemsSource = Orders;
-                
-                // Show count in page subtitle
-                var totalCount = filteredOrders.Count();
-                PageSubtitle.Text = $"Danh sách và tr?ng thái ??n hàng ({totalCount} ??n hàng)";
-                
-                System.Diagnostics.Debug.WriteLine($"Final filtered count: {totalCount}");
-                
+                if (OrdersDataGrid != null)
+                {
+                    OrdersDataGrid.ItemsSource = Orders;
+                }
             }
             catch (Exception ex)
             {
                 MessageBox.Show($"L?i khi l?c ??n hàng: {ex.Message}", "L?i", 
                     MessageBoxButton.OK, MessageBoxImage.Error);
-                System.Diagnostics.Debug.WriteLine($"Error in ApplyOrderFilters: {ex.Message}");
             }
         }
 
         #region Event Handlers
-        private void OrderSearchBox_GotFocus(object sender, RoutedEventArgs e)
-        {
-            SearchPlaceholder.Visibility = Visibility.Hidden;
-        }
-
-        private void OrderSearchBox_LostFocus(object sender, RoutedEventArgs e)
-        {
-            if (string.IsNullOrWhiteSpace(OrderSearchBox.Text))
-            {
-                SearchPlaceholder.Visibility = Visibility.Visible;
-            }
-        }
-
         private void OrderSearch_TextChanged(object sender, TextChangedEventArgs e)
         {
             if (OrderSearchBox != null)
@@ -191,42 +137,9 @@ namespace ShoppingOnline
 
         private void RefreshOrders_Click(object sender, RoutedEventArgs e)
         {
-            try
-            {
-                // Reload all orders data
-                _allOrders = _adminService.GetAllOrders();
-                
-                // Debug info
-                MessageBox.Show($"?ã t?i {_allOrders.Count} ??n hàng t? database", "Debug Info", 
-                    MessageBoxButton.OK, MessageBoxImage.Information);
-                
-                // Reset all filters
-                if (StatusFilterComboBox != null)
-                {
-                    StatusFilterComboBox.SelectedIndex = 0; // "Tat ca trang thai"
-                }
-                
-                if (DateFilterComboBox != null)
-                {
-                    DateFilterComboBox.SelectedIndex = 0; // "Tat ca"
-                }
-                
-                if (OrderSearchBox != null)
-                {
-                    OrderSearchBox.Text = "";
-                    SearchPlaceholder.Visibility = Visibility.Visible;
-                }
-                
-                ApplyOrderFilters();
-                
-                MessageBox.Show("?ã làm m?i danh sách ??n hàng!", "Thông báo", 
-                    MessageBoxButton.OK, MessageBoxImage.Information);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"L?i khi làm m?i d? li?u: {ex.Message}", "L?i", 
-                    MessageBoxButton.OK, MessageBoxImage.Error);
-            }
+            LoadOrders();
+            MessageBox.Show("?ã làm m?i danh sách ??n hàng!", "Thông báo", 
+                MessageBoxButton.OK, MessageBoxImage.Information);
         }
 
         private void ViewOrderDetail_Click(object sender, RoutedEventArgs e)
@@ -315,26 +228,6 @@ namespace ShoppingOnline
                 }
             }
         }
-
-        private void Close_Click(object sender, RoutedEventArgs e)
-        {
-            this.Close();
-        }
-
-        private void BackToDashboard_Click(object sender, RoutedEventArgs e)
-        {
-            // Not needed anymore in single-window navigation
-            MessageBox.Show("Navigation ?ã ???c c?p nh?t! Vui lòng s? d?ng menu bên trái ?? chuy?n trang.", "Thông báo", 
-                MessageBoxButton.OK, MessageBoxImage.Information);
-        }
-
-        protected override void OnClosing(CancelEventArgs e)
-        {
-            // Not needed anymore in single-window navigation
-            AdminSession.EndNavigation();
-            base.OnClosing(e);
-        }
-
         #endregion
 
         #region INotifyPropertyChanged

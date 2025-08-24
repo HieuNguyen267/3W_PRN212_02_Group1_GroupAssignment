@@ -11,6 +11,7 @@ namespace ShoppingOnline
         public static string? AdminName { get; private set; } = null;
         public static string? Email { get; private set; } = null;
         public static string? Phone { get; private set; } = null;
+        public static bool IsNavigating { get; set; } = false; // Track navigation state
 
         public static void Login(Admin admin)
         {
@@ -19,6 +20,7 @@ namespace ShoppingOnline
             AdminName = admin.FullName;
             Email = admin.Account?.Email;
             Phone = admin.Phone;
+            IsNavigating = false; // Reset navigation state on login
         }
 
         public static void Logout()
@@ -28,6 +30,17 @@ namespace ShoppingOnline
             AdminName = null;
             Email = null;
             Phone = null;
+            IsNavigating = false; // Reset navigation state on logout
+        }
+
+        public static void StartNavigation()
+        {
+            IsNavigating = true;
+        }
+
+        public static void EndNavigation()
+        {
+            IsNavigating = false;
         }
     }
 }

@@ -95,6 +95,20 @@ namespace ShoppingOnline
         {
             this.Close();
         }
+
+        private void BackToDashboard_Click(object sender, RoutedEventArgs e)
+        {
+            // Not needed anymore in single-window navigation
+            MessageBox.Show("Navigation ?ã ???c c?p nh?t! Vui lòng s? d?ng menu bên trái ?? chuy?n trang.", "Thông báo", 
+                MessageBoxButton.OK, MessageBoxImage.Information);
+        }
+
+        protected override void OnClosing(CancelEventArgs e)
+        {
+            // Not needed anymore in single-window navigation
+            AdminSession.EndNavigation();
+            base.OnClosing(e);
+        }
         #endregion
 
         private void GenerateReportForPeriod(DateTime startDate, DateTime endDate)

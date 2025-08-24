@@ -3,7 +3,8 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="Admin Reports"
         Height="700" Width="1200"
-        WindowStartupLocation="CenterOwner"
+        WindowStartupLocation="CenterScreen"
+        WindowState="Maximized"
         Background="#FFF8F9FA">
     
     <Window.Resources>
@@ -205,6 +206,8 @@
                     Background="#FF28A745" Margin="0,0,10,0" Click="ExportExcel_Click"/>
             <Button Content="In bao cao" Style="{StaticResource ModernButton}" 
                     Background="#FF6C757D" Margin="0,0,10,0" Click="PrintReport_Click"/>
+            <Button Content="Quay lai Dashboard" Style="{StaticResource ModernButton}" 
+                    Background="#FF007BFF" Margin="0,0,10,0" Click="BackToDashboard_Click"/>
             <Button Content="Dong" Style="{StaticResource ModernButton}" 
                     Background="#FF6C757D" Click="Close_Click"/>
         </StackPanel>

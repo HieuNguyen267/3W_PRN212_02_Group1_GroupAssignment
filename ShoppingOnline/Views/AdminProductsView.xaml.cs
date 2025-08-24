@@ -7,29 +7,25 @@ using System.ComponentModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
-using System.Globalization;
-using System.Windows.Data;
-using System.Windows.Markup;
 
-namespace ShoppingOnline
+namespace ShoppingOnline.Views
 {
-    public partial class AdminProductsWindow : Window, INotifyPropertyChanged
+    public partial class AdminProductsView : UserControl, INotifyPropertyChanged
     {
         private readonly IAdminService _adminService;
         private ObservableCollection<Product> _products = new();
         private List<Product> _allProducts = new();
 
-        public AdminProductsWindow()
+        public AdminProductsView()
         {
             InitializeComponent();
             _adminService = new AdminService();
             DataContext = this;
             
-            // Ensure all UI controls are loaded before calling data methods
-            Loaded += AdminProductsWindow_Loaded;
+            Loaded += AdminProductsView_Loaded;
         }
 
-        private void AdminProductsWindow_Loaded(object sender, RoutedEventArgs e)
+        private void AdminProductsView_Loaded(object sender, RoutedEventArgs e)
         {
             LoadCategories();
             LoadProducts();
@@ -113,13 +109,13 @@ namespace ShoppingOnline
                     Products.Add(product);
                 }
 
-                // Update DataGrid - Add null check
+                // Update DataGrid
                 if (ProductsDataGrid != null)
                 {
                     ProductsDataGrid.ItemsSource = Products;
                 }
                 
-                // Update count - Add null check
+                // Update count
                 if (ProductCountText != null)
                 {
                     ProductCountText.Text = $"Tong: {filteredProducts.Count()} san pham";
@@ -202,25 +198,6 @@ namespace ShoppingOnline
                 }
             }
         }
-
-        private void Close_Click(object sender, RoutedEventArgs e)
-        {
-            this.Close();
-        }
-
-        private void BackToDashboard_Click(object sender, RoutedEventArgs e)
-        {
-            // Not needed anymore in single-window navigation
-            MessageBox.Show("Navigation ?ã ???c c?p nh?t! Vui lòng s? d?ng menu bên trái ?? chuy?n trang.", "Thông báo", 
-                MessageBoxButton.OK, MessageBoxImage.Information);
-        }
-
-        protected override void OnClosing(CancelEventArgs e)
-        {
-            // Not needed anymore in single-window navigation
-            AdminSession.EndNavigation();
-            base.OnClosing(e);
-        }
         #endregion
 
         #region INotifyPropertyChanged
@@ -231,45 +208,5 @@ namespace ShoppingOnline
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
         #endregion
-    }
-
-    // Converter for stock status display
-    public class LowStockConverter : IValueConverter
-    {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            if (value is int stock)
-            {
-                return stock <= 10 && stock > 0; // Low stock threshold
-            }
-            return false;
-        }
-
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            throw new NotImplementedException();
-        }
-    }
-
-    public class StockStatusConverter : IValueConverter
-    {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            if (value is int stock)
-            {
-                return stock switch
-                {
-                    0 => "H?t hàng",
-                    <= 10 => "S?p h?t",
-                    _ => "Còn hàng"
-                };
-            }
-            return "N/A";
-        }
-
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            throw new NotImplementedException();
-        }
     }
 }

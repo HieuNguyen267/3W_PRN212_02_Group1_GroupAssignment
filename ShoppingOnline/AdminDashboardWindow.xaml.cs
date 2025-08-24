@@ -3,12 +3,18 @@ using DAL.Entities;
 using System;
 using System.ComponentModel;
 using System.Windows;
+using System.Windows.Controls;
+using ShoppingOnline.Views;
 
 namespace ShoppingOnline
 {
     public partial class AdminDashboardWindow : Window, INotifyPropertyChanged
     {
         private readonly IAdminService _adminService;
+        private AdminDashboardView? _dashboardView;
+        private AdminProductsView? _productsView;
+        private AdminOrdersView? _ordersView;
+        private AdminCustomersView? _customersView;
 
         public AdminDashboardWindow()
         {
@@ -26,7 +32,7 @@ namespace ShoppingOnline
             }
             
             InitializeAdminInfo();
-            LoadDashboardData();
+            NavigateToDashboard(); // Load dashboard by default
         }
 
         private void InitializeAdminInfo()
@@ -35,150 +41,182 @@ namespace ShoppingOnline
             AdminEmailText.Text = AdminSession.Email ?? "admin@shop.com";
         }
 
-        private void LoadDashboardData()
+        private void NavigateToDashboard()
         {
-            try
+            if (_dashboardView == null)
+                _dashboardView = new AdminDashboardView();
+            
+            MainContentControl.Content = _dashboardView;
+            UpdatePageTitle("?? Dashboard", "Tong quan he thong");
+            UpdateActiveButton("Dashboard");
+            
+            // Refresh dashboard data
+            _dashboardView.LoadDashboardData();
+        }
+
+        private void NavigateToProducts()
+        {
+            if (_productsView == null)
+                _productsView = new AdminProductsView();
+            
+            MainContentControl.Content = _productsView;
+            UpdatePageTitle("?? Quan ly San pham", "Danh sach va thong tin san pham");
+            UpdateActiveButton("Products");
+        }
+
+        private void NavigateToOrders()
+        {
+            if (_ordersView == null)
+                _ordersView = new AdminOrdersView();
+            
+            MainContentControl.Content = _ordersView;
+            UpdatePageTitle("??? Quan ly Don hang", "Danh sach va trang thai don hang");
+            UpdateActiveButton("Orders");
+        }
+
+        private void NavigateToCustomers()
+        {
+            if (_customersView == null)
+                _customersView = new AdminCustomersView();
+            
+            MainContentControl.Content = _customersView;
+            UpdatePageTitle("?? Quan ly Khach hang", "Danh sach khach hang");
+            UpdateActiveButton("Customers");
+        }
+
+        private void NavigateToCategories()
+        {
+            // Create a simple placeholder for now
+            var categoriesView = new TextBlock 
+            { 
+                Text = "Quan ly Danh muc - Dang phat trien", 
+                FontSize = 24,
+                HorizontalAlignment = HorizontalAlignment.Center,
+                VerticalAlignment = VerticalAlignment.Center,
+                Margin = new Thickness(50)
+            };
+            
+            MainContentControl.Content = categoriesView;
+            UpdatePageTitle("?? Quan ly Danh muc", "Danh sach danh muc san pham");
+            UpdateActiveButton("Categories");
+        }
+
+        private void NavigateToAdmins()
+        {
+            // Create a simple placeholder for now
+            var adminsView = new TextBlock 
+            { 
+                Text = "Quan ly Admin - Dang phat trien", 
+                FontSize = 24,
+                HorizontalAlignment = HorizontalAlignment.Center,
+                VerticalAlignment = VerticalAlignment.Center,
+                Margin = new Thickness(50)
+            };
+            
+            MainContentControl.Content = adminsView;
+            UpdatePageTitle("????? Quan ly Admin", "Quan ly tai khoan admin");
+            UpdateActiveButton("Admins");
+        }
+
+        private void NavigateToReports()
+        {
+            // Create a simple placeholder for now
+            var reportsView = new TextBlock 
+            { 
+                Text = "Bao cao - Dang phat trien", 
+                FontSize = 24,
+                HorizontalAlignment = HorizontalAlignment.Center,
+                VerticalAlignment = VerticalAlignment.Center,
+                Margin = new Thickness(50)
+            };
+            
+            MainContentControl.Content = reportsView;
+            UpdatePageTitle("?? Bao cao", "Thong ke va bao cao");
+            UpdateActiveButton("Reports");
+        }
+
+        private void UpdatePageTitle(string title, string subtitle)
+        {
+            PageTitle.Text = title;
+            PageSubtitle.Text = subtitle;
+        }
+
+        private void UpdateActiveButton(string activeButton)
+        {
+            // Reset all buttons to normal style
+            DashboardBtn.Style = (Style)FindResource("SidebarButton");
+            CustomersBtn.Style = (Style)FindResource("SidebarButton");
+            ProductsBtn.Style = (Style)FindResource("SidebarButton");
+            OrdersBtn.Style = (Style)FindResource("SidebarButton");
+            CategoriesBtn.Style = (Style)FindResource("SidebarButton");
+            AdminsBtn.Style = (Style)FindResource("SidebarButton");
+            ReportsBtn.Style = (Style)FindResource("SidebarButton");
+
+            // Set active button style
+            switch (activeButton)
             {
-                // Load statistics
-                var totalCustomers = _adminService.GetTotalCustomers();
-                var totalProducts = _adminService.GetTotalProducts();
-                var totalOrders = _adminService.GetTotalOrders();
-                var totalRevenue = _adminService.GetTotalRevenue();
-                var todayOrders = _adminService.GetTodayOrders();
-                var todayRevenue = _adminService.GetTodayRevenue();
-
-                // Update UI
-                TotalCustomersText.Text = totalCustomers.ToString("N0");
-                TotalProductsText.Text = totalProducts.ToString("N0");
-                TotalOrdersText.Text = totalOrders.ToString("N0");
-                TotalRevenueText.Text = $"{totalRevenue:N0}?";
-                TodayOrdersText.Text = todayOrders.ToString("N0");
-                TodayRevenueText.Text = $"{todayRevenue:N0}?";
-
-                // Load recent orders
-                var recentOrders = _adminService.GetRecentOrders(10);
-                RecentOrdersGrid.ItemsSource = recentOrders;
-
-                // Load low stock products
-                var lowStockProducts = _adminService.GetLowStockProducts(10);
-                LowStockGrid.ItemsSource = lowStockProducts;
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"L?i khi t?i d? li?u dashboard: {ex.Message}", "L?i", 
-                    MessageBoxButton.OK, MessageBoxImage.Error);
+                case "Dashboard":
+                    DashboardBtn.Style = (Style)FindResource("ActiveSidebarButton");
+                    break;
+                case "Customers":
+                    CustomersBtn.Style = (Style)FindResource("ActiveSidebarButton");
+                    break;
+                case "Products":
+                    ProductsBtn.Style = (Style)FindResource("ActiveSidebarButton");
+                    break;
+                case "Orders":
+                    OrdersBtn.Style = (Style)FindResource("ActiveSidebarButton");
+                    break;
+                case "Categories":
+                    CategoriesBtn.Style = (Style)FindResource("ActiveSidebarButton");
+                    break;
+                case "Admins":
+                    AdminsBtn.Style = (Style)FindResource("ActiveSidebarButton");
+                    break;
+                case "Reports":
+                    ReportsBtn.Style = (Style)FindResource("ActiveSidebarButton");
+                    break;
             }
         }
 
         #region Navigation Methods
         private void Dashboard_Click(object sender, RoutedEventArgs e)
         {
-            // Already on dashboard, just refresh data
-            LoadDashboardData();
+            NavigateToDashboard();
         }
 
         private void Customers_Click(object sender, RoutedEventArgs e)
         {
-            try
-            {
-                var customersWindow = new AdminCustomersWindow();
-                customersWindow.Owner = this;
-                customersWindow.ShowDialog();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Loi khi mo quan ly khach hang: {ex.Message}", "Loi", 
-                    MessageBoxButton.OK, MessageBoxImage.Error);
-            }
+            NavigateToCustomers();
         }
 
         private void Products_Click(object sender, RoutedEventArgs e)
         {
-            try
-            {
-                var productsWindow = new AdminProductsWindow();
-                productsWindow.Owner = this;
-                productsWindow.ShowDialog();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Loi khi mo quan ly san pham: {ex.Message}", "Loi", 
-                    MessageBoxButton.OK, MessageBoxImage.Error);
-            }
+            NavigateToProducts();
         }
 
         private void Orders_Click(object sender, RoutedEventArgs e)
         {
-            try
-            {
-                var ordersWindow = new AdminOrdersWindow();
-                ordersWindow.Owner = this;
-                ordersWindow.ShowDialog();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Loi khi mo quan ly don hang: {ex.Message}", "Loi", 
-                    MessageBoxButton.OK, MessageBoxImage.Error);
-            }
+            NavigateToOrders();
         }
 
         private void Categories_Click(object sender, RoutedEventArgs e)
         {
-            try
-            {
-                var categoriesWindow = new AdminCategoriesWindow();
-                categoriesWindow.Owner = this;
-                categoriesWindow.ShowDialog();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Loi khi mo quan ly danh muc: {ex.Message}", "Loi", 
-                    MessageBoxButton.OK, MessageBoxImage.Error);
-            }
+            NavigateToCategories();
         }
 
         private void Admins_Click(object sender, RoutedEventArgs e)
         {
-            try
-            {
-                var adminManagementWindow = new AdminManagementWindow();
-                adminManagementWindow.Owner = this;
-                adminManagementWindow.ShowDialog();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Loi khi mo quan ly admin: {ex.Message}", "Loi", 
-                    MessageBoxButton.OK, MessageBoxImage.Error);
-            }
+            NavigateToAdmins();
         }
 
         private void Reports_Click(object sender, RoutedEventArgs e)
         {
-            try
-            {
-                var reportsWindow = new AdminReportsWindow();
-                reportsWindow.Owner = this;
-                reportsWindow.ShowDialog();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Loi khi mo bao cao: {ex.Message}", "Loi", 
-                    MessageBoxButton.OK, MessageBoxImage.Error);
-            }
+            NavigateToReports();
         }
         #endregion
 
         #region Event Handlers
-        private void ViewAllOrders_Click(object sender, RoutedEventArgs e)
-        {
-            Orders_Click(sender, e);
-        }
-
-        private void ManageStock_Click(object sender, RoutedEventArgs e)
-        {
-            Products_Click(sender, e);
-        }
-
         private void Logout_Click(object sender, RoutedEventArgs e)
         {
             var result = MessageBox.Show("B?n có mu?n ??ng xu?t kh?i Admin Panel?", 
@@ -190,7 +228,6 @@ namespace ShoppingOnline
                 MessageBox.Show("?ã ??ng xu?t thành công!", "Thông báo", 
                     MessageBoxButton.OK, MessageBoxImage.Information);
                 
-                // Close the current admin dashboard
                 this.Close();
             }
         }

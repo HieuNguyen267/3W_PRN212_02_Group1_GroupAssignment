@@ -1,26 +1,32 @@
 using BLL.Services;
 using DAL.Entities;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 
-namespace ShoppingOnline
+namespace ShoppingOnline.Views
 {
-    public partial class AdminCustomersWindow : Window, INotifyPropertyChanged
+    public partial class AdminCustomersView : UserControl, INotifyPropertyChanged
     {
         private readonly IAdminService _adminService;
         private ObservableCollection<Customer> _customers = new();
         private List<Customer> _allCustomers = new();
 
-        public AdminCustomersWindow()
+        public AdminCustomersView()
         {
             InitializeComponent();
             _adminService = new AdminService();
             DataContext = this;
             
+            Loaded += AdminCustomersView_Loaded;
+        }
+
+        private void AdminCustomersView_Loaded(object sender, RoutedEventArgs e)
+        {
             LoadCustomers();
         }
 
@@ -66,6 +72,14 @@ namespace ShoppingOnline
                         (c.Address?.ToLower().Contains(searchLower) == true));
                 }
 
+                // Apply status filter
+                var selectedStatus = (StatusFilterComboBox?.SelectedItem as ComboBoxItem)?.Content?.ToString();
+                if (!string.IsNullOrEmpty(selectedStatus) && selectedStatus != "Tat ca trang thai")
+                {
+                    bool isActive = selectedStatus == "Hoat dong";
+                    filteredCustomers = filteredCustomers.Where(c => c.Account?.IsActive == isActive);
+                }
+
                 // Update customers collection
                 Customers.Clear();
                 foreach (var customer in filteredCustomers.OrderBy(c => c.FullName))
@@ -74,10 +88,16 @@ namespace ShoppingOnline
                 }
 
                 // Update DataGrid
-                CustomersDataGrid.ItemsSource = Customers;
+                if (CustomersDataGrid != null)
+                {
+                    CustomersDataGrid.ItemsSource = Customers;
+                }
                 
                 // Update count
-                CustomerCountText.Text = $"T?ng: {filteredCustomers.Count()} khách hàng";
+                if (CustomerCountText != null)
+                {
+                    CustomerCountText.Text = $"Tong: {filteredCustomers.Count()} khach hang";
+                }
             }
             catch (Exception ex)
             {
@@ -98,16 +118,15 @@ namespace ShoppingOnline
             }
         }
 
+        private void StatusFilter_Changed(object sender, SelectionChangedEventArgs e)
+        {
+            ApplyCustomerFilter();
+        }
+
         private void RefreshCustomers_Click(object sender, RoutedEventArgs e)
         {
             LoadCustomers();
             MessageBox.Show("?ã làm m?i danh sách khách hàng!", "Thông báo", 
-                MessageBoxButton.OK, MessageBoxImage.Information);
-        }
-
-        private void AddCustomer_Click(object sender, RoutedEventArgs e)
-        {
-            MessageBox.Show("Tính n?ng thêm khách hàng s? ???c phát tri?n sau!", "Thông báo", 
                 MessageBoxButton.OK, MessageBoxImage.Information);
         }
 
@@ -117,17 +136,18 @@ namespace ShoppingOnline
             {
                 try
                 {
-                    var customer = _adminService.GetCustomerById(customerId);
+                    var customer = _allCustomers.FirstOrDefault(c => c.CustomerId == customerId);
                     if (customer != null)
                     {
-                        var details = $"Khách hàng #{customerId}\n" +
-                                     $"Tên: {customer.FullName}\n" +
-                                     $"Email: {customer.Account?.Email}\n" +
-                                     $"S?T: {customer.Phone}\n" +
-                                     $"??a ch?: {customer.Address}\n" +
-                                     $"Ngày t?o: {customer.CreatedDate:dd/MM/yyyy}";
+                        var info = $"Thông tin khách hàng #{customerId}\n\n" +
+                                  $"Tên: {customer.FullName}\n" +
+                                  $"Email: {customer.Account?.Email}\n" +
+                                  $"?i?n tho?i: {customer.Phone}\n" +
+                                  $"??a ch?: {customer.Address}\n" +
+                                  $"Ngày t?o: {customer.CreatedDate:dd/MM/yyyy}\n" +
+                                  $"Tr?ng thái: {(customer.Account?.IsActive == true ? "Ho?t ??ng" : "Khóa")}";
                         
-                        MessageBox.Show(details, "Thông tin khách hàng", 
+                        MessageBox.Show(info, "Thông tin khách hàng", 
                             MessageBoxButton.OK, MessageBoxImage.Information);
                     }
                 }
@@ -161,25 +181,6 @@ namespace ShoppingOnline
                         MessageBoxButton.OK, MessageBoxImage.Information);
                 }
             }
-        }
-
-        private void Close_Click(object sender, RoutedEventArgs e)
-        {
-            this.Close();
-        }
-
-        private void BackToDashboard_Click(object sender, RoutedEventArgs e)
-        {
-            // Not needed anymore in single-window navigation
-            MessageBox.Show("Navigation ?ã ???c c?p nh?t! Vui lòng s? d?ng menu bên trái ?? chuy?n trang.", "Thông báo", 
-                MessageBoxButton.OK, MessageBoxImage.Information);
-        }
-
-        protected override void OnClosing(CancelEventArgs e)
-        {
-            // Not needed anymore in single-window navigation
-            AdminSession.EndNavigation();
-            base.OnClosing(e);
         }
         #endregion
 

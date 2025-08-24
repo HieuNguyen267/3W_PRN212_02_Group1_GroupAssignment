@@ -3,7 +3,8 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="Quản lý Khách hàng - Admin"
         Height="700" Width="1000"
-        WindowStartupLocation="CenterOwner"
+        WindowStartupLocation="CenterScreen"
+        WindowState="Maximized"
         Background="#FFF8F9FA">
 
 	<Window.Resources>
@@ -141,6 +142,8 @@
 		<StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,20,0,0">
 			<TextBlock x:Name="CustomerCountText" Text="Tổng: 0 khách hàng" FontSize="14" 
                        VerticalAlignment="Center" Margin="0,0,20,0"/>
+			<Button Content="Quay lai Dashboard" Style="{StaticResource ModernButton}" 
+                    Background="#FF28A745" Margin="0,0,10,0" Click="BackToDashboard_Click"/>
 			<Button Content="Đóng" Style="{StaticResource ModernButton}" 
                     Background="#FF6C757D" Click="Close_Click"/>
 		</StackPanel>
