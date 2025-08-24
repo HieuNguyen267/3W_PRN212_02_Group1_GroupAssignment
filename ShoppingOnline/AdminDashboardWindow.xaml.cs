@@ -1,21 +1,14 @@
 using BLL.Services;
 using DAL.Entities;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
 using System.Windows;
-using System.Windows.Controls;
-using System.Collections.ObjectModel;
-using System.Windows.Media;
 
 namespace ShoppingOnline
 {
     public partial class AdminDashboardWindow : Window, INotifyPropertyChanged
     {
         private readonly IAdminService _adminService;
-        private ObservableCollection<Order> _orders = new();
-        private List<Order> _allOrders = new();
 
         public AdminDashboardWindow()
         {
@@ -34,16 +27,6 @@ namespace ShoppingOnline
             
             InitializeAdminInfo();
             LoadDashboardData();
-        }
-
-        public ObservableCollection<Order> Orders
-        {
-            get => _orders;
-            set
-            {
-                _orders = value;
-                OnPropertyChanged(nameof(Orders));
-            }
         }
 
         private void InitializeAdminInfo()
@@ -90,432 +73,97 @@ namespace ShoppingOnline
         #region Navigation Methods
         private void Dashboard_Click(object sender, RoutedEventArgs e)
         {
-            ShowContent("Dashboard");
-            PageTitle.Text = "?? Dashboard";
-            PageSubtitle.Text = "T?ng quan h? th?ng";
+            // Already on dashboard, just refresh data
             LoadDashboardData();
         }
 
         private void Customers_Click(object sender, RoutedEventArgs e)
         {
-            ShowContent("Customers");
-            PageTitle.Text = "?? Quan ly Khach hang";
-            PageSubtitle.Text = "Danh sach khach hang va thong tin";
-            LoadCustomersData();
+            try
+            {
+                var customersWindow = new AdminCustomersWindow();
+                customersWindow.Owner = this;
+                customersWindow.ShowDialog();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Loi khi mo quan ly khach hang: {ex.Message}", "Loi", 
+                    MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
         private void Products_Click(object sender, RoutedEventArgs e)
         {
-            ShowContent("Products");
-            PageTitle.Text = "?? Quan ly San pham";
-            PageSubtitle.Text = "Danh sach san pham va kho hang";
-            LoadProductsData();
+            try
+            {
+                var productsWindow = new AdminProductsWindow();
+                productsWindow.Owner = this;
+                productsWindow.ShowDialog();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Loi khi mo quan ly san pham: {ex.Message}", "Loi", 
+                    MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
         private void Orders_Click(object sender, RoutedEventArgs e)
         {
-            ShowContent("Orders");
-            PageTitle.Text = "??? Quan ly Don hang";
-            PageSubtitle.Text = "Danh sach va trang thai don hang";
-            LoadOrdersData();
+            try
+            {
+                var ordersWindow = new AdminOrdersWindow();
+                ordersWindow.Owner = this;
+                ordersWindow.ShowDialog();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Loi khi mo quan ly don hang: {ex.Message}", "Loi", 
+                    MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
         private void Categories_Click(object sender, RoutedEventArgs e)
         {
-            ShowContent("Categories");
-            PageTitle.Text = "?? Quan ly Danh muc";
-            PageSubtitle.Text = "Quan ly danh muc san pham";
+            try
+            {
+                var categoriesWindow = new AdminCategoriesWindow();
+                categoriesWindow.Owner = this;
+                categoriesWindow.ShowDialog();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Loi khi mo quan ly danh muc: {ex.Message}", "Loi", 
+                    MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
         private void Admins_Click(object sender, RoutedEventArgs e)
         {
-            ShowContent("Admins");
-            PageTitle.Text = "????? Quan ly Admin";
-            PageSubtitle.Text = "Quan ly tai khoan admin";
+            try
+            {
+                var adminManagementWindow = new AdminManagementWindow();
+                adminManagementWindow.Owner = this;
+                adminManagementWindow.ShowDialog();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Loi khi mo quan ly admin: {ex.Message}", "Loi", 
+                    MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
         private void Reports_Click(object sender, RoutedEventArgs e)
         {
-            ShowContent("Reports");
-            PageTitle.Text = "?? Bao cao";
-            PageSubtitle.Text = "Bao cao va thong ke";
-        }
-
-        private void ShowContent(string contentName)
-        {
-            // Hide all content panels
-            DashboardContent.Visibility = Visibility.Collapsed;
-            if (CustomersContent != null) CustomersContent.Visibility = Visibility.Collapsed;
-            if (ProductsContent != null) ProductsContent.Visibility = Visibility.Collapsed;
-            if (OrdersContent != null) OrdersContent.Visibility = Visibility.Collapsed;
-            if (CategoriesContent != null) CategoriesContent.Visibility = Visibility.Collapsed;
-            if (AdminsContent != null) AdminsContent.Visibility = Visibility.Collapsed;
-            if (ReportsContent != null) ReportsContent.Visibility = Visibility.Collapsed;
-            
-            // Show selected content
-            switch (contentName)
-            {
-                case "Dashboard":
-                    DashboardContent.Visibility = Visibility.Visible;
-                    break;
-                case "Customers":
-                    if (CustomersContent != null) CustomersContent.Visibility = Visibility.Visible;
-                    break;
-                case "Products":
-                    if (ProductsContent != null) ProductsContent.Visibility = Visibility.Visible;
-                    break;
-                case "Orders":
-                    if (OrdersContent != null) OrdersContent.Visibility = Visibility.Visible;
-                    break;
-                case "Categories":
-                    if (CategoriesContent != null) CategoriesContent.Visibility = Visibility.Visible;
-                    break;
-                case "Admins":
-                    if (AdminsContent != null) AdminsContent.Visibility = Visibility.Visible;
-                    break;
-                case "Reports":
-                    if (ReportsContent != null) ReportsContent.Visibility = Visibility.Visible;
-                    break;
-            }
-        }
-        #endregion
-
-        #region Data Loading Methods
-        private void LoadCustomersData()
-        {
             try
             {
-                // Load customers data
-                var customers = _adminService.GetAllCustomers();
-                // TODO: Populate customers content
+                var reportsWindow = new AdminReportsWindow();
+                reportsWindow.Owner = this;
+                reportsWindow.ShowDialog();
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"L?i khi t?i d? li?u khách hàng: {ex.Message}", "L?i", 
+                MessageBox.Show($"Loi khi mo bao cao: {ex.Message}", "Loi", 
                     MessageBoxButton.OK, MessageBoxImage.Error);
-            }
-        }
-
-        private void LoadProductsData()
-        {
-            try
-            {
-                // Load products data
-                var products = _adminService.GetAllProducts();
-                // TODO: Populate products content
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"L?i khi t?i d? li?u s?n ph?m: {ex.Message}", "L?i", 
-                    MessageBoxButton.OK, MessageBoxImage.Error);
-            }
-        }
-
-        private void LoadOrdersData()
-        {
-            try
-            {
-                // Load all orders data
-                _allOrders = _adminService.GetAllOrders();
-                
-                // Only apply filters if Orders panel is currently visible
-                if (OrdersContent?.Visibility == Visibility.Visible)
-                {
-                    ApplyOrderFilters();
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"L?i khi t?i d? li?u ??n hàng: {ex.Message}", "L?i", 
-                    MessageBoxButton.OK, MessageBoxImage.Error);
-            }
-        }
-
-        private void ApplyOrderFilters()
-        {
-            try
-            {
-                // Check if controls are available (Orders panel might not be loaded yet)
-                if (OrderSearchBox == null || StatusFilterComboBox == null || DateFilterComboBox == null || OrdersDataGrid == null)
-                {
-                    return; // Exit if controls are not loaded yet
-                }
-
-                var filteredOrders = _allOrders.AsEnumerable();
-                
-                // Debug logging
-                System.Diagnostics.Debug.WriteLine($"Total orders before filtering: {_allOrders.Count}");
-
-                // Apply search filter
-                var searchText = OrderSearchBox?.Text?.Trim();
-                if (!string.IsNullOrWhiteSpace(searchText))
-                {
-                    var searchLower = searchText.ToLower();
-                    filteredOrders = filteredOrders.Where(o => 
-                        o.OrderId.ToString().Contains(searchLower) ||
-                        (o.Customer?.FullName?.ToLower().Contains(searchLower) == true) ||
-                        (o.Phone?.ToLower().Contains(searchLower) == true) ||
-                        (o.ShippingAddress?.ToLower().Contains(searchLower) == true));
-                    
-                    System.Diagnostics.Debug.WriteLine($"After search filter '{searchText}': {filteredOrders.Count()}");
-                }
-
-                // Apply status filter
-                var selectedStatus = (StatusFilterComboBox?.SelectedItem as ComboBoxItem)?.Content?.ToString();
-                System.Diagnostics.Debug.WriteLine($"Selected status: '{selectedStatus}'");
-                
-                if (!string.IsNullOrEmpty(selectedStatus) && selectedStatus != "Tat ca trang thai")
-                {
-                    filteredOrders = filteredOrders.Where(o => o.Status == selectedStatus);
-                    System.Diagnostics.Debug.WriteLine($"After status filter '{selectedStatus}': {filteredOrders.Count()}");
-                }
-
-                // Apply date filter
-                var selectedDateFilter = (DateFilterComboBox?.SelectedItem as ComboBoxItem)?.Content?.ToString();
-                System.Diagnostics.Debug.WriteLine($"Selected date filter: '{selectedDateFilter}'");
-                
-                if (!string.IsNullOrEmpty(selectedDateFilter) && selectedDateFilter != "Tat ca")
-                {
-                    var now = DateTime.Now;
-                    filteredOrders = selectedDateFilter switch
-                    {
-                        "Hom nay" => filteredOrders.Where(o => o.OrderDate?.Date == now.Date),
-                        "7 ngay qua" => filteredOrders.Where(o => o.OrderDate >= now.AddDays(-7)),
-                        "30 ngay qua" => filteredOrders.Where(o => o.OrderDate >= now.AddDays(-30)),
-                        _ => filteredOrders
-                    };
-                    System.Diagnostics.Debug.WriteLine($"After date filter '{selectedDateFilter}': {filteredOrders.Count()}");
-                }
-
-                // Update orders collection
-                Orders.Clear();
-                foreach (var order in filteredOrders.OrderByDescending(o => o.OrderDate))
-                {
-                    Orders.Add(order);
-                }
-
-                // Update DataGrid
-                OrdersDataGrid.ItemsSource = Orders;
-                
-                // Show count in page subtitle
-                var totalCount = filteredOrders.Count();
-                PageSubtitle.Text = $"Danh sách và tr?ng thái ??n hàng ({totalCount} ??n hàng)";
-                
-                System.Diagnostics.Debug.WriteLine($"Final filtered count: {totalCount}");
-                
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"L?i khi l?c ??n hàng: {ex.Message}", "L?i", 
-                    MessageBoxButton.OK, MessageBoxImage.Error);
-                System.Diagnostics.Debug.WriteLine($"Error in ApplyOrderFilters: {ex.Message}");
-            }
-        }
-
-        private void LoadCategoriesData()
-        {
-            try
-            {
-                // Load categories data
-                var categories = _adminService.GetAllCategories();
-                // TODO: Populate categories content
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"L?i khi t?i d? li?u danh m?c: {ex.Message}", "L?i", 
-                    MessageBoxButton.OK, MessageBoxImage.Error);
-            }
-        }
-
-        private void LoadAdminsData()
-        {
-            try
-            {
-                // Load admins data
-                var admins = _adminService.GetAllAdmins();
-                // TODO: Populate admins content
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"L?i khi t?i d? li?u admin: {ex.Message}", "L?i", 
-                    MessageBoxButton.OK, MessageBoxImage.Error);
-            }
-        }
-
-        private void LoadReportsData()
-        {
-            try
-            {
-                // Load reports data
-                // TODO: Populate reports content
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"L?i khi t?i d? li?u báo cáo: {ex.Message}", "L?i", 
-                    MessageBoxButton.OK, MessageBoxImage.Error);
-            }
-        }
-        #endregion
-
-        #region Order Management Event Handlers
-        private void OrderSearchBox_GotFocus(object sender, RoutedEventArgs e)
-        {
-            SearchPlaceholder.Visibility = Visibility.Hidden;
-        }
-
-        private void OrderSearchBox_LostFocus(object sender, RoutedEventArgs e)
-        {
-            if (string.IsNullOrWhiteSpace(OrderSearchBox.Text))
-            {
-                SearchPlaceholder.Visibility = Visibility.Visible;
-            }
-        }
-
-        private void OrderSearch_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            if (OrderSearchBox != null)
-            {
-                SearchPlaceholder.Visibility = string.IsNullOrWhiteSpace(OrderSearchBox.Text) 
-                    ? Visibility.Visible : Visibility.Hidden;
-                
-                ApplyOrderFilters();
-            }
-        }
-
-        private void StatusFilter_Changed(object sender, SelectionChangedEventArgs e)
-        {
-            ApplyOrderFilters();
-        }
-
-        private void DateFilter_Changed(object sender, SelectionChangedEventArgs e)
-        {
-            ApplyOrderFilters();
-        }
-
-        private void RefreshOrders_Click(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                // Reload all orders data
-                _allOrders = _adminService.GetAllOrders();
-                
-                // Debug info
-                MessageBox.Show($"?ã t?i {_allOrders.Count} ??n hàng t? database", "Debug Info", 
-                    MessageBoxButton.OK, MessageBoxImage.Information);
-                
-                // Reset all filters
-                if (StatusFilterComboBox != null)
-                {
-                    StatusFilterComboBox.SelectedIndex = 0; // "Tat ca trang thai"
-                }
-                
-                if (DateFilterComboBox != null)
-                {
-                    DateFilterComboBox.SelectedIndex = 0; // "Tat ca"
-                }
-                
-                if (OrderSearchBox != null)
-                {
-                    OrderSearchBox.Text = "";
-                    SearchPlaceholder.Visibility = Visibility.Visible;
-                }
-                
-                ApplyOrderFilters();
-                
-                MessageBox.Show("?ã làm m?i danh sách ??n hàng!", "Thông báo", 
-                    MessageBoxButton.OK, MessageBoxImage.Information);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"L?i khi làm m?i d? li?u: {ex.Message}", "L?i", 
-                    MessageBoxButton.OK, MessageBoxImage.Error);
-            }
-        }
-
-        private void ViewOrderDetail_Click(object sender, RoutedEventArgs e)
-        {
-            if (sender is Button button && button.Tag is int orderId)
-            {
-                try
-                {
-                    var orderDetailWindow = new OrderDetailWindow(orderId);
-                    var result = orderDetailWindow.ShowDialog();
-                    
-                    if (result == true)
-                    {
-                        // Refresh orders if changes were made
-                        LoadOrdersData();
-                    }
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show($"L?i khi m? chi ti?t ??n hàng: {ex.Message}", "L?i", 
-                        MessageBoxButton.OK, MessageBoxImage.Error);
-                }
-            }
-        }
-
-        private void ConfirmOrder_Click(object sender, RoutedEventArgs e)
-        {
-            if (sender is Button button && button.Tag is int orderId)
-            {
-                var result = MessageBox.Show("B?n có ch?c mu?n xác nh?n ??n hàng này?", 
-                    "Xác nh?n ??n hàng", MessageBoxButton.YesNo, MessageBoxImage.Question);
-                
-                if (result == MessageBoxResult.Yes)
-                {
-                    try
-                    {
-                        if (_adminService.UpdateOrderStatus(orderId, "Confirmed"))
-                        {
-                            MessageBox.Show("?ã xác nh?n ??n hàng thành công!", "Thành công", 
-                                MessageBoxButton.OK, MessageBoxImage.Information);
-                            LoadOrdersData(); // Refresh
-                        }
-                        else
-                        {
-                            MessageBox.Show("L?i khi xác nh?n ??n hàng!", "L?i", 
-                                MessageBoxButton.OK, MessageBoxImage.Error);
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show($"L?i: {ex.Message}", "L?i", 
-                            MessageBoxButton.OK, MessageBoxImage.Error);
-                    }
-                }
-            }
-        }
-
-        private void CancelOrder_Click(object sender, RoutedEventArgs e)
-        {
-            if (sender is Button button && button.Tag is int orderId)
-            {
-                var result = MessageBox.Show("B?n có ch?c mu?n h?y ??n hàng này?", 
-                    "H?y ??n hàng", MessageBoxButton.YesNo, MessageBoxImage.Warning);
-                
-                if (result == MessageBoxResult.Yes)
-                {
-                    try
-                    {
-                        if (_adminService.UpdateOrderStatus(orderId, "Cancelled"))
-                        {
-                            MessageBox.Show("?ã h?y ??n hàng!", "Thành công", 
-                                MessageBoxButton.OK, MessageBoxImage.Information);
-                            LoadOrdersData(); // Refresh
-                        }
-                        else
-                        {
-                            MessageBox.Show("L?i khi h?y ??n hàng!", "L?i", 
-                                MessageBoxButton.OK, MessageBoxImage.Error);
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show($"L?i: {ex.Message}", "L?i", 
-                            MessageBoxButton.OK, MessageBoxImage.Error);
-                    }
-                }
             }
         }
         #endregion

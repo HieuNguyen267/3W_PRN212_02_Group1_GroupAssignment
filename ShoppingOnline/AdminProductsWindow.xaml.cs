@@ -24,6 +24,12 @@ namespace ShoppingOnline
             _adminService = new AdminService();
             DataContext = this;
             
+            // Ensure all UI controls are loaded before calling data methods
+            Loaded += AdminProductsWindow_Loaded;
+        }
+
+        private void AdminProductsWindow_Loaded(object sender, RoutedEventArgs e)
+        {
             LoadCategories();
             LoadProducts();
         }
@@ -43,17 +49,20 @@ namespace ShoppingOnline
             try
             {
                 var categories = _adminService.GetAllCategories();
-                CategoryFilterComboBox.Items.Clear();
-                CategoryFilterComboBox.Items.Add(new ComboBoxItem { Content = "Tat ca danh muc", IsSelected = true });
-                
-                foreach (var category in categories)
+                if (CategoryFilterComboBox != null)
                 {
-                    CategoryFilterComboBox.Items.Add(new ComboBoxItem { Content = category.CategoryName, Tag = category.CategoryId });
+                    CategoryFilterComboBox.Items.Clear();
+                    CategoryFilterComboBox.Items.Add(new ComboBoxItem { Content = "Tat ca danh muc", IsSelected = true });
+                    
+                    foreach (var category in categories)
+                    {
+                        CategoryFilterComboBox.Items.Add(new ComboBoxItem { Content = category.CategoryName, Tag = category.CategoryId });
+                    }
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"L?i khi t?i danh m?c: {ex.Message}", "L?i", 
+                MessageBox.Show($"Loi khi tai danh muc: {ex.Message}", "Loi", 
                     MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
@@ -67,7 +76,7 @@ namespace ShoppingOnline
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"L?i khi t?i d? li?u s?n ph?m: {ex.Message}", "L?i", 
+                MessageBox.Show($"Loi khi tai du lieu san pham: {ex.Message}", "Loi", 
                     MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
@@ -103,15 +112,21 @@ namespace ShoppingOnline
                     Products.Add(product);
                 }
 
-                // Update DataGrid
-                ProductsDataGrid.ItemsSource = Products;
+                // Update DataGrid - Add null check
+                if (ProductsDataGrid != null)
+                {
+                    ProductsDataGrid.ItemsSource = Products;
+                }
                 
-                // Update count
-                ProductCountText.Text = $"T?ng: {filteredProducts.Count()} s?n ph?m";
+                // Update count - Add null check
+                if (ProductCountText != null)
+                {
+                    ProductCountText.Text = $"Tong: {filteredProducts.Count()} san pham";
+                }
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"L?i khi l?c s?n ph?m: {ex.Message}", "L?i", 
+                MessageBox.Show($"Loi khi loc san pham: {ex.Message}", "Loi", 
                     MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
@@ -136,13 +151,13 @@ namespace ShoppingOnline
         private void RefreshProducts_Click(object sender, RoutedEventArgs e)
         {
             LoadProducts();
-            MessageBox.Show("?ã làm m?i danh sách s?n ph?m!", "Thông báo", 
+            MessageBox.Show("Da lam moi danh sach san pham!", "Thong bao", 
                 MessageBoxButton.OK, MessageBoxImage.Information);
         }
 
         private void AddProduct_Click(object sender, RoutedEventArgs e)
         {
-            MessageBox.Show("Tính n?ng thêm s?n ph?m s? ???c phát tri?n sau!", "Thông báo", 
+            MessageBox.Show("Tinh nang them san pham se duoc phat trien sau!", "Thong bao", 
                 MessageBoxButton.OK, MessageBoxImage.Information);
         }
 
@@ -157,7 +172,7 @@ namespace ShoppingOnline
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show($"L?i khi xem s?n ph?m: {ex.Message}", "L?i", 
+                    MessageBox.Show($"Loi khi xem san pham: {ex.Message}", "Loi", 
                         MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }
@@ -167,7 +182,7 @@ namespace ShoppingOnline
         {
             if (sender is Button button && button.Tag is string productId)
             {
-                MessageBox.Show($"Tính n?ng s?a s?n ph?m {productId} s? ???c phát tri?n sau!", "Thông báo", 
+                MessageBox.Show($"Tinh nang sua san pham {productId} se duoc phat trien sau!", "Thong bao", 
                     MessageBoxButton.OK, MessageBoxImage.Information);
             }
         }
@@ -176,12 +191,12 @@ namespace ShoppingOnline
         {
             if (sender is Button button && button.Tag is string productId)
             {
-                var result = MessageBox.Show($"B?n có ch?c mu?n xóa s?n ph?m {productId}?", 
-                    "Xác nh?n xóa", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+                var result = MessageBox.Show($"Ban co chac muon xoa san pham {productId}?", 
+                    "Xac nhan xoa", MessageBoxButton.YesNo, MessageBoxImage.Warning);
                 
                 if (result == MessageBoxResult.Yes)
                 {
-                    MessageBox.Show("Tính n?ng xóa s?n ph?m s? ???c phát tri?n sau!", "Thông báo", 
+                    MessageBox.Show("Tinh nang xoa san pham se duoc phat trien sau!", "Thong bao", 
                         MessageBoxButton.OK, MessageBoxImage.Information);
                 }
             }
