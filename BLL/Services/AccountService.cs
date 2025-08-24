@@ -127,6 +127,16 @@ namespace BLL.Services
         {
             _accountRepo.DeleteAccount(accountId);
         }
+
+        public Customer? GetCustomerById(int customerId)
+        {
+            return _accountRepo.GetCustomerById(customerId);
+        }
+
+        public void UpdateCustomer(Customer customer)
+        {
+            _accountRepo.UpdateCustomer(customer);
+        }
     }
 
     public class LoginResult

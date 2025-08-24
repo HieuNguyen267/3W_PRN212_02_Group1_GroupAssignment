@@ -463,8 +463,76 @@ namespace ShoppingOnline
         private void ViewProfile_Click(object sender, RoutedEventArgs e)
         {
             UserMenuPopup.IsOpen = false;
-            MessageBox.Show("Chức năng xem thông tin cá nhân sẽ được phát triển trong tương lai!", 
-                "Thông báo", MessageBoxButton.OK, MessageBoxImage.Information);
+            
+            if (!UserSession.IsLoggedIn || UserSession.CustomerId == null)
+            {
+                MessageBox.Show("Vui lòng đăng nhập để xem thông tin cá nhân!", 
+                    "Thông báo", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            try
+            {
+                var userProfileWindow = new UserProfileWindow();
+                userProfileWindow.ShowDialog();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Lỗi khi mở thông tin cá nhân: {ex.Message}", 
+                    "Lỗi", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private void AccountSettings_Click(object sender, RoutedEventArgs e)
+        {
+            UserMenuPopup.IsOpen = false;
+            
+            if (!UserSession.IsLoggedIn || UserSession.CustomerId == null)
+            {
+                MessageBox.Show("Vui lòng đăng nhập để cài đặt tài khoản!", 
+                    "Thông báo", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            try
+            {
+                var accountSettingsWindow = new AccountSettingsWindow();
+                var result = accountSettingsWindow.ShowDialog();
+                
+                if (result == true)
+                {
+                    // Update UserSession if account settings were changed
+                    UpdateLoginButton();
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Lỗi khi mở cài đặt tài khoản: {ex.Message}", 
+                    "Lỗi", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private void AddressManagement_Click(object sender, RoutedEventArgs e)
+        {
+            UserMenuPopup.IsOpen = false;
+            
+            if (!UserSession.IsLoggedIn || UserSession.CustomerId == null)
+            {
+                MessageBox.Show("Vui lòng đăng nhập để quản lý địa chỉ!", 
+                    "Thông báo", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            try
+            {
+                var addressManagementWindow = new AddressManagementWindow();
+                addressManagementWindow.ShowDialog();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Lỗi khi mở quản lý địa chỉ: {ex.Message}", 
+                    "Lỗi", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
         private void ViewOrders_Click(object sender, RoutedEventArgs e)

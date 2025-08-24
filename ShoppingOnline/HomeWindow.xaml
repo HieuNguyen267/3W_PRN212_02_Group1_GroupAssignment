@@ -222,6 +222,8 @@
                                 CornerRadius="5" Padding="0">
                             <StackPanel>
                                 <Button Content="Xem thông tin cá nhân" Style="{StaticResource UserMenuItemStyle}" Click="ViewProfile_Click"/>
+                                <Button Content="Cài đặt tài khoản" Style="{StaticResource UserMenuItemStyle}" Click="AccountSettings_Click"/>
+                                <Button Content="Quản lý địa chỉ" Style="{StaticResource UserMenuItemStyle}" Click="AddressManagement_Click"/>
                                 <Button Content="Xem đơn hàng đã đặt" Style="{StaticResource UserMenuItemStyle}" Click="ViewOrders_Click"/>
                                 <Separator Margin="5,0"/>
                                 <Button Content="Đăng xuất" Style="{StaticResource UserMenuItemStyle}" Click="Logout_Click"/>

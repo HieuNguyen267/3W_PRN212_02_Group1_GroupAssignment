@@ -63,5 +63,25 @@ namespace DAL.Repositories
                 _context.SaveChanges();
             }
         }
+
+        public Customer? GetCustomerById(int customerId)
+        {
+            return _context.Customers
+                .Include(c => c.Account)
+                .Include(c => c.Orders)
+                    .ThenInclude(o => o.OrderDetails)
+                        .ThenInclude(od => od.Product)
+                .FirstOrDefault(c => c.CustomerId == customerId);
+        }
+
+        public void UpdateCustomer(Customer customer)
+        {
+            _context.Customers.Update(customer);
+            if (customer.Account != null)
+            {
+                _context.Accounts.Update(customer.Account);
+            }
+            _context.SaveChanges();
+        }
     }
 }

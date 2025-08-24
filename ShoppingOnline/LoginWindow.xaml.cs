@@ -10,6 +10,8 @@ namespace ShoppingOnline
         public bool IsLoggedIn { get; private set; } = false;
         public int? LoggedInCustomerId { get; private set; } = null;
         public string? LoggedInCustomerName { get; private set; } = null;
+        public string? LoggedInEmail { get; private set; } = null;
+        public string? LoggedInPhone { get; private set; } = null;
 
         public LoginWindow()
         {
@@ -40,6 +42,8 @@ namespace ShoppingOnline
                     IsLoggedIn = true;
                     LoggedInCustomerId = result.Customer.CustomerId;
                     LoggedInCustomerName = result.Customer.FullName;
+                    LoggedInEmail = result.Customer.Account?.Email;
+                    LoggedInPhone = result.Customer.Phone;
                     
                     MessageBox.Show(result.Message, "Thành công", 
                         MessageBoxButton.OK, MessageBoxImage.Information);

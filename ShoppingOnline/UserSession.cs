@@ -4,13 +4,17 @@ namespace ShoppingOnline
     {
         public static bool IsLoggedIn { get; private set; } = false;
         public static int? CustomerId { get; private set; } = null;
-        public static string? CustomerName { get; private set; } = null;
+        public static string? CustomerName { get; set; } = null;
+        public static string? Email { get; set; } = null;
+        public static string? Phone { get; set; } = null;
 
-        public static void Login(int customerId, string customerName)
+        public static void Login(int customerId, string customerName, string? email = null, string? phone = null)
         {
             IsLoggedIn = true;
             CustomerId = customerId;
             CustomerName = customerName;
+            Email = email;
+            Phone = phone;
         }
 
         public static void Logout()
@@ -18,6 +22,8 @@ namespace ShoppingOnline
             IsLoggedIn = false;
             CustomerId = null;
             CustomerName = null;
+            Email = null;
+            Phone = null;
         }
 
         public static bool ShowLoginDialog()
@@ -27,7 +33,7 @@ namespace ShoppingOnline
             
             if (result == true && loginWindow.IsLoggedIn)
             {
-                Login(loginWindow.LoggedInCustomerId!.Value, loginWindow.LoggedInCustomerName!);
+                Login(loginWindow.LoggedInCustomerId!.Value, loginWindow.LoggedInCustomerName!, loginWindow.LoggedInEmail, loginWindow.LoggedInPhone);
                 return true;
             }
             

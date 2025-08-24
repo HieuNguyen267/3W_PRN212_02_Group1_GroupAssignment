@@ -1,0 +1,290 @@
+<Window x:Class="ShoppingOnline.AddressManagementWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:local="clr-namespace:ShoppingOnline"
+        Title="Quản lý địa chỉ" Height="600" Width="800" 
+        WindowStartupLocation="CenterScreen" ResizeMode="CanResize">
+    
+    <Window.Resources>
+        <SolidColorBrush x:Key="PrimaryRed" Color="#E31837"/>
+        <SolidColorBrush x:Key="LightGray" Color="#F5F5F5"/>
+        <SolidColorBrush x:Key="MediumGray" Color="#E0E0E0"/>
+        <SolidColorBrush x:Key="DarkGray" Color="#666666"/>
+        
+        <BooleanToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+        <local:InverseBooleanToVisibilityConverter x:Key="InverseBoolToVisibilityConverter"/>
+        
+        <Style x:Key="CardStyle" TargetType="Border">
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="BorderBrush" Value="{StaticResource MediumGray}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="CornerRadius" Value="8"/>
+            <Setter Property="Padding" Value="20"/>
+            <Setter Property="Margin" Value="0,0,0,15"/>
+        </Style>
+        
+        <Style x:Key="SectionTitleStyle" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="18"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Foreground" Value="{StaticResource PrimaryRed}"/>
+            <Setter Property="Margin" Value="0,0,0,15"/>
+        </Style>
+        
+        <Style x:Key="FormLabelStyle" TargetType="TextBlock">
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Foreground" Value="{StaticResource DarkGray}"/>
+            <Setter Property="Margin" Value="0,0,0,5"/>
+        </Style>
+        
+        <Style x:Key="FormTextBoxStyle" TargetType="TextBox">
+            <Setter Property="Padding" Value="10,8"/>
+            <Setter Property="BorderBrush" Value="{StaticResource MediumGray}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Margin" Value="0,0,0,15"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TextBox">
+                        <Border Background="{TemplateBinding Background}" 
+                                BorderBrush="{TemplateBinding BorderBrush}" 
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="5" 
+                                Padding="{TemplateBinding Padding}">
+                            <ScrollViewer x:Name="PART_ContentHost" 
+                                          VerticalAlignment="Center" 
+                                          HorizontalAlignment="Left"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        
+        <Style x:Key="FormComboBoxStyle" TargetType="ComboBox">
+            <Setter Property="Padding" Value="10,8"/>
+            <Setter Property="BorderBrush" Value="{StaticResource MediumGray}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Margin" Value="0,0,0,15"/>
+        </Style>
+        
+        <Style x:Key="AddressItemStyle" TargetType="Border">
+            <Setter Property="Background" Value="{StaticResource LightGray}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource MediumGray}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="CornerRadius" Value="8"/>
+            <Setter Property="Padding" Value="15"/>
+            <Setter Property="Margin" Value="0,0,0,10"/>
+        </Style>
+        
+        <Style x:Key="ActionButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="{StaticResource PrimaryRed}"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Padding" Value="15,8"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Margin" Value="5,0"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" 
+                                CornerRadius="5" 
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        
+        <Style x:Key="SecondaryButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="{StaticResource PrimaryRed}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource PrimaryRed}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="10,5"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Margin" Value="5,0"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" 
+                                BorderBrush="{TemplateBinding BorderBrush}" 
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="5" 
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        
+
+    </Window.Resources>
+    
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        
+        <!-- Header -->
+        <Border Grid.Row="0" Background="{StaticResource PrimaryRed}" Padding="20,15">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                
+                <StackPanel Grid.Column="0">
+                    <TextBlock Text="Quản lý địa chỉ" Foreground="White" FontSize="24" FontWeight="Bold"/>
+                    <TextBlock Text="Thêm, sửa và quản lý địa chỉ giao hàng" Foreground="White" FontSize="14" Margin="0,5,0,0"/>
+                </StackPanel>
+                
+                <Button Grid.Column="1" Content="✕" Background="Transparent" Foreground="White" 
+                        BorderThickness="0" FontSize="18" Click="Close_Click" Padding="10"/>
+            </Grid>
+        </Border>
+        
+        <!-- Main Content -->
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+            <Grid Margin="20">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="350"/>
+                </Grid.ColumnDefinitions>
+                
+                <!-- Left - Address List -->
+                <StackPanel Grid.Column="0" Margin="0,0,20,0">
+                    <Border Style="{StaticResource CardStyle}">
+                        <StackPanel>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                
+                                <TextBlock Text="Danh sách địa chỉ" Style="{StaticResource SectionTitleStyle}"/>
+                                <Button Grid.Column="1" Content="+ Thêm địa chỉ mới" Style="{StaticResource ActionButtonStyle}" Click="AddNewAddress_Click"/>
+                            </Grid>
+                            
+                            <ItemsControl x:Name="AddressListItemsControl" ItemsSource="{Binding Addresses}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border Style="{StaticResource AddressItemStyle}">
+                                            <Grid>
+                                                <Grid.RowDefinitions>
+                                                    <RowDefinition Height="Auto"/>
+                                                    <RowDefinition Height="Auto"/>
+                                                    <RowDefinition Height="Auto"/>
+                                                </Grid.RowDefinitions>
+                                                
+                                                <Grid Grid.Row="0">
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="*"/>
+                                                        <ColumnDefinition Width="Auto"/>
+                                                    </Grid.ColumnDefinitions>
+                                                    
+                                                    <StackPanel Grid.Column="0">
+                                                        <TextBlock Text="{Binding FullName}" FontWeight="Bold" FontSize="16"/>
+                                                        <TextBlock Text="{Binding Phone}" FontSize="14" Foreground="{StaticResource DarkGray}"/>
+                                                    </StackPanel>
+                                                    
+                                                    <StackPanel Grid.Column="1" Orientation="Horizontal">
+                                                        <Button Content="Sửa" Style="{StaticResource SecondaryButtonStyle}" Click="EditAddress_Click"/>
+                                                        <Button Content="Xóa" Background="#FF4444" Foreground="White" 
+                                                                BorderThickness="0" Padding="10,5" 
+                                                                Click="DeleteAddress_Click">
+                                                            <Button.Template>
+                                                                <ControlTemplate TargetType="Button">
+                                                                    <Border Background="{TemplateBinding Background}" 
+                                                                            CornerRadius="5" 
+                                                                            Padding="{TemplateBinding Padding}">
+                                                                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                                    </Border>
+                                                                </ControlTemplate>
+                                                            </Button.Template>
+                                                        </Button>
+                                                    </StackPanel>
+                                                </Grid>
+                                                
+                                                <TextBlock Grid.Row="1" Text="{Binding FullAddress}" FontSize="14" Margin="0,10,0,5"/>
+                                                
+                                                <StackPanel Grid.Row="2" Orientation="Horizontal">
+                                                    <TextBlock Text="Địa chỉ mặc định" FontSize="12" Foreground="{StaticResource PrimaryRed}" 
+                                                               FontWeight="Bold" Visibility="{Binding IsDefault, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                                                    <Button Content="Đặt làm mặc định" Style="{StaticResource SecondaryButtonStyle}" 
+                                                            Click="SetDefaultAddress_Click" 
+                                                            Visibility="{Binding IsDefault, Converter={StaticResource InverseBoolToVisibilityConverter}}"/>
+                                                </StackPanel>
+                                            </Grid>
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                            
+                            <TextBlock Text="Chưa có địa chỉ nào" HorizontalAlignment="Center" Foreground="{StaticResource DarkGray}" 
+                                       Margin="0,20" x:Name="NoAddressesText"/>
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+                
+                <!-- Right - Address Form -->
+                <Border Grid.Column="1" Style="{StaticResource CardStyle}">
+                    <StackPanel>
+                        <TextBlock x:Name="FormTitleText" Text="Thêm địa chỉ mới" Style="{StaticResource SectionTitleStyle}"/>
+                        
+                        <TextBlock Text="Họ và tên:" Style="{StaticResource FormLabelStyle}"/>
+                        <TextBox x:Name="FullNameTextBox" Style="{StaticResource FormTextBoxStyle}"/>
+                        
+                        <TextBlock Text="Số điện thoại:" Style="{StaticResource FormLabelStyle}"/>
+                        <TextBox x:Name="PhoneTextBox" Style="{StaticResource FormTextBoxStyle}"/>
+                        
+                        <TextBlock Text="Tỉnh/Thành phố:" Style="{StaticResource FormLabelStyle}"/>
+                        <ComboBox x:Name="ProvinceComboBox" Style="{StaticResource FormComboBoxStyle}">
+                            <ComboBoxItem Content="Hà Nội"/>
+                            <ComboBoxItem Content="TP. Hồ Chí Minh"/>
+                            <ComboBoxItem Content="Đà Nẵng"/>
+                            <ComboBoxItem Content="Cần Thơ"/>
+                            <ComboBoxItem Content="Hải Phòng"/>
+                            <ComboBoxItem Content="Nghệ An"/>
+                            <ComboBoxItem Content="Thanh Hóa"/>
+                            <ComboBoxItem Content="Quảng Nam"/>
+                        </ComboBox>
+                        
+                        <TextBlock Text="Quận/Huyện:" Style="{StaticResource FormLabelStyle}"/>
+                        <ComboBox x:Name="DistrictComboBox" Style="{StaticResource FormComboBoxStyle}">
+                            <ComboBoxItem Content="Quận 1"/>
+                            <ComboBoxItem Content="Quận 2"/>
+                            <ComboBoxItem Content="Quận 3"/>
+                            <ComboBoxItem Content="Quận 4"/>
+                            <ComboBoxItem Content="Quận 5"/>
+                            <ComboBoxItem Content="Quận 6"/>
+                            <ComboBoxItem Content="Quận 7"/>
+                            <ComboBoxItem Content="Quận 8"/>
+                        </ComboBox>
+                        
+                        <TextBlock Text="Phường/Xã:" Style="{StaticResource FormLabelStyle}"/>
+                        <ComboBox x:Name="WardComboBox" Style="{StaticResource FormComboBoxStyle}">
+                            <ComboBoxItem Content="Phường 1"/>
+                            <ComboBoxItem Content="Phường 2"/>
+                            <ComboBoxItem Content="Phường 3"/>
+                            <ComboBoxItem Content="Phường 4"/>
+                            <ComboBoxItem Content="Phường 5"/>
+                        </ComboBox>
+                        
+                        <TextBlock Text="Địa chỉ chi tiết:" Style="{StaticResource FormLabelStyle}"/>
+                        <TextBox x:Name="DetailAddressTextBox" Style="{StaticResource FormTextBoxStyle}" 
+                                 TextWrapping="Wrap" AcceptsReturn="True" Height="60"/>
+                        
+                        <CheckBox x:Name="DefaultAddressCheckBox" Content="Đặt làm địa chỉ mặc định" 
+                                  Margin="0,0,0,20" FontWeight="Bold"/>
+                        
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                            <Button x:Name="SaveButton" Content="Lưu địa chỉ" Style="{StaticResource ActionButtonStyle}" Click="SaveAddress_Click"/>
+                            <Button Content="Hủy" Style="{StaticResource SecondaryButtonStyle}" Click="CancelForm_Click"/>
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+            </Grid>
+        </ScrollViewer>
+    </Grid>
+</Window>

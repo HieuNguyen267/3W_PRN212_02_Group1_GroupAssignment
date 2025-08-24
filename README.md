@@ -1,66 +1,101 @@
-# Shopping Online Application
+# ShoppingOnline - Hệ thống bán hàng điện tử
 
-## Mô tả
-Ứng dụng Shopping Online được xây dựng bằng WPF với kiến trúc 3-layer (DAL, BLL, Presentation).
+## Mô tả dự án
+ShoppingOnline là một ứng dụng desktop WPF được phát triển bằng C# và .NET Framework, mô phỏng một hệ thống bán hàng điện tử với đầy đủ các chức năng cơ bản.
 
 ## Cấu trúc dự án
-- **DAL (Data Access Layer)**: Chứa entities và repositories để truy cập database
-- **BLL (Business Logic Layer)**: Chứa services để xử lý business logic
-- **ShoppingOnline (Presentation Layer)**: Giao diện người dùng WPF
 
-## Cài đặt và chạy
+### 1. ShoppingOnline (WPF Application)
+- **LoginWindow**: Cửa sổ đăng nhập
+- **HomeWindow**: Trang chủ hiển thị sản phẩm
+- **CartWindow**: Giỏ hàng
+- **DetailWindow**: Chi tiết sản phẩm
+- **OrderHistoryWindow**: Lịch sử đơn hàng
+- **UserProfileWindow**: Thông tin cá nhân (dữ liệu động từ DB)
+- **AccountSettingsWindow**: Cài đặt tài khoản
+- **AddressManagementWindow**: Quản lý địa chỉ (dữ liệu động từ DB)
 
-### 1. Cấu hình Database
-1. Đảm bảo SQL Server đang chạy
-2. Tạo database tên "ShoppingOnline"
-3. Chạy script `sample_data.sql` để tạo dữ liệu mẫu
-4. Cập nhật connection string trong `ShoppingOnline/appsettings.json` nếu cần
+### 2. BLL (Business Logic Layer)
+- **AccountService**: Xử lý logic đăng nhập, quản lý tài khoản
+- **ProductService**: Xử lý logic sản phẩm
+- **CartService**: Xử lý logic giỏ hàng
+- **OrderService**: Xử lý logic đơn hàng
 
-### 2. Build và chạy
-1. Mở solution trong Visual Studio
-2. Build solution (Ctrl+Shift+B)
-3. Chạy project ShoppingOnline
+### 3. DAL (Data Access Layer)
+- **Entities**: Các entity classes
+- **Repositories**: Các repository classes để truy cập database
+  - **AccountRepo**: Truy cập dữ liệu tài khoản
+  - **ProductRepo**: Truy cập dữ liệu sản phẩm
+  - **CartRepo**: Truy cập dữ liệu giỏ hàng
+  - **OrderRepo**: Truy cập dữ liệu đơn hàng
 
-## Thay đổi từ Hard Code sang Database
+## Cơ sở dữ liệu
 
-### Trước đây:
-- Dữ liệu sản phẩm được hard code trực tiếp trong XAML
-- Không thể thay đổi dữ liệu mà không sửa code
+### Các bảng chính:
+- **Account**: Thông tin tài khoản
+- **Customers**: Thông tin khách hàng
+- **Admin**: Thông tin admin
+- **Carrier**: Thông tin shipper
+- **Products**: Sản phẩm
+- **Categories**: Danh mục sản phẩm
+- **Orders**: Đơn hàng
+- **OrderDetails**: Chi tiết đơn hàng
+- **ShoppingCart**: Giỏ hàng
 
-### Bây giờ:
-- Dữ liệu được lấy từ database thông qua Entity Framework
-- Sử dụng MVVM pattern với binding
-- Có thể thay đổi dữ liệu trong database mà không cần sửa code
+## Tính năng chính
 
-### Các file đã thay đổi:
+### 1. Quản lý người dùng
+- Đăng nhập/Đăng xuất
+- Xem thông tin cá nhân
+- Cập nhật thông tin tài khoản
 
-#### 1. DAL Layer:
-- `ProductRepo.cs`: Repository để truy cập dữ liệu sản phẩm
-- `ShoppingOnlineContext.cs`: DbContext cho Entity Framework
+### 2. Mua sắm
+- Xem danh sách sản phẩm
+- Tìm kiếm và lọc sản phẩm
+- Xem chi tiết sản phẩm
+- Thêm vào giỏ hàng
+- Đặt hàng
 
-#### 2. BLL Layer:
-- `ProductService.cs`: Service để xử lý business logic
+### 3. Quản lý đơn hàng
+- Xem lịch sử đơn hàng
+- Theo dõi trạng thái đơn hàng
+- Xem chi tiết đơn hàng
 
-#### 3. Presentation Layer:
-- `HomeWindow.xaml/.cs`: Tích hợp trực tiếp ProductService và binding logic
+## Hướng dẫn sử dụng
 
-### Cách hoạt động:
-1. `HomeWindow` khởi tạo và gọi `ProductService`
-2. `ProductService` gọi `ProductRepo` để lấy dữ liệu từ database
-3. Dữ liệu được binding đến `ItemsControl` trong `HomeWindow.xaml`
-4. Mỗi sản phẩm được hiển thị bằng DataTemplate trực tiếp
+### 1. Cài đặt và chạy
+1. Clone repository về máy
+2. Mở file `3W_PRN212_02_Group1_GroupAssignment.sln` trong Visual Studio
+3. Restore NuGet packages
+4. Chạy script SQL trong thư mục `Database` để tạo database:
+   - Chạy `Base.sql` để tạo database và các bảng
+5. Cập nhật connection string trong `appsettings.json`
+6. Build và chạy project
 
-## Tính năng
-- Hiển thị danh sách sản phẩm từ database
-- Responsive design với UniformGrid
-- Binding dữ liệu động
-- Kiến trúc 3-layer rõ ràng
-- Trang chi tiết sản phẩm với layout 2 cột
-- Tương tác với sản phẩm (click để xem chi tiết)
-- Các tùy chọn mua hàng (phiên bản, màu sắc)
-- Nút thêm vào giỏ hàng
+### 2. Đăng nhập
+- Sử dụng email: `nguyenvana@gmail.com` và password: `123456` để đăng nhập với quyền Customer
+- Hoặc sử dụng email: `nguyenduyhieu@gmail.com` và password: `123456` để đăng nhập với quyền Admin
 
-## Lưu ý
-- Đảm bảo database có dữ liệu trước khi chạy ứng dụng
-- Connection string phải chính xác
-- Cần có quyền truy cập database
+### 3. Sử dụng hệ thống
+1. **Mua sắm**: Chọn sản phẩm từ trang chủ, thêm vào giỏ hàng và đặt hàng
+2. **Xem thông tin cá nhân**: Click vào menu user và chọn "Xem thông tin cá nhân"
+3. **Cài đặt tài khoản**: Click vào menu user và chọn "Cài đặt tài khoản"
+4. **Quản lý địa chỉ**: Click vào menu user và chọn "Quản lý địa chỉ"
+
+
+
+## Công nghệ sử dụng
+- **.NET Framework 4.8**
+- **WPF (Windows Presentation Foundation)**
+- **Entity Framework Core**
+- **SQL Server**
+- **MVVM Pattern**
+
+## Nhóm phát triển
+- Nguyễn Duy Hiếu
+- Trần Thái Thịnh
+- Và các thành viên khác
+
+## Phiên bản
+- Version: 1.0
+- Ngày cập nhật: 2024
