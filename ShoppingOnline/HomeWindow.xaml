@@ -5,7 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ShoppingOnline"
         mc:Ignorable="d"
-        Title="HomeWindow" Height="1080" Width="1920">
+        Title="HomeWindow" Height="1080" Width="1920" WindowStartupLocation="CenterScreen"
+        WindowState="Maximized">
 
     <Window.Resources>
         <!-- Colors -->
@@ -50,6 +51,7 @@
             <Setter Property="CornerRadius" Value="8"/>
             <Setter Property="Padding" Value="10"/>
             <Setter Property="Margin" Value="5"/>
+            <Setter Property="Width" Value="200"/>
         </Style>
 
         <Style x:Key="ProductImageStyle" TargetType="Border">
@@ -157,16 +159,28 @@
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
 
-                <Button Grid.Column="0" Content="Danh mục" Background="{StaticResource DarkRed}" 
-                        Foreground="White" Padding="15,10" Margin="0,0,129,0"/>
-                <Button Grid.Column="0" Content="Hồ Chí Minh" Background="{StaticResource DarkRed}" 
-                        Foreground="White" Padding="15,10" Margin="120,0,10,0"/>
-
-                <TextBox Grid.Column="1" Text="Q Bạn muốn mua gì hôm nay?" Foreground="Gray" 
-                         FontSize="14" Padding="15,10" VerticalAlignment="Center"/>
+                <ComboBox x:Name="SearchComboBox" Grid.Column="1" 
+                          FontSize="14" Padding="15,10" VerticalAlignment="Center"
+                          IsEditable="True" IsTextSearchEnabled="True"
+                          TextSearch.TextPath="ProductName"
+                          ItemsSource="{Binding SearchSuggestions}"
+                          SelectedValuePath="ProductId"
+                          Text="Q Bạn muốn mua gì hôm nay?"
+                          SelectionChanged="SearchComboBox_SelectionChanged"
+                          DropDownOpened="SearchComboBox_DropDownOpened">
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="{Binding ProductName}" FontWeight="Bold"/>
+                                <TextBlock Text=" - " Foreground="Gray"/>
+                                <TextBlock Text="{Binding Category.CategoryName}" Foreground="Gray" FontStyle="Italic"/>
+                            </StackPanel>
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
 
                 <Button Grid.Column="2" Content="Tìm kiếm" Background="{StaticResource DarkRed}" 
-                        Foreground="White" Padding="15,10" Margin="10,0,0,0"/>
+                        Foreground="White" Padding="15,10" Margin="10,0,0,0" Click="SearchButton_Click"/>
             </Grid>
 
             <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center" Margin="20,0">
@@ -185,18 +199,15 @@
             <!-- Left Sidebar Categories -->
             <ScrollViewer Grid.Column="0" Background="{StaticResource LightGray}">
                 <StackPanel>
-                    <Button Content="▶ Điện thoại, Tablet" Style="{StaticResource CategoryButtonStyle}"/>
-                    <Button Content="▶ Laptop" Style="{StaticResource CategoryButtonStyle}"/>
-                    <Button Content="▶ Âm thanh, Mic thu âm" Style="{StaticResource CategoryButtonStyle}"/>
-                    <Button Content="▶ Đồng hồ, Camera" Style="{StaticResource CategoryButtonStyle}"/>
-                    <Button Content="▶ Đồ gia dụng" Style="{StaticResource CategoryButtonStyle}"/>
-                    <Button Content="▶ Phụ kiện" Style="{StaticResource CategoryButtonStyle}"/>
-                    <Button Content="▶ PC, Màn hình, Máy in" Style="{StaticResource CategoryButtonStyle}"/>
-                    <Button Content="▶ Tivi" Style="{StaticResource CategoryButtonStyle}"/>
-                    <Button Content="▶ Thu cũ đổi mới" Style="{StaticResource CategoryButtonStyle}"/>
-                    <Button Content="▶ Hàng cũ" Style="{StaticResource CategoryButtonStyle}"/>
-                    <Button Content="▶ Khuyến mãi" Style="{StaticResource CategoryButtonStyle}"/>
-                    <Button Content="▶ Tin công nghệ" Style="{StaticResource CategoryButtonStyle}"/>
+                    <Button Content="▶ Tất cả sản phẩm" Style="{StaticResource CategoryButtonStyle}" Click="AllProducts_Click"/>
+                    <Button Content="▶ Điện thoại, Tablet" Style="{StaticResource CategoryButtonStyle}" Click="Category_Click" Tag="CAT001"/>
+                    <Button Content="▶ Laptop" Style="{StaticResource CategoryButtonStyle}" Click="Category_Click" Tag="CAT002"/>
+                    <Button Content="▶ Âm thanh, Mic thu âm" Style="{StaticResource CategoryButtonStyle}" Click="Category_Click" Tag="CAT003"/>
+                    <Button Content="▶ Đồng hồ, Camera" Style="{StaticResource CategoryButtonStyle}" Click="Category_Click" Tag="CAT004"/>
+                    <Button Content="▶ Đồ gia dụng" Style="{StaticResource CategoryButtonStyle}" Click="Category_Click" Tag="CAT005"/>
+                    <Button Content="▶ Phụ kiện" Style="{StaticResource CategoryButtonStyle}" Click="Category_Click" Tag="CAT006"/>
+                    <Button Content="▶ PC, Màn hình, Máy in" Style="{StaticResource CategoryButtonStyle}" Click="Category_Click" Tag="CAT007"/>
+                    <Button Content="▶ Tivi" Style="{StaticResource CategoryButtonStyle}" Click="Category_Click" Tag="CAT008"/>
                 </StackPanel>
             </ScrollViewer>
 
@@ -259,46 +270,16 @@
                     <Border Background="White" BorderBrush="{StaticResource MediumGray}" BorderThickness="1" 
                             CornerRadius="10" Padding="20">
                         <StackPanel>
-                            <StackPanel Orientation="Horizontal" Margin="0,0,0,15">
-                                <TextBlock Text="ĐIỆN THOẠI NỔI BẬT NHẤT" FontSize="20" FontWeight="Bold" VerticalAlignment="Center"/>
-                                <Button Content="Xem chi tiết mẫu" Background="{StaticResource PrimaryRed}" Foreground="White" 
-                                        Padding="10,5" Margin="20,0,0,0" Click="TestDetailWindow_Click">
-                                    <Button.Template>
-                                        <ControlTemplate TargetType="Button">
-                                            <Border Background="{TemplateBinding Background}"
-                                                    BorderBrush="{TemplateBinding BorderBrush}"
-                                                    BorderThickness="{TemplateBinding BorderThickness}"
-                                                    CornerRadius="5">
-                                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                                            </Border>
-                                        </ControlTemplate>
-                                    </Button.Template>
-                                </Button>
-                            </StackPanel>
-
-                            <!-- Brand Filters -->
-                            <ScrollViewer HorizontalScrollBarVisibility="Auto" Margin="0,0,0,15">
-                                <StackPanel Orientation="Horizontal">
-                                    <Button Content="Apple" Style="{StaticResource BrandFilterButtonActiveStyle}"/>
-                                    <Button Content="Samsung" Style="{StaticResource BrandFilterButtonStyle}"/>
-                                    <Button Content="Xiaomi" Style="{StaticResource BrandFilterButtonStyle}"/>
-                                    <Button Content="OPPO" Style="{StaticResource BrandFilterButtonStyle}"/>
-                                    <Button Content="vivo" Style="{StaticResource BrandFilterButtonStyle}"/>
-                                    <Button Content="realme" Style="{StaticResource BrandFilterButtonStyle}"/>
-                                    <Button Content="ASUS" Style="{StaticResource BrandFilterButtonStyle}"/>
-                                    <Button Content="TECNO" Style="{StaticResource BrandFilterButtonStyle}"/>
-                                    <Button Content="Nokia" Style="{StaticResource BrandFilterButtonStyle}"/>
-                                    <Button Content="Infinix" Style="{StaticResource BrandFilterButtonStyle}"/>
-                                    <Button Content="Nothing" Style="{StaticResource BrandFilterButtonStyle}"/>
-                                    <Button Content="Xem tất cả" Style="{StaticResource BrandFilterButtonStyle}"/>
-                                </StackPanel>
-                            </ScrollViewer>
-
+                           
+                            <!-- Section Title -->
+                            <TextBlock x:Name="SectionTitle" Text="Tất cả sản phẩm" FontSize="20" FontWeight="Bold" 
+                                       Margin="0,0,0,20" Foreground="{StaticResource PrimaryRed}"/>
+                           
                             <!-- Product Grid -->
                             <ItemsControl ItemsSource="{Binding Products}">
                                 <ItemsControl.ItemsPanel>
                                     <ItemsPanelTemplate>
-                                        <UniformGrid Columns="5" Rows="2"/>
+                                        <WrapPanel/>
                                     </ItemsPanelTemplate>
                                 </ItemsControl.ItemsPanel>
                                 <ItemsControl.ItemTemplate>

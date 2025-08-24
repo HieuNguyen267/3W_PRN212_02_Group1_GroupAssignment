@@ -16,6 +16,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using System.Windows.Controls.Primitives;
 
 namespace ShoppingOnline
 {
@@ -30,6 +31,8 @@ namespace ShoppingOnline
         private ObservableCollection<Product> _products = new();
         private Product? _mainBannerProduct;
         private ObservableCollection<Product> _smallBannerProducts = new();
+        private ObservableCollection<Product> _searchSuggestions = new();
+        private List<Product> _allProducts = new();
 
         public HomeWindow()
         {
@@ -71,12 +74,24 @@ namespace ShoppingOnline
             }
         }
 
+        public ObservableCollection<Product> SearchSuggestions
+        {
+            get => _searchSuggestions;
+            set
+            {
+                _searchSuggestions = value;
+                OnPropertyChanged(nameof(SearchSuggestions));
+            }
+        }
+
         public void LoadProducts()
         {
             try
             {
-                // Load products for main grid
-                var products = _productService.GetFeaturedProducts(8);
+                // Load ALL active products for main grid
+                var products = _productService.GetActiveProducts();
+                _allProducts = products.ToList(); // Store all products for search
+                
                 Products.Clear();
                 foreach (var product in products)
                 {
@@ -84,16 +99,15 @@ namespace ShoppingOnline
                 }
 
                 // Load random products for banners
-                var allProducts = _productService.GetActiveProducts();
-                if (allProducts.Count > 0)
+                if (products.Count > 0)
                 {
                     // Random for main banner
                     var random = new Random();
-                    MainBannerProduct = allProducts[random.Next(allProducts.Count)];
+                    MainBannerProduct = products[random.Next(products.Count)];
 
                     // Random for small banners (3 different products)
                     SmallBannerProducts.Clear();
-                    var availableProducts = allProducts.Where(p => p.ProductId != MainBannerProduct?.ProductId).ToList();
+                    var availableProducts = products.Where(p => p.ProductId != MainBannerProduct?.ProductId).ToList();
                     for (int i = 0; i < 3 && i < availableProducts.Count; i++)
                     {
                         var randomIndex = random.Next(availableProducts.Count);
@@ -218,6 +232,202 @@ namespace ShoppingOnline
             {
                 var detailWindow = new DetailWindow(product.ProductId);
                 detailWindow.Show();
+            }
+        }
+
+        private void AllProducts_Click(object sender, RoutedEventArgs e)
+        {
+            LoadProducts();
+            SectionTitle.Text = "Tất cả sản phẩm";
+        }
+
+        private void Category_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender is Button button && button.Tag is string categoryId)
+            {
+                LoadProductsByCategory(categoryId);
+                
+                // Update section title based on category
+                var categoryName = GetCategoryName(categoryId);
+                SectionTitle.Text = categoryName;
+            }
+        }
+
+        private string GetCategoryName(string categoryId)
+        {
+            return categoryId switch
+            {
+                "CAT001" => "Điện thoại, Tablet",
+                "CAT002" => "Laptop",
+                "CAT003" => "Âm thanh, Mic thu âm",
+                "CAT004" => "Đồng hồ, Camera",
+                "CAT005" => "Đồ gia dụng",
+                "CAT006" => "Phụ kiện",
+                "CAT007" => "PC, Màn hình, Máy in",
+                "CAT008" => "Tivi",
+                _ => "Sản phẩm"
+            };
+        }
+
+        private void LoadProductsByCategory(string categoryId)
+        {
+            try
+            {
+                // Load products by category
+                var products = _productService.GetProductsByCategory(categoryId);
+                Products.Clear();
+                foreach (var product in products)
+                {
+                    Products.Add(product);
+                }
+
+                // Update banners with random products from the same category
+                if (products.Count > 0)
+                {
+                    var random = new Random();
+                    MainBannerProduct = products[random.Next(products.Count)];
+
+                    // Random for small banners (3 different products from same category)
+                    SmallBannerProducts.Clear();
+                    var availableProducts = products.Where(p => p.ProductId != MainBannerProduct?.ProductId).ToList();
+                    for (int i = 0; i < 3 && i < availableProducts.Count; i++)
+                    {
+                        var randomIndex = random.Next(availableProducts.Count);
+                        var selectedProduct = availableProducts[randomIndex];
+                        SmallBannerProducts.Add(selectedProduct);
+                        availableProducts.RemoveAt(randomIndex);
+                    }
+                }
+                else
+                {
+                    // If no products in category, clear banners
+                    MainBannerProduct = null;
+                    SmallBannerProducts.Clear();
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Lỗi khi tải sản phẩm theo danh mục: {ex.Message}", "Lỗi", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private void SearchComboBox_DropDownOpened(object sender, EventArgs e)
+        {
+            var searchText = SearchComboBox.Text?.Trim();
+            
+            if (string.IsNullOrEmpty(searchText) || searchText == "Q Bạn muốn mua gì hôm nay?")
+            {
+                SearchSuggestions.Clear();
+                return;
+            }
+
+            // Filter products based on search text (product name OR category name)
+            var suggestions = _allProducts
+                .Where(p => p.ProductName.Contains(searchText, StringComparison.OrdinalIgnoreCase) ||
+                           (p.Category?.CategoryName?.Contains(searchText, StringComparison.OrdinalIgnoreCase) == true) ||
+                           // Smart search for common keywords
+                           (searchText.ToLower() == "điện" && p.Category?.CategoryName?.Contains("Điện thoại", StringComparison.OrdinalIgnoreCase) == true) ||
+                           (searchText.ToLower() == "laptop" && p.Category?.CategoryName?.Contains("Laptop", StringComparison.OrdinalIgnoreCase) == true) ||
+                           (searchText.ToLower() == "âm thanh" && p.Category?.CategoryName?.Contains("Âm thanh", StringComparison.OrdinalIgnoreCase) == true) ||
+                           (searchText.ToLower() == "đồng hồ" && p.Category?.CategoryName?.Contains("Đồng hồ", StringComparison.OrdinalIgnoreCase) == true) ||
+                           (searchText.ToLower() == "gia dụng" && p.Category?.CategoryName?.Contains("Đồ gia dụng", StringComparison.OrdinalIgnoreCase) == true) ||
+                           (searchText.ToLower() == "phụ kiện" && p.Category?.CategoryName?.Contains("Phụ kiện", StringComparison.OrdinalIgnoreCase) == true) ||
+                           (searchText.ToLower() == "pc" && p.Category?.CategoryName?.Contains("PC", StringComparison.OrdinalIgnoreCase) == true) ||
+                           (searchText.ToLower() == "tivi" && p.Category?.CategoryName?.Contains("Tivi", StringComparison.OrdinalIgnoreCase) == true))
+                .Take(10) // Limit to 10 suggestions
+                .ToList();
+
+            SearchSuggestions.Clear();
+            foreach (var product in suggestions)
+            {
+                SearchSuggestions.Add(product);
+            }
+        }
+
+        private void SearchComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (SearchComboBox.SelectedItem is Product selectedProduct)
+            {
+                // Open detail window for selected product
+                var detailWindow = new DetailWindow(selectedProduct.ProductId);
+                detailWindow.Show();
+                
+                // Reset search
+                SearchComboBox.SelectedItem = null;
+                SearchComboBox.Text = "Q Bạn muốn mua gì hôm nay?";
+                SearchSuggestions.Clear();
+            }
+        }
+
+        private void SearchButton_Click(object sender, RoutedEventArgs e)
+        {
+            var searchText = SearchComboBox.Text?.Trim();
+            
+            if (string.IsNullOrEmpty(searchText) || searchText == "Q Bạn muốn mua gì hôm nay?")
+            {
+                // If no search text, show all products
+                LoadProducts();
+                SectionTitle.Text = "Tất cả sản phẩm";
+                return;
+            }
+
+            try
+            {
+                // Search products by name OR category name
+                var searchResults = _allProducts
+                    .Where(p => p.ProductName.Contains(searchText, StringComparison.OrdinalIgnoreCase) ||
+                               (p.Category?.CategoryName?.Contains(searchText, StringComparison.OrdinalIgnoreCase) == true) ||
+                               // Smart search for common keywords
+                               (searchText.ToLower() == "điện" && p.Category?.CategoryName?.Contains("Điện thoại", StringComparison.OrdinalIgnoreCase) == true) ||
+                               (searchText.ToLower() == "laptop" && p.Category?.CategoryName?.Contains("Laptop", StringComparison.OrdinalIgnoreCase) == true) ||
+                               (searchText.ToLower() == "âm thanh" && p.Category?.CategoryName?.Contains("Âm thanh", StringComparison.OrdinalIgnoreCase) == true) ||
+                               (searchText.ToLower() == "đồng hồ" && p.Category?.CategoryName?.Contains("Đồng hồ", StringComparison.OrdinalIgnoreCase) == true) ||
+                               (searchText.ToLower() == "gia dụng" && p.Category?.CategoryName?.Contains("Đồ gia dụng", StringComparison.OrdinalIgnoreCase) == true) ||
+                               (searchText.ToLower() == "phụ kiện" && p.Category?.CategoryName?.Contains("Phụ kiện", StringComparison.OrdinalIgnoreCase) == true) ||
+                               (searchText.ToLower() == "pc" && p.Category?.CategoryName?.Contains("PC", StringComparison.OrdinalIgnoreCase) == true) ||
+                               (searchText.ToLower() == "tivi" && p.Category?.CategoryName?.Contains("Tivi", StringComparison.OrdinalIgnoreCase) == true))
+                    .ToList();
+
+                // Update products display
+                Products.Clear();
+                foreach (var product in searchResults)
+                {
+                    Products.Add(product);
+                }
+
+                // Update section title
+                SectionTitle.Text = $"Kết quả tìm kiếm: '{searchText}' ({searchResults.Count} sản phẩm)";
+
+                // Update banners with search results
+                if (searchResults.Count > 0)
+                {
+                    var random = new Random();
+                    MainBannerProduct = searchResults[random.Next(searchResults.Count)];
+
+                    // Random for small banners (3 different products from search results)
+                    SmallBannerProducts.Clear();
+                    var availableProducts = searchResults.Where(p => p.ProductId != MainBannerProduct?.ProductId).ToList();
+                    for (int i = 0; i < 3 && i < availableProducts.Count; i++)
+                    {
+                        var randomIndex = random.Next(availableProducts.Count);
+                        var selectedProduct = availableProducts[randomIndex];
+                        SmallBannerProducts.Add(selectedProduct);
+                        availableProducts.RemoveAt(randomIndex);
+                    }
+                }
+                else
+                {
+                    // If no search results, clear banners
+                    MainBannerProduct = null;
+                    SmallBannerProducts.Clear();
+                }
+
+                // Clear search suggestions
+                SearchSuggestions.Clear();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Lỗi khi tìm kiếm: {ex.Message}", "Lỗi", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
     }

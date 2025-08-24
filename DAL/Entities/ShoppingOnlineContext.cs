@@ -49,7 +49,12 @@ public partial class ShoppingOnlineContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        optionsBuilder.UseSqlServer(GetConnectionString());
+        var connectionString = GetConnectionString();
+        optionsBuilder.UseSqlServer(connectionString, options => 
+        {
+            options.EnableRetryOnFailure();
+            options.CommandTimeout(30);
+        });
     }
 
 
