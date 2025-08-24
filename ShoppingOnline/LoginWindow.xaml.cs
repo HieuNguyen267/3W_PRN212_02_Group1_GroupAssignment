@@ -17,8 +17,7 @@ namespace ShoppingOnline
         {
             InitializeComponent();
             _accountService = new AccountService();
-            // Set default password for demo
-            PasswordBox.Password = "123456";
+            // Remove mock password - use database authentication only
         }
 
         private void Login_Click(object sender, RoutedEventArgs e)
@@ -37,18 +36,31 @@ namespace ShoppingOnline
             {
                 var result = _accountService.Login(emailOrPhone, password);
                 
-                if (result.IsSuccess && result.Customer != null)
+                if (result.IsSuccess)
                 {
-                    IsLoggedIn = true;
-                    LoggedInCustomerId = result.Customer.CustomerId;
-                    LoggedInCustomerName = result.Customer.FullName;
-                    LoggedInEmail = result.Customer.Account?.Email;
-                    LoggedInPhone = result.Customer.Phone;
-                    
                     MessageBox.Show(result.Message, "Thành công", 
                         MessageBoxButton.OK, MessageBoxImage.Information);
                     
                     this.DialogResult = true;
+                    
+                    // Check if admin or customer
+                    if (result.IsAdmin && result.Admin != null)
+                    {
+                        // Admin login - set up AdminSession and open AdminDashboard
+                        AdminSession.Login(result.Admin);
+                        var adminDashboard = new AdminDashboardWindow();
+                        adminDashboard.Show();
+                    }
+                    else if (result.Customer != null)
+                    {
+                        // Customer login - set up session properties
+                        IsLoggedIn = true;
+                        LoggedInCustomerId = result.Customer.CustomerId;
+                        LoggedInCustomerName = result.Customer.FullName;
+                        LoggedInEmail = result.Customer.Account?.Email;
+                        LoggedInPhone = result.Customer.Phone;
+                    }
+                    
                     this.Close();
                 }
                 else

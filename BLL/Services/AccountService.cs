@@ -58,45 +58,33 @@ namespace BLL.Services
                         };
                     }
 
-                    // Create a Customer object from Admin for compatibility
-                    var adminAsCustomer = new Customer
-                    {
-                        CustomerId = admin.AdminId,
-                        AccountId = admin.AccountId,
-                        FullName = admin.FullName,
-                        Phone = admin.Phone,
-                        Address = "Admin Address",
-                        CreatedDate = admin.CreatedDate,
-                        UpdatedDate = admin.CreatedDate
-                    };
-
                     return new LoginResult
                     {
                         IsSuccess = true,
                         Message = "Đăng nhập thành công với quyền Admin!",
-                        Customer = adminAsCustomer
+                        IsAdmin = true,
+                        Admin = admin
                     };
                 }
-                else
-                {
-                    // Check if it's a Customer account
-                    var customer = account.Customers.FirstOrDefault();
-                    if (customer == null)
-                    {
-                        return new LoginResult
-                        {
-                            IsSuccess = false,
-                            Message = "Thông tin khách hàng không hợp lệ!"
-                        };
-                    }
 
+                // Handle Customer accounts
+                var customer = account.Customers.FirstOrDefault();
+                if (customer == null)
+                {
                     return new LoginResult
                     {
-                        IsSuccess = true,
-                        Message = "Đăng nhập thành công!",
-                        Customer = customer
+                        IsSuccess = false,
+                        Message = "Thông tin khách hàng không hợp lệ!"
                     };
                 }
+
+                return new LoginResult
+                {
+                    IsSuccess = true,
+                    Message = "Đăng nhập thành công!",
+                    IsAdmin = false,
+                    Customer = customer
+                };
             }
             catch (Exception ex)
             {
@@ -144,5 +132,7 @@ namespace BLL.Services
         public bool IsSuccess { get; set; }
         public string Message { get; set; } = string.Empty;
         public Customer? Customer { get; set; }
+        public bool IsAdmin { get; set; } // Indicates if the logged-in user is an admin
+        public Admin? Admin { get; set; } // Admin information, if applicable
     }
 }
