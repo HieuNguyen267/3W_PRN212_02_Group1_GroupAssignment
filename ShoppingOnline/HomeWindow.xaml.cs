@@ -22,6 +22,8 @@ namespace ShoppingOnline
     /// <summary>
     /// Interaction logic for HomeWindow.xaml
     /// </summary>
+    /// 
+    //.
     public partial class HomeWindow : Window, INotifyPropertyChanged
     {
         private readonly IProductService _productService;
