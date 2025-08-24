@@ -1,0 +1,328 @@
+﻿<Window x:Class="ShoppingOnline.HomeWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ShoppingOnline"
+        mc:Ignorable="d"
+        Title="HomeWindow" Height="1080" Width="1920">
+
+    <Window.Resources>
+        <!-- Colors -->
+        <SolidColorBrush x:Key="PrimaryRed" Color="#E31837"/>
+        <SolidColorBrush x:Key="DarkRed" Color="#C41230"/>
+        <SolidColorBrush x:Key="LightGray" Color="#F5F5F5"/>
+        <SolidColorBrush x:Key="MediumGray" Color="#E0E0E0"/>
+        <SolidColorBrush x:Key="DarkGray" Color="#666666"/>
+
+        <!-- Styles -->
+        <Style x:Key="HeaderTextStyle" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="Margin" Value="0,0,20,0"/>
+        </Style>
+
+        <Style x:Key="CategoryButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="Black"/>
+            <Setter Property="Padding" Value="15,10"/>
+            <Setter Property="HorizontalAlignment" Value="Stretch"/>
+            <Setter Property="HorizontalContentAlignment" Value="Left"/>
+            <Setter Property="BorderThickness" Value="0"/>
+        </Style>
+
+        <Style x:Key="BrandFilterButtonStyle" TargetType="Button">
+            <Setter Property="Padding" Value="15,8"/>
+            <Setter Property="Margin" Value="0,0,5,0"/>
+            <Setter Property="Background" Value="{StaticResource MediumGray}"/>
+            <Setter Property="Foreground" Value="Black"/>
+        </Style>
+
+        <Style x:Key="BrandFilterButtonActiveStyle" TargetType="Button" BasedOn="{StaticResource BrandFilterButtonStyle}">
+            <Setter Property="Background" Value="{StaticResource PrimaryRed}"/>
+            <Setter Property="Foreground" Value="White"/>
+        </Style>
+
+        <Style x:Key="ProductCardStyle" TargetType="Border">
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="BorderBrush" Value="#E0E0E0"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="CornerRadius" Value="8"/>
+            <Setter Property="Padding" Value="10"/>
+            <Setter Property="Margin" Value="5"/>
+        </Style>
+
+        <Style x:Key="ProductImageStyle" TargetType="Border">
+            <Setter Property="Background" Value="{StaticResource LightGray}"/>
+            <Setter Property="Height" Value="150"/>
+            <Setter Property="CornerRadius" Value="5"/>
+            <Setter Property="Margin" Value="0,0,0,10"/>
+        </Style>
+
+        <Style x:Key="DiscountBadgeStyle" TargetType="Border">
+            <Setter Property="Background" Value="{StaticResource PrimaryRed}"/>
+            <Setter Property="CornerRadius" Value="3"/>
+            <Setter Property="HorizontalAlignment" Value="Left"/>
+            <Setter Property="Padding" Value="5,2"/>
+            <Setter Property="Margin" Value="0,0,0,5"/>
+        </Style>
+
+        <Style x:Key="ProductTitleStyle" TargetType="TextBlock">
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="TextWrapping" Value="Wrap"/>
+            <Setter Property="Margin" Value="0,0,0,5"/>
+        </Style>
+
+        <Style x:Key="ProductSubtitleStyle" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="10"/>
+            <Setter Property="Foreground" Value="{StaticResource DarkGray}"/>
+            <Setter Property="Margin" Value="0,0,0,5"/>
+        </Style>
+
+        <Style x:Key="ProductPriceStyle" TargetType="TextBlock">
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Foreground" Value="{StaticResource PrimaryRed}"/>
+            <Setter Property="FontSize" Value="14"/>
+        </Style>
+
+        <Style x:Key="ProductOldPriceStyle" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="10"/>
+            <Setter Property="TextDecorations" Value="Strikethrough"/>
+            <Setter Property="Foreground" Value="{StaticResource DarkGray}"/>
+        </Style>
+
+        <Style x:Key="ProductRatingStyle" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="10"/>
+            <Setter Property="Margin" Value="0,5,0,0"/>
+        </Style>
+
+        <Style x:Key="PromoButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="Padding" Value="20,10"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Margin" Value="0,10,0,0"/>
+        </Style>
+
+        <Style x:Key="SmallPromoButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="Padding" Value="15,8"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="FontSize" Value="10"/>
+            <Setter Property="Margin" Value="0,5,0,0"/>
+        </Style>
+
+        <Style x:Key="SmallPromoBorderStyle" TargetType="Border">
+            <Setter Property="Background" Value="Red"/>
+            <Setter Property="CornerRadius" Value="8"/>
+            <Setter Property="Padding" Value="15"/>
+            <Setter Property="Margin" Value="0,0,0,10"/>
+        </Style>
+        
+        <!-- Converters -->
+        <local:PriceToMillionConverter x:Key="PriceToMillionConverter"/>
+    </Window.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="40"/>
+            <RowDefinition Height="80"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- Top Header Bar -->
+        <Grid Grid.Row="0" Background="{StaticResource PrimaryRed}">
+            <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="20,0">
+                <TextBlock Text="Miễn phí cho đơn 300k" Style="{StaticResource HeaderTextStyle}"/>
+                <TextBlock Text="Thu cũ giá ngon - Lên đời tiết kiệm" Style="{StaticResource HeaderTextStyle}"/>
+                <TextBlock Text="Sản phẩm Chính hãng - Xuất VAT đầy đủ" Style="{StaticResource HeaderTextStyle}"/>
+                <TextBlock Text="Giao nhanh - Miễn phí cho đi" Foreground="White" FontSize="12"/>
+            </StackPanel>
+        </Grid>
+
+        <!-- Main Header -->
+        <Grid Grid.Row="1" Background="{StaticResource PrimaryRed}">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="200"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+
+            <TextBlock Grid.Column="0" Text="cellphoneS" Foreground="White" FontSize="24" FontWeight="Bold" 
+                       VerticalAlignment="Center" HorizontalAlignment="Center"/>
+
+            <Grid Grid.Column="1" VerticalAlignment="Center" Margin="20,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <Button Grid.Column="0" Content="Danh mục" Background="{StaticResource DarkRed}" 
+                        Foreground="White" Padding="15,10" Margin="0,0,129,0"/>
+                <Button Grid.Column="0" Content="Hồ Chí Minh" Background="{StaticResource DarkRed}" 
+                        Foreground="White" Padding="15,10" Margin="120,0,10,0"/>
+
+                <TextBox Grid.Column="1" Text="Q Bạn muốn mua gì hôm nay?" Foreground="Gray" 
+                         FontSize="14" Padding="15,10" VerticalAlignment="Center"/>
+
+                <Button Grid.Column="2" Content="Tìm kiếm" Background="{StaticResource DarkRed}" 
+                        Foreground="White" Padding="15,10" Margin="10,0,0,0"/>
+            </Grid>
+
+            <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center" Margin="20,0">
+                <Button Content="🛒" Background="Transparent" Foreground="White" FontSize="20" BorderThickness="0" Click="OpenCart_Click"/>
+                <Button x:Name="LoginButton" Content="Đăng nhập" Background="Transparent" Foreground="White" BorderThickness="0" Margin="10,0,0,0" Click="Login_Click"/>
+            </StackPanel>
+        </Grid>
+
+        <!-- Main Content -->
+        <Grid Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="250"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- Left Sidebar Categories -->
+            <ScrollViewer Grid.Column="0" Background="{StaticResource LightGray}">
+                <StackPanel>
+                    <Button Content="▶ Điện thoại, Tablet" Style="{StaticResource CategoryButtonStyle}"/>
+                    <Button Content="▶ Laptop" Style="{StaticResource CategoryButtonStyle}"/>
+                    <Button Content="▶ Âm thanh, Mic thu âm" Style="{StaticResource CategoryButtonStyle}"/>
+                    <Button Content="▶ Đồng hồ, Camera" Style="{StaticResource CategoryButtonStyle}"/>
+                    <Button Content="▶ Đồ gia dụng" Style="{StaticResource CategoryButtonStyle}"/>
+                    <Button Content="▶ Phụ kiện" Style="{StaticResource CategoryButtonStyle}"/>
+                    <Button Content="▶ PC, Màn hình, Máy in" Style="{StaticResource CategoryButtonStyle}"/>
+                    <Button Content="▶ Tivi" Style="{StaticResource CategoryButtonStyle}"/>
+                    <Button Content="▶ Thu cũ đổi mới" Style="{StaticResource CategoryButtonStyle}"/>
+                    <Button Content="▶ Hàng cũ" Style="{StaticResource CategoryButtonStyle}"/>
+                    <Button Content="▶ Khuyến mãi" Style="{StaticResource CategoryButtonStyle}"/>
+                    <Button Content="▶ Tin công nghệ" Style="{StaticResource CategoryButtonStyle}"/>
+                </StackPanel>
+            </ScrollViewer>
+
+            <!-- Main Content Area -->
+            <ScrollViewer Grid.Column="1" VerticalScrollBarVisibility="Auto">
+                <StackPanel Margin="20">
+
+                    <!-- Promotional Banners -->
+                    <Grid Margin="0,0,0,20">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="2*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <!-- Left Large Banner -->
+                        <Border Grid.Column="0" Background="Red" CornerRadius="10" Padding="20" Margin="0,0,10,0">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+
+                                <StackPanel Grid.Column="0" VerticalAlignment="Center">
+                                    <TextBlock Text="{Binding MainBannerProduct.ProductName, FallbackValue='SẢN PHẨM HOT'}" 
+                                               Foreground="White" FontSize="24" FontWeight="Bold"/>
+                                    <TextBlock Text="{Binding MainBannerProduct.Price, Converter={StaticResource PriceToMillionConverter}, FallbackValue='Giá từ 0₫'}" 
+                                               Foreground="White" FontSize="18" Margin="0,5"/>
+                                    <TextBlock Text="Trợ giá lên đời đến 500K+" Foreground="White" FontSize="12" Margin="0,5"/>
+                                    <TextBlock Text="S-Student S-Teacher Giảm thêm 15%" Foreground="White" FontSize="12" Margin="0,5"/>
+                                    <Button Content="Mua Ngay" Style="{StaticResource PromoButtonStyle}" 
+                                            Foreground="{StaticResource PrimaryRed}" Click="MainBanner_Click"/>
+                                </StackPanel>
+
+                                <TextBlock Grid.Column="1" Text="📱" FontSize="80" VerticalAlignment="Center"/>
+                            </Grid>
+                        </Border>
+
+                        <!-- Right Stacked Banners -->
+                        <ItemsControl Grid.Column="1" ItemsSource="{Binding SmallBannerProducts}" Margin="10,0,0,0">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Border Style="{StaticResource SmallPromoBorderStyle}" MouseLeftButtonDown="SmallBanner_Click">
+                                <StackPanel>
+                                            <TextBlock Text="{Binding ProductName, FallbackValue='Sản phẩm hot'}" 
+                                                       Foreground="White" FontWeight="Bold"/>
+                                            <TextBlock Text="{Binding Price, Converter={StaticResource PriceToMillionConverter}, FallbackValue='Giá liên hệ'}" 
+                                                       Foreground="White" FontSize="12"/>
+                                            <TextBlock Text="{Binding Category.CategoryName, FallbackValue='Khuyến mãi đặc biệt'}" 
+                                                       Foreground="White" FontSize="10"/>
+                                            <Button Content="MUA NGAY" Style="{StaticResource SmallPromoButtonStyle}" 
+                                                    Foreground="#4A90E2" Click="SmallBannerButton_Click"/>
+                                </StackPanel>
+                            </Border>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </Grid>
+
+                    <!-- Featured Phones Section -->
+                    <Border Background="White" BorderBrush="{StaticResource MediumGray}" BorderThickness="1" 
+                            CornerRadius="10" Padding="20">
+                        <StackPanel>
+                            <StackPanel Orientation="Horizontal" Margin="0,0,0,15">
+                                <TextBlock Text="ĐIỆN THOẠI NỔI BẬT NHẤT" FontSize="20" FontWeight="Bold" VerticalAlignment="Center"/>
+                                <Button Content="Xem chi tiết mẫu" Background="{StaticResource PrimaryRed}" Foreground="White" 
+                                        Padding="10,5" Margin="20,0,0,0" Click="TestDetailWindow_Click">
+                                    <Button.Template>
+                                        <ControlTemplate TargetType="Button">
+                                            <Border Background="{TemplateBinding Background}"
+                                                    BorderBrush="{TemplateBinding BorderBrush}"
+                                                    BorderThickness="{TemplateBinding BorderThickness}"
+                                                    CornerRadius="5">
+                                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                            </Border>
+                                        </ControlTemplate>
+                                    </Button.Template>
+                                </Button>
+                            </StackPanel>
+
+                            <!-- Brand Filters -->
+                            <ScrollViewer HorizontalScrollBarVisibility="Auto" Margin="0,0,0,15">
+                                <StackPanel Orientation="Horizontal">
+                                    <Button Content="Apple" Style="{StaticResource BrandFilterButtonActiveStyle}"/>
+                                    <Button Content="Samsung" Style="{StaticResource BrandFilterButtonStyle}"/>
+                                    <Button Content="Xiaomi" Style="{StaticResource BrandFilterButtonStyle}"/>
+                                    <Button Content="OPPO" Style="{StaticResource BrandFilterButtonStyle}"/>
+                                    <Button Content="vivo" Style="{StaticResource BrandFilterButtonStyle}"/>
+                                    <Button Content="realme" Style="{StaticResource BrandFilterButtonStyle}"/>
+                                    <Button Content="ASUS" Style="{StaticResource BrandFilterButtonStyle}"/>
+                                    <Button Content="TECNO" Style="{StaticResource BrandFilterButtonStyle}"/>
+                                    <Button Content="Nokia" Style="{StaticResource BrandFilterButtonStyle}"/>
+                                    <Button Content="Infinix" Style="{StaticResource BrandFilterButtonStyle}"/>
+                                    <Button Content="Nothing" Style="{StaticResource BrandFilterButtonStyle}"/>
+                                    <Button Content="Xem tất cả" Style="{StaticResource BrandFilterButtonStyle}"/>
+                                </StackPanel>
+                            </ScrollViewer>
+
+                            <!-- Product Grid -->
+                            <ItemsControl ItemsSource="{Binding Products}">
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <UniformGrid Columns="5" Rows="2"/>
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border Style="{StaticResource ProductCardStyle}" MouseLeftButtonDown="ProductCard_Click">
+                                    <StackPanel>
+                                        <Border Style="{StaticResource ProductImageStyle}">
+                                            <TextBlock Text="📱" FontSize="60" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                        </Border>
+                                                <TextBlock Text="{Binding ProductName}" Style="{StaticResource ProductTitleStyle}"/>
+                                                <TextBlock Text="{Binding Category.CategoryName}" Style="{StaticResource ProductSubtitleStyle}"/>
+                                                <TextBlock Text="{Binding Price, StringFormat='{}{0:N0}₫'}" Style="{StaticResource ProductPriceStyle}"/>
+                                        <TextBlock Text="⭐ 4.9" Style="{StaticResource ProductRatingStyle}"/>
+                                    </StackPanel>
+                                </Border>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+            </ScrollViewer>
+        </Grid>
+    </Grid>
+</Window>
+
+

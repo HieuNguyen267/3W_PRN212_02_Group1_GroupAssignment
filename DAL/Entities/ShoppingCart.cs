@@ -7,9 +7,9 @@ public partial class ShoppingCart
 {
     public int CartId { get; set; }
 
-    public int? CustomerId { get; set; }
+    public int CustomerId { get; set; }
 
-    public string? ProductId { get; set; }
+    public string ProductId { get; set; } = null!;
 
     public int Quantity { get; set; }
 

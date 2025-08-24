@@ -1,0 +1,148 @@
+<Window x:Class="ShoppingOnline.DetailWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ShoppingOnline"
+        mc:Ignorable="d"
+        Title="Chi tiết sản phẩm" Height="800" Width="1200"
+        WindowStartupLocation="CenterScreen">
+
+    <Window.Resources>
+        <!-- Colors -->
+        <SolidColorBrush x:Key="PrimaryRed" Color="#E31837"/>
+        <SolidColorBrush x:Key="LightGray" Color="#F5F5F5"/>
+        <SolidColorBrush x:Key="DarkGray" Color="#666666"/>
+
+        <!-- Styles -->
+        <Style x:Key="ProductTitleStyle" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="24"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Margin" Value="0,0,0,10"/>
+        </Style>
+
+        <Style x:Key="ImageContainerStyle" TargetType="Border">
+            <Setter Property="Background" Value="{StaticResource LightGray}"/>
+            <Setter Property="CornerRadius" Value="10"/>
+            <Setter Property="Padding" Value="20"/>
+            <Setter Property="Margin" Value="0,0,0,20"/>
+        </Style>
+
+        <Style x:Key="FeatureTitleStyle" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="18"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Margin" Value="0,0,0,15"/>
+        </Style>
+
+        <Style x:Key="FeatureItemStyle" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Margin" Value="0,0,0,8"/>
+            <Setter Property="TextWrapping" Value="Wrap"/>
+        </Style>
+
+        <Style x:Key="PriceLabelStyle" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Foreground" Value="{StaticResource DarkGray}"/>
+            <Setter Property="Margin" Value="0,0,0,5"/>
+        </Style>
+
+        <Style x:Key="CurrentPriceStyle" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="28"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Margin" Value="0,0,0,5"/>
+        </Style>
+         
+         <!-- Converters -->
+         <local:FirstImageConverter x:Key="FirstImageConverter"/>
+         <local:VisibilityConverter x:Key="VisibilityConverter"/>
+     </Window.Resources>
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="400"/>
+        </Grid.ColumnDefinitions>
+
+        <!-- Left Column - Product Information -->
+        <ScrollViewer Grid.Column="0" VerticalScrollBarVisibility="Auto">
+            <StackPanel Margin="30">
+                <!-- Product Title and Rating -->
+                <TextBlock Text="{Binding CurrentProduct.ProductName}" Style="{StaticResource ProductTitleStyle}"/>
+                
+                                <!-- Product Image and Features -->
+                <Border Background="red" Style="{StaticResource ImageContainerStyle}">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                                                 <!-- Product Image -->
+                         <Border Grid.Column="0" Background="White" CornerRadius="8" Margin="0,0,20,0">
+                             <Grid>
+                                
+                                 <!-- Product Image Display -->
+                                 <Image x:Name="ProductImage" Stretch="Uniform" MaxWidth="200" MaxHeight="200" 
+                                        HorizontalAlignment="Center" VerticalAlignment="Center">
+                                     <Image.Source>
+                                         <Binding Path="CurrentProduct.ProductImages" Converter="{StaticResource FirstImageConverter}"/>
+                                     </Image.Source>
+                                 </Image>
+                                 
+                                 <!-- Fallback icon if no image -->
+                                 <TextBlock Text="📱" FontSize="80" HorizontalAlignment="Center" VerticalAlignment="Center"
+                                            Visibility="{Binding CurrentProduct.ProductImages.Count, Converter={StaticResource VisibilityConverter}}"/>
+                                 
+                                
+                             </Grid>
+                         </Border>
+
+                                                 <!-- Features -->
+                         <StackPanel Grid.Column="1">
+                             <TextBlock Text="TÍNH NĂNG NỔI BẬT" Style="{StaticResource FeatureTitleStyle}"/>
+                             <TextBlock Text="{Binding CurrentProduct.Description}" 
+                                        Style="{StaticResource FeatureItemStyle}"
+                                        TextWrapping="Wrap"/>
+                         </StackPanel>
+                    </Grid>
+                </Border>
+            </StackPanel>
+        </ScrollViewer>
+
+        <!-- Right Column - Purchase Options -->
+        <Border Grid.Column="1" Background="{StaticResource LightGray}" Padding="30">
+            <ScrollViewer VerticalScrollBarVisibility="Auto">
+                <StackPanel>
+                    <!-- Price Section -->
+                    <TextBlock Text="Giá sản phẩm" Style="{StaticResource PriceLabelStyle}"/>
+                    <TextBlock Text="{Binding CurrentProduct.Price, StringFormat='{}{0:N0}₫'}"  Style="{StaticResource CurrentPriceStyle }" />
+                    
+                    
+
+                    <!-- Add to Cart Button -->
+                    <Button Content="THÊM VÀO GIỎ HÀNG" 
+                            Background="{StaticResource PrimaryRed}" 
+                            Foreground="White" 
+                            FontSize="16" 
+                            FontWeight="Bold"
+                            Padding="20,15"
+                            Margin="0,20,0,0"
+                            Click="AddToCart_Click">
+                        <Button.Template>
+                            <ControlTemplate TargetType="Button">
+                                <Border Background="{TemplateBinding Background}"
+                                        BorderBrush="{TemplateBinding BorderBrush}"
+                                        BorderThickness="{TemplateBinding BorderThickness}"
+                                        CornerRadius="8">
+                                    <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                </Border>
+                            </ControlTemplate>
+                        </Button.Template>
+                    </Button>
+                </StackPanel>
+            </ScrollViewer>
+        </Border>
+    </Grid>
+</Window>
