@@ -113,18 +113,37 @@ namespace ShoppingOnline.Views
                     };
                 }
 
-                // Convert to display models and sort
-                var displayOrders = filteredOrders.Select(o => new OrderDisplayModel
+                // Convert to display models with product information and sort
+                var displayOrders = filteredOrders.Select(o => 
                 {
-                    OrderId = o.OrderId,
-                    Customer = o.Customer,
-                    Phone = o.Phone,
-                    OrderDate = o.OrderDate,
-                    TotalAmount = o.TotalAmount,
-                    Status = o.Notes?.Contains("[CANCELLED]") == true ? "Cancelled" : o.Status, // Show as Cancelled if cancelled via Notes
-                    ShippingAddress = o.ShippingAddress,
-                    ActualStatus = o.Status, // Keep actual status for internal use
-                    Notes = o.Notes
+                    // Get order details to show product information
+                    var orderDetails = _adminService.GetOrderDetailsByOrderId(o.OrderId);
+                    var productNames = orderDetails.Any() 
+                        ? string.Join(", ", orderDetails.Take(2).Select(od => od.Product?.ProductName).Where(name => !string.IsNullOrEmpty(name)))
+                        : "Khong co san pham";
+                    
+                    // Add "..." if there are more than 2 products
+                    if (orderDetails.Count > 2)
+                    {
+                        productNames += "...";
+                    }
+                    
+                    var totalQuantity = orderDetails.Sum(od => od.Quantity);
+                    
+                    return new OrderDisplayModel
+                    {
+                        OrderId = o.OrderId,
+                        Customer = o.Customer,
+                        Phone = o.Phone,
+                        OrderDate = o.OrderDate,
+                        TotalAmount = o.TotalAmount,
+                        Status = o.Notes?.Contains("[CANCELLED]") == true ? "Cancelled" : o.Status, // Show as Cancelled if cancelled via Notes
+                        ShippingAddress = o.ShippingAddress,
+                        ActualStatus = o.Status, // Keep actual status for internal use
+                        Notes = o.Notes,
+                        ProductNames = productNames,
+                        TotalQuantity = totalQuantity
+                    };
                 }).OrderByDescending(o => o.OrderDate).ToList();
 
                 // Update DataGrid
@@ -424,7 +443,7 @@ namespace ShoppingOnline.Views
         }
         #endregion
 
-        // Add display model to handle cancelled orders properly
+        // Add display model to handle cancelled orders properly and include product information
         public class OrderDisplayModel
         {
             public int OrderId { get; set; }
@@ -436,6 +455,8 @@ namespace ShoppingOnline.Views
             public string? ShippingAddress { get; set; }
             public string? ActualStatus { get; set; } // Original database status
             public string? Notes { get; set; }
+            public string ProductNames { get; set; } = ""; // New: Product names in order
+            public int TotalQuantity { get; set; } // New: Total quantity of all products
         }
     }
 }
