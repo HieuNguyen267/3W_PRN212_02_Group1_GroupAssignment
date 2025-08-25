@@ -58,14 +58,14 @@
                 </StackPanel>
             </Border>
 
-            <!-- Total Revenue Card -->
+            <!-- Total Order Value Card -->
             <Border Grid.Column="3" Background="White" CornerRadius="10" Padding="20" Margin="10,0,0,0"
                     BorderBrush="#FFE0E0E0" BorderThickness="1">
                 <StackPanel>
-                    <TextBlock Text="Tong doanh thu" FontSize="14" Foreground="#FF666666"/>
+                    <TextBlock Text="Tong gia tri don hang" FontSize="14" Foreground="#FF666666"/>
                     <TextBlock x:Name="TotalRevenueText" Text="0 VND" FontSize="24" FontWeight="Bold" 
                                Foreground="#E31837" Margin="0,5,0,0"/>
-                    <TextBlock Text="Doanh thu" FontSize="12" Foreground="#FF999999"/>
+                    <TextBlock Text="Gia tri don hang" FontSize="12" Foreground="#FF999999"/>
                 </StackPanel>
             </Border>
         </Grid>

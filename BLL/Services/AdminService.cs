@@ -14,6 +14,7 @@ namespace BLL.Services
         int GetTotalProducts();
         int GetTotalOrders();
         decimal GetTotalRevenue();
+        decimal GetTotalOrderValue();
         int GetTodayOrders();
         decimal GetTodayRevenue();
         List<Order> GetRecentOrders(int count = 10);
@@ -114,6 +115,21 @@ namespace BLL.Services
             System.Diagnostics.Debug.WriteLine($"GetTotalRevenue: Total revenue: {totalRevenue}");
             
             return totalRevenue;
+        }
+
+        public decimal GetTotalOrderValue()
+        {
+            using var context = new ShoppingOnlineContext();
+            
+            // Calculate total value of all orders (excluding cancelled orders)
+            // This includes Pending, Confirmed, Shipping, Delivered, Completed orders
+            var totalOrderValue = context.Orders
+                .Where(o => o.Notes == null || !o.Notes.Contains("[CANCELLED]"))
+                .Sum(o => o.TotalAmount);
+                
+            System.Diagnostics.Debug.WriteLine($"GetTotalOrderValue: Total order value: {totalOrderValue}");
+            
+            return totalOrderValue;
         }
 
         public int GetTodayOrders()

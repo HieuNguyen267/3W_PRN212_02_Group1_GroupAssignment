@@ -177,12 +177,11 @@ namespace ShoppingOnline.Views
 
                 if (TotalRevenueText != null)
                 {
-                    // Calculate actual revenue (only completed orders) excluding cancelled orders
-                    var actualRevenue = allOrders
-                        .Where(o => (o.Status == "Delivered" || o.Status == "Completed") && 
-                                   (o.Notes?.Contains("[CANCELLED]") != true))
+                    // Calculate total order value (all non-cancelled orders) instead of just completed orders
+                    var totalOrderValue = allOrders
+                        .Where(o => (o.Notes?.Contains("[CANCELLED]") != true))
                         .Sum(o => o.TotalAmount);
-                    TotalRevenueText.Text = $"{actualRevenue:N0} VND";
+                    TotalRevenueText.Text = $"{totalOrderValue:N0} VND";
                 }
             }
             catch (Exception ex)
@@ -341,7 +340,7 @@ namespace ShoppingOnline.Views
             if (sender is Button button && button.Tag is int orderId)
             {
                 var result = MessageBox.Show("Ban co chac muon huy don hang nay?\n\n" +
-                                           "LUU Y: Don hang bi huy se KHONG duoc tinh vao doanh thu va thong ke.", 
+                                           "LUU Y: Don hang bi huy se KHONG duoc tinh vao tong gia tri don hang va thong ke.", 
                     "Huy don hang", MessageBoxButton.YesNo, MessageBoxImage.Warning);
                 
                 if (result == MessageBoxResult.Yes)
@@ -390,7 +389,7 @@ namespace ShoppingOnline.Views
                             if (changes > 0)
                             {
                                 MessageBox.Show($"Da huy don hang thanh cong!\n\n" +
-                                              $"Don hang #{orderId} gia tri {order.TotalAmount:N0} VND da bi loai khoi doanh thu.", 
+                                              $"Don hang #{orderId} gia tri {order.TotalAmount:N0} VND da bi loai khoi tong gia tri don hang.", 
                                               "Thanh cong", MessageBoxButton.OK, MessageBoxImage.Information);
                                 LoadOrders(); // Refresh orders and statistics
                             }
