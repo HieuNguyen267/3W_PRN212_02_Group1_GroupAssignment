@@ -189,62 +189,6 @@ namespace ShoppingOnline.Views
                 MessageBoxButton.OK, MessageBoxImage.Information);
         }
 
-        private void ExportExcel_Click(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                MessageBox.Show("Ch?c n?ng Export Excel ?ang ???c phát tri?n!", "Thông báo", 
-                    MessageBoxButton.OK, MessageBoxImage.Information);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"L?i khi export Excel: {ex.Message}", "L?i", 
-                    MessageBoxButton.OK, MessageBoxImage.Error);
-            }
-        }
-
-        private void PrintReport_Click(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                MessageBox.Show("Ch?c n?ng in báo cáo ?ang ???c phát tri?n!", "Thông báo", 
-                    MessageBoxButton.OK, MessageBoxImage.Information);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"L?i khi in báo cáo: {ex.Message}", "L?i", 
-                    MessageBoxButton.OK, MessageBoxImage.Error);
-            }
-        }
-
-        private void DetailedStats_Click(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                MessageBox.Show("Ch?c n?ng th?ng kê chi ti?t ?ang ???c phát tri?n!", "Thông báo", 
-                    MessageBoxButton.OK, MessageBoxImage.Information);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"L?i khi xem th?ng kê chi ti?t: {ex.Message}", "L?i", 
-                    MessageBoxButton.OK, MessageBoxImage.Error);
-            }
-        }
-
-        private void ExportPDF_Click(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                MessageBox.Show("Ch?c n?ng Export PDF ?ang ???c phát tri?n!", "Thông báo", 
-                    MessageBoxButton.OK, MessageBoxImage.Information);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"L?i khi export PDF: {ex.Message}", "L?i", 
-                    MessageBoxButton.OK, MessageBoxImage.Error);
-            }
-        }
-
         private void ViewOrderDetail_Click(object sender, RoutedEventArgs e)
         {
             if (sender is Button button && button.Tag is int orderId)
