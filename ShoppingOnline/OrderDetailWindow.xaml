@@ -64,7 +64,7 @@
                 <Border Background="White" CornerRadius="10" Padding="20" Margin="0,0,0,15" 
                         BorderBrush="#FFE0E0E0" BorderThickness="1">
                     <StackPanel>
-                        <TextBlock Text="[P] Thong tin khach hang" FontSize="16" FontWeight="SemiBold" 
+                        <TextBlock Text="Thong tin khach hang" FontSize="16" FontWeight="SemiBold" 
                                    Foreground="{StaticResource PrimaryRed}" Margin="0,0,0,15"/>
                         
                         <Grid>
@@ -92,11 +92,11 @@
                     </StackPanel>
                 </Border>
 
-                <!-- Order Status and Actions -->
+                <!-- Order Status -->
                 <Border Background="White" CornerRadius="10" Padding="20" Margin="0,0,0,15" 
                         BorderBrush="#FFE0E0E0" BorderThickness="1">
                     <StackPanel>
-                        <TextBlock Text="[P] Trang thai don hang" FontSize="16" FontWeight="SemiBold" 
+                        <TextBlock Text="Trang thai don hang" FontSize="16" FontWeight="SemiBold" 
                                    Foreground="{StaticResource PrimaryRed}" Margin="0,0,0,15"/>
                         
                         <Grid>
@@ -122,22 +122,22 @@
                             </StackPanel>
                             
                             <StackPanel Grid.Column="1" VerticalAlignment="Top">
-                                <Button Content="[S] Cap nhat trang thai" Style="{StaticResource ModernButton}" 
+                                <Button x:Name="UpdateStatusButton" Content="Cap nhat trang thai" Style="{StaticResource ModernButton}" 
                                         Margin="0,0,0,10" Click="UpdateStatus_Click"/>
-                                <Button Content="[C] Xac nhan don hang" Style="{StaticResource ModernButton}" 
+                                <Button x:Name="ConfirmOrderButton" Content="Xac nhan don hang" Style="{StaticResource ModernButton}" 
                                         Background="#FF4CAF50" Margin="0,0,0,10" Click="ConfirmOrder_Click"/>
-                                <Button Content="[X] Huy don hang" Style="{StaticResource ModernButton}" 
-                                        Background="#FFF44336" Click="CancelOrder_Click"/>
+                                <Button x:Name="CancelOrderButton" Content="Huy don hang" Style="{StaticResource ModernButton}" 
+                                        Background="#FFDC3545" Click="CancelOrder_Click"/>
                             </StackPanel>
                         </Grid>
                     </StackPanel>
                 </Border>
 
-                <!-- Carrier Selection -->
+                <!-- Carrier Assignment -->
                 <Border Background="White" CornerRadius="10" Padding="20" Margin="0,0,0,15" 
                         BorderBrush="#FFE0E0E0" BorderThickness="1">
                     <StackPanel>
-                        <TextBlock Text="[T] Nguoi van chuyen" FontSize="16" FontWeight="SemiBold" 
+                        <TextBlock Text="Nguoi giao hang" FontSize="16" FontWeight="SemiBold" 
                                    Foreground="{StaticResource PrimaryRed}" Margin="0,0,0,15"/>
                         
                         <Grid>
@@ -147,21 +147,19 @@
                             </Grid.ColumnDefinitions>
                             
                             <StackPanel Grid.Column="0">
-                                <TextBlock Text="Nguoi van chuyen hien tai:" FontWeight="SemiBold" Margin="0,0,0,5"/>
+                                <TextBlock Text="Nguoi giao hang hien tai:" FontWeight="SemiBold" Margin="0,0,0,5"/>
                                 <TextBlock x:Name="CurrentCarrierText" Text="Chua chon" Margin="0,0,0,15"/>
                                 
-                                <TextBlock Text="Chon nguoi van chuyen:" FontWeight="SemiBold" Margin="0,0,0,5"/>
+                                <TextBlock Text="Chon nguoi giao hang:" FontWeight="SemiBold" Margin="0,0,0,5"/>
                                 <ComboBox x:Name="CarrierComboBox" Width="300" HorizontalAlignment="Left" Height="35" FontSize="14"
                                           DisplayMemberPath="FullName" SelectedValuePath="CarrierId"/>
                             </StackPanel>
                             
                             <StackPanel Grid.Column="1" VerticalAlignment="Top">
-                                <Button Content="[U] Chon nguoi van chuyen" Style="{StaticResource ModernButton}" 
+                                <Button Content="Gan nguoi giao hang" Style="{StaticResource ModernButton}" 
                                         Background="#FFFF9800" Click="AssignCarrier_Click" Margin="0,20,0,10"/>
-                                <Button Content="[R] Bat dau van chuyen" Style="{StaticResource ModernButton}" 
-                                        Background="#FF2196F3" Click="StartShipping_Click" Margin="0,0,0,10"/>
-                                <Button Content="[C] Xac nhan da giao" Style="{StaticResource ModernButton}" 
-                                        Background="#FF4CAF50" Click="MarkAsDelivered_Click"/>
+                                <Button Content="Bat dau giao hang" Style="{StaticResource ModernButton}" 
+                                        Background="#FF2196F3" Click="StartShipping_Click"/>
                             </StackPanel>
                         </Grid>
                     </StackPanel>
@@ -171,7 +169,7 @@
                 <Border Background="White" CornerRadius="10" Padding="20" Margin="0,0,0,15" 
                         BorderBrush="#FFE0E0E0" BorderThickness="1">
                     <StackPanel>
-                        <TextBlock Text="[S] San pham trong don hang" FontSize="16" FontWeight="SemiBold" 
+                        <TextBlock Text="San pham trong don hang" FontSize="16" FontWeight="SemiBold" 
                                    Foreground="{StaticResource PrimaryRed}" Margin="0,0,0,15"/>
                         
                         <DataGrid x:Name="OrderItemsGrid" 
@@ -209,7 +207,7 @@
                 <Border Background="White" CornerRadius="10" Padding="20" 
                         BorderBrush="#FFE0E0E0" BorderThickness="1">
                     <StackPanel>
-                        <TextBlock Text="[N] Ghi chu" FontSize="16" FontWeight="SemiBold" 
+                        <TextBlock Text="Ghi chu" FontSize="16" FontWeight="SemiBold" 
                                    Foreground="{StaticResource PrimaryRed}" Margin="0,0,0,15"/>
                         
                         <TextBox x:Name="NotesTextBox" Height="80" TextWrapping="Wrap" AcceptsReturn="True"
@@ -221,9 +219,9 @@
 
         <!-- Footer Buttons -->
         <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,20,0,0">
-            <Button Content="[S] Luu thay doi" Style="{StaticResource ModernButton}" 
+            <Button Content="Luu thay doi" Style="{StaticResource ModernButton}" 
                     Margin="0,0,10,0" Click="SaveChanges_Click"/>
-            <Button Content="[X] Dong" Style="{StaticResource ModernButton}" 
+            <Button Content="Dong" Style="{StaticResource ModernButton}" 
                     Background="#FF6C757D" Click="Close_Click"/>
         </StackPanel>
     </Grid>

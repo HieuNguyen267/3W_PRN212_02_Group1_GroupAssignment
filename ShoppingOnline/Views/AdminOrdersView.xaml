@@ -65,7 +65,7 @@
                     BorderBrush="#FFE0E0E0" BorderThickness="1">
                 <StackPanel>
                     <TextBlock Text="Tong doanh thu" FontSize="12" Foreground="#FF666666" FontWeight="SemiBold"/>
-                    <TextBlock x:Name="TotalRevenueText" Text="0?" FontSize="18" FontWeight="Bold" 
+                    <TextBlock x:Name="TotalRevenueText" Text="0d" FontSize="18" FontWeight="Bold" 
                                Foreground="#E31837" Margin="0,5,0,0"/>
                 </StackPanel>
             </Border>
@@ -115,7 +115,7 @@
             </ComboBox>
 
             <!-- Refresh Button -->
-            <Button Grid.Column="3" Content="Refresh" Height="35" Width="80"
+            <Button Grid.Column="3" Content="Lam moi" Height="35" Width="80"
                     Click="RefreshOrders_Click" Background="#FF007BFF" Foreground="White"/>
         </Grid>
 
@@ -141,7 +141,7 @@
                     <DataGridTextColumn Header="Khach hang" Binding="{Binding Customer.FullName}" Width="200"/>
                     <DataGridTextColumn Header="So dien thoai" Binding="{Binding Phone}" Width="130"/>
                     <DataGridTextColumn Header="Ngay dat" Binding="{Binding OrderDate, StringFormat=dd/MM/yyyy HH:mm}" Width="140"/>
-                    <DataGridTextColumn Header="Tong tien" Binding="{Binding TotalAmount, StringFormat={}{0:N0}?}" Width="120"/>
+                    <DataGridTextColumn Header="Tong tien" Binding="{Binding TotalAmount, StringFormat={}{0:N0}d}" Width="120"/>
                     
                     <!-- Status Column with Color Coding -->
                     <DataGridTemplateColumn Header="Trang thai" Width="120">
@@ -178,23 +178,55 @@
 
                     <DataGridTextColumn Header="Dia chi giao hang" Binding="{Binding ShippingAddress}" Width="250"/>
                     
-                    <!-- Actions Column -->
-                    <DataGridTemplateColumn Header="Thao tac" Width="280">
+                    <!-- Actions Column - Added Cancel Button Back -->
+                    <DataGridTemplateColumn Header="Thao tac" Width="200">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                                    <Button Content="Xem" Height="32" FontSize="11" Margin="2" Width="60"
+                                    <Button Content="Xem" Height="32" FontSize="11" Margin="2" Width="50"
                                             Click="ViewOrderDetail_Click" Tag="{Binding OrderId}" 
                                             Background="#FF17A2B8" Foreground="White"/>
-                                    <Button Content="Xac nhan" Height="32" FontSize="11" Margin="2" Width="70"
+                                    <Button Content="Xac nhan" Height="32" FontSize="11" Margin="2" Width="65"
                                             Background="#FF28A745" Click="ConfirmOrder_Click" Tag="{Binding OrderId}"
-                                            Foreground="White"/>
-                                    <Button Content="Giao hang" Height="32" FontSize="11" Margin="2" Width="75"
-                                            Background="#FF007BFF" Click="ShipOrder_Click" Tag="{Binding OrderId}"
-                                            Foreground="White"/>
+                                            Foreground="White">
+                                        <Button.Style>
+                                            <Style TargetType="Button">
+                                                <Setter Property="Visibility" Value="Visible"/>
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding Status}" Value="Confirmed">
+                                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding Status}" Value="Shipping">
+                                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding Status}" Value="Delivered">
+                                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding Status}" Value="Cancelled">
+                                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Button.Style>
+                                    </Button>
+                                    <!-- Cancel button restored for admin -->
                                     <Button Content="Huy" Height="32" FontSize="11" Margin="2" Width="50"
                                             Background="#FFDC3545" Click="CancelOrder_Click" Tag="{Binding OrderId}"
-                                            Foreground="White"/>
+                                            Foreground="White">
+                                        <Button.Style>
+                                            <Style TargetType="Button">
+                                                <Setter Property="Visibility" Value="Visible"/>
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding Status}" Value="Delivered">
+                                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding Status}" Value="Cancelled">
+                                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Button.Style>
+                                    </Button>
                                 </StackPanel>
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
@@ -207,7 +239,7 @@
         <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,20,0,0">
             <TextBlock x:Name="OrderCountText" Text="Hien thi: 0 don hang" FontSize="14" 
                        VerticalAlignment="Center" Margin="0,0,20,0" Foreground="#FF666666"/>
-            <TextBlock x:Name="FilteredRevenueText" Text="Tong doanh thu: 0?" FontSize="14" 
+            <TextBlock x:Name="FilteredRevenueText" Text="Tong doanh thu: 0d" FontSize="14" 
                        VerticalAlignment="Center" Foreground="#E31837" FontWeight="SemiBold"/>
         </StackPanel>
     </Grid>

@@ -45,13 +45,18 @@ namespace ShoppingOnline.Views
         {
             try
             {
+                // Load all orders from AdminService and store for filtering
                 _allOrders = _adminService.GetAllOrders();
+                
+                // Apply current filters
                 ApplyOrderFilters();
+                
+                // Update statistics
                 UpdateStatistics();
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"L?i khi t?i d? li?u ??n hàng: {ex.Message}", "L?i", 
+                MessageBox.Show($"Loi khi tai danh sach don hang: {ex.Message}", "Loi", 
                     MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
@@ -60,6 +65,7 @@ namespace ShoppingOnline.Views
         {
             try
             {
+                // Start with all orders
                 var filteredOrders = _allOrders.AsEnumerable();
 
                 // Apply search filter
@@ -78,7 +84,18 @@ namespace ShoppingOnline.Views
                 var selectedStatus = (StatusFilterComboBox?.SelectedItem as ComboBoxItem)?.Content?.ToString();
                 if (!string.IsNullOrEmpty(selectedStatus) && selectedStatus != "Tat ca trang thai")
                 {
-                    filteredOrders = filteredOrders.Where(o => o.Status == selectedStatus);
+                    if (selectedStatus == "Cancelled")
+                    {
+                        // Filter for cancelled orders (check Notes field)
+                        filteredOrders = filteredOrders.Where(o => o.Notes?.Contains("[CANCELLED]") == true);
+                    }
+                    else
+                    {
+                        // Filter for normal status and exclude cancelled orders
+                        filteredOrders = filteredOrders.Where(o => 
+                            o.Status == selectedStatus && 
+                            (o.Notes?.Contains("[CANCELLED]") != true));
+                    }
                 }
 
                 // Apply date filter
@@ -91,39 +108,47 @@ namespace ShoppingOnline.Views
                         "Hom nay" => filteredOrders.Where(o => o.OrderDate?.Date == now.Date),
                         "7 ngay qua" => filteredOrders.Where(o => o.OrderDate >= now.AddDays(-7)),
                         "30 ngay qua" => filteredOrders.Where(o => o.OrderDate >= now.AddDays(-30)),
+                        "Thang nay" => filteredOrders.Where(o => o.OrderDate?.Month == now.Month && o.OrderDate?.Year == now.Year),
                         _ => filteredOrders
                     };
                 }
 
-                // Update orders collection
-                Orders.Clear();
-                foreach (var order in filteredOrders.OrderByDescending(o => o.OrderDate))
+                // Convert to display models and sort
+                var displayOrders = filteredOrders.Select(o => new OrderDisplayModel
                 {
-                    Orders.Add(order);
-                }
+                    OrderId = o.OrderId,
+                    Customer = o.Customer,
+                    Phone = o.Phone,
+                    OrderDate = o.OrderDate,
+                    TotalAmount = o.TotalAmount,
+                    Status = o.Notes?.Contains("[CANCELLED]") == true ? "Cancelled" : o.Status, // Show as Cancelled if cancelled via Notes
+                    ShippingAddress = o.ShippingAddress,
+                    ActualStatus = o.Status, // Keep actual status for internal use
+                    Notes = o.Notes
+                }).OrderByDescending(o => o.OrderDate).ToList();
 
                 // Update DataGrid
                 if (OrdersDataGrid != null)
                 {
-                    OrdersDataGrid.ItemsSource = Orders;
+                    OrdersDataGrid.ItemsSource = displayOrders;
                 }
 
                 // Update count display
                 if (OrderCountText != null)
                 {
-                    OrderCountText.Text = $"Hien thi: {Orders.Count} don hang";
+                    OrderCountText.Text = $"Hien thi: {displayOrders.Count} don hang";
                 }
 
                 // Update filtered revenue
                 if (FilteredRevenueText != null)
                 {
-                    var totalRevenue = Orders.Sum(o => o.TotalAmount);
-                    FilteredRevenueText.Text = $"Tong doanh thu: {totalRevenue:N0}?";
+                    var totalRevenue = displayOrders.Sum(o => o.TotalAmount);
+                    FilteredRevenueText.Text = $"Tong doanh thu: {totalRevenue:N0}d";
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"L?i khi l?c ??n hàng: {ex.Message}", "L?i", 
+                MessageBox.Show($"Loi khi loc don hang: {ex.Message}", "Loi", 
                     MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
@@ -132,30 +157,34 @@ namespace ShoppingOnline.Views
         {
             try
             {
-                if (_allOrders == null) return;
+                // Use _allOrders (all loaded orders) for statistics
+                var allOrders = _allOrders ?? new List<Order>();
 
                 // Update statistics cards
                 if (TotalOrdersText != null)
-                    TotalOrdersText.Text = _allOrders.Count.ToString();
+                    TotalOrdersText.Text = allOrders.Count.ToString();
 
                 if (PendingOrdersText != null)
-                    PendingOrdersText.Text = _allOrders.Count(o => o.Status == "Pending").ToString();
+                    PendingOrdersText.Text = allOrders.Count(o => o.Status == "Pending" && (o.Notes?.Contains("[CANCELLED]") != true)).ToString();
 
                 if (ConfirmedOrdersText != null)
-                    ConfirmedOrdersText.Text = _allOrders.Count(o => o.Status == "Confirmed").ToString();
+                    ConfirmedOrdersText.Text = allOrders.Count(o => o.Status == "Confirmed" && (o.Notes?.Contains("[CANCELLED]") != true)).ToString();
 
                 if (ShippingOrdersText != null)
-                    ShippingOrdersText.Text = _allOrders.Count(o => o.Status == "Shipping").ToString();
+                    ShippingOrdersText.Text = allOrders.Count(o => o.Status == "Shipping" && (o.Notes?.Contains("[CANCELLED]") != true)).ToString();
 
                 if (TotalRevenueText != null)
                 {
-                    var totalRevenue = _allOrders.Sum(o => o.TotalAmount);
-                    TotalRevenueText.Text = $"{totalRevenue:N0}?";
+                    // Only count revenue from non-cancelled orders
+                    var totalRevenue = allOrders
+                        .Where(o => o.Notes?.Contains("[CANCELLED]") != true)
+                        .Sum(o => o.TotalAmount);
+                    TotalRevenueText.Text = $"{totalRevenue:N0}d";
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"L?i khi c?p nh?t th?ng kê: {ex.Message}", "L?i", 
+                MessageBox.Show($"Loi khi cap nhat thong ke: {ex.Message}", "Loi", 
                     MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
@@ -184,9 +213,43 @@ namespace ShoppingOnline.Views
 
         private void RefreshOrders_Click(object sender, RoutedEventArgs e)
         {
-            LoadOrders();
-            MessageBox.Show("?ã làm m?i danh sách ??n hàng!", "Thông báo", 
-                MessageBoxButton.OK, MessageBoxImage.Information);
+            try
+            {
+                // Reset search box
+                if (OrderSearchBox != null)
+                {
+                    OrderSearchBox.Text = "";
+                }
+                
+                // Reset status filter
+                if (StatusFilterComboBox != null)
+                {
+                    StatusFilterComboBox.SelectedIndex = 0; // "Tat ca trang thai"
+                }
+                
+                // Reset date filter
+                if (DateFilterComboBox != null)
+                {
+                    DateFilterComboBox.SelectedIndex = 0; // "Tat ca"
+                }
+                
+                // Update search placeholder visibility
+                if (SearchPlaceholder != null)
+                {
+                    SearchPlaceholder.Visibility = Visibility.Visible;
+                }
+                
+                // Reload all orders
+                LoadOrders();
+                
+                MessageBox.Show("Da lam moi danh sach don hang!", "Thong bao", 
+                    MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Loi khi lam moi du lieu: {ex.Message}", "Loi", 
+                    MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
         private void ViewOrderDetail_Click(object sender, RoutedEventArgs e)
@@ -206,7 +269,7 @@ namespace ShoppingOnline.Views
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show($"L?i khi m? chi ti?t ??n hàng: {ex.Message}", "L?i", 
+                    MessageBox.Show($"Loi khi mo chi tiet don hang: {ex.Message}", "Loi", 
                         MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }
@@ -216,60 +279,54 @@ namespace ShoppingOnline.Views
         {
             if (sender is Button button && button.Tag is int orderId)
             {
-                var result = MessageBox.Show("B?n có ch?c mu?n xác nh?n ??n hàng này?", 
-                    "Xác nh?n ??n hàng", MessageBoxButton.YesNo, MessageBoxImage.Question);
+                var result = MessageBox.Show("Ban co chac muon xac nhan don hang nay?", 
+                    "Xac nhan don hang", MessageBoxButton.YesNo, MessageBoxImage.Question);
                 
                 if (result == MessageBoxResult.Yes)
                 {
                     try
                     {
+                        // Validate order status before confirming
+                        var order = _allOrders.FirstOrDefault(o => o.OrderId == orderId);
+                        if (order == null)
+                        {
+                            MessageBox.Show("Khong tim thay don hang!", "Loi", 
+                                MessageBoxButton.OK, MessageBoxImage.Error);
+                            return;
+                        }
+
+                        // Check if order is cancelled
+                        if (order.Notes?.Contains("[CANCELLED]") == true)
+                        {
+                            MessageBox.Show("DON HANG DA BI HUY!\n\n" +
+                                          "Khong the xac nhan don hang da bi huy.\n" +
+                                          "Vui long tao don hang moi neu can thiet.", 
+                                          "Don hang da bi huy", MessageBoxButton.OK, MessageBoxImage.Warning);
+                            return;
+                        }
+
+                        if (order.Status != "Pending")
+                        {
+                            MessageBox.Show($"Chi co the xac nhan don hang co trang thai 'Pending'. Trang thai hien tai: {order.Status}", 
+                                "Thong bao", MessageBoxButton.OK, MessageBoxImage.Warning);
+                            return;
+                        }
+
                         if (_adminService.UpdateOrderStatus(orderId, "Confirmed"))
                         {
-                            MessageBox.Show("?ã xác nh?n ??n hàng thành công!", "Thành công", 
+                            MessageBox.Show("Da xac nhan don hang thanh cong!", "Thanh cong", 
                                 MessageBoxButton.OK, MessageBoxImage.Information);
                             LoadOrders(); // Refresh
                         }
                         else
                         {
-                            MessageBox.Show("L?i khi xác nh?n ??n hàng!", "L?i", 
+                            MessageBox.Show("Loi khi xac nhan don hang!", "Loi", 
                                 MessageBoxButton.OK, MessageBoxImage.Error);
                         }
                     }
                     catch (Exception ex)
                     {
-                        MessageBox.Show($"L?i: {ex.Message}", "L?i", 
-                            MessageBoxButton.OK, MessageBoxImage.Error);
-                    }
-                }
-            }
-        }
-
-        private void ShipOrder_Click(object sender, RoutedEventArgs e)
-        {
-            if (sender is Button button && button.Tag is int orderId)
-            {
-                var result = MessageBox.Show("B?n có ch?c mu?n chuy?n ??n hàng này sang tr?ng thái ?ang giao?", 
-                    "Giao hàng", MessageBoxButton.YesNo, MessageBoxImage.Question);
-                
-                if (result == MessageBoxResult.Yes)
-                {
-                    try
-                    {
-                        if (_adminService.UpdateOrderStatus(orderId, "Shipping"))
-                        {
-                            MessageBox.Show("?ã chuy?n ??n hàng sang tr?ng thái ?ang giao!", "Thành công", 
-                                MessageBoxButton.OK, MessageBoxImage.Information);
-                            LoadOrders(); // Refresh
-                        }
-                        else
-                        {
-                            MessageBox.Show("L?i khi c?p nh?t tr?ng thái ??n hàng!", "L?i", 
-                                MessageBoxButton.OK, MessageBoxImage.Error);
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show($"L?i: {ex.Message}", "L?i", 
+                        MessageBox.Show($"Loi: {ex.Message}", "Loi", 
                             MessageBoxButton.OK, MessageBoxImage.Error);
                     }
                 }
@@ -280,28 +337,73 @@ namespace ShoppingOnline.Views
         {
             if (sender is Button button && button.Tag is int orderId)
             {
-                var result = MessageBox.Show("B?n có ch?c mu?n h?y ??n hàng này?", 
-                    "H?y ??n hàng", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+                var result = MessageBox.Show("Ban co chac muon huy don hang nay?", 
+                    "Huy don hang", MessageBoxButton.YesNo, MessageBoxImage.Warning);
                 
                 if (result == MessageBoxResult.Yes)
                 {
                     try
                     {
-                        if (_adminService.UpdateOrderStatus(orderId, "Cancelled"))
+                        var order = _adminService.GetOrderById(orderId);
+                        if (order == null)
                         {
-                            MessageBox.Show("?ã h?y ??n hàng!", "Thành công", 
+                            MessageBox.Show("Khong tim thay don hang!", "Loi", 
+                                MessageBoxButton.OK, MessageBoxImage.Error);
+                            return;
+                        }
+
+                        if (order.Status == "Delivered")
+                        {
+                            MessageBox.Show("Khong the huy don hang da duoc giao!", "Thong bao", 
+                                MessageBoxButton.OK, MessageBoxImage.Warning);
+                            return;
+                        }
+
+                        if (order.Notes?.Contains("[CANCELLED]") == true)
+                        {
+                            MessageBox.Show("Don hang da duoc huy truoc do!", "Thong bao", 
                                 MessageBoxButton.OK, MessageBoxImage.Information);
-                            LoadOrders(); // Refresh
+                            return;
+                        }
+
+                        // Use Notes-based cancellation to avoid database constraint issues
+                        var cancellationNote = $"[CANCELLED] Don hang da bi huy luc {DateTime.Now:dd/MM/yyyy HH:mm}. " +
+                                             $"Ly do: Yeu cau huy tu admin. ";
+                        
+                        if (!string.IsNullOrEmpty(order.Notes))
+                        {
+                            cancellationNote += $"Ghi chu cu: {order.Notes}";
+                        }
+
+                        // Update notes in database using direct context to avoid constraint issues
+                        using var context = new DAL.Entities.ShoppingOnlineContext();
+                        var dbOrder = context.Orders.Find(orderId);
+                        if (dbOrder != null)
+                        {
+                            dbOrder.Notes = cancellationNote;
+                            var changes = context.SaveChanges();
+                            
+                            if (changes > 0)
+                            {
+                                MessageBox.Show("Da huy don hang thanh cong!", "Thanh cong", 
+                                    MessageBoxButton.OK, MessageBoxImage.Information);
+                                LoadOrders(); // Refresh
+                            }
+                            else
+                            {
+                                MessageBox.Show("Loi khi huy don hang!", "Loi", 
+                                    MessageBoxButton.OK, MessageBoxImage.Error);
+                            }
                         }
                         else
                         {
-                            MessageBox.Show("L?i khi h?y ??n hàng!", "L?i", 
+                            MessageBox.Show("Khong tim thay don hang trong database!", "Loi", 
                                 MessageBoxButton.OK, MessageBoxImage.Error);
                         }
                     }
                     catch (Exception ex)
                     {
-                        MessageBox.Show($"L?i: {ex.Message}", "L?i", 
+                        MessageBox.Show($"Loi: {ex.Message}\n\nChi tiet: {ex.InnerException?.Message}", "Loi", 
                             MessageBoxButton.OK, MessageBoxImage.Error);
                     }
                 }
@@ -317,5 +419,19 @@ namespace ShoppingOnline.Views
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
         #endregion
+
+        // Add display model to handle cancelled orders properly
+        public class OrderDisplayModel
+        {
+            public int OrderId { get; set; }
+            public Customer? Customer { get; set; }
+            public string? Phone { get; set; }
+            public DateTime? OrderDate { get; set; }
+            public decimal TotalAmount { get; set; }
+            public string? Status { get; set; } // This will show "Cancelled" for cancelled orders
+            public string? ShippingAddress { get; set; }
+            public string? ActualStatus { get; set; } // Original database status
+            public string? Notes { get; set; }
+        }
     }
 }

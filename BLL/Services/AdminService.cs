@@ -247,17 +247,35 @@ namespace BLL.Services
             try
             {
                 using var context = new ShoppingOnlineContext();
+                
+                // Enhanced logging and validation
                 var order = context.Orders.Find(orderId);
-                if (order != null)
+                if (order == null)
                 {
-                    order.Status = status;
-                    context.SaveChanges();
-                    return true;
+                    System.Diagnostics.Debug.WriteLine($"UpdateOrderStatus: Order {orderId} not found");
+                    return false;
                 }
-                return false;
+
+                System.Diagnostics.Debug.WriteLine($"UpdateOrderStatus: Updating order {orderId} from {order.Status} to {status}");
+                
+                order.Status = status;
+                var rowsAffected = context.SaveChanges();
+                
+                System.Diagnostics.Debug.WriteLine($"UpdateOrderStatus: {rowsAffected} rows affected");
+                return rowsAffected > 0;
             }
-            catch
+            catch (Exception ex)
             {
+                // Log the actual exception for debugging
+                System.Diagnostics.Debug.WriteLine($"UpdateOrderStatus Error: {ex.Message}");
+                System.Diagnostics.Debug.WriteLine($"UpdateOrderStatus Stack Trace: {ex.StackTrace}");
+                
+                // Also check if it's a database connection issue
+                if (ex.InnerException != null)
+                {
+                    System.Diagnostics.Debug.WriteLine($"UpdateOrderStatus Inner Exception: {ex.InnerException.Message}");
+                }
+                
                 return false;
             }
         }
@@ -267,17 +285,36 @@ namespace BLL.Services
             try
             {
                 using var context = new ShoppingOnlineContext();
+                
                 var order = context.Orders.Find(orderId);
-                if (order != null)
+                if (order == null)
                 {
-                    order.CarrierId = carrierId;
-                    context.SaveChanges();
-                    return true;
+                    System.Diagnostics.Debug.WriteLine($"AssignCarrierToOrder: Order {orderId} not found");
+                    return false;
                 }
-                return false;
+
+                var carrier = context.Carriers.Find(carrierId);
+                if (carrier == null)
+                {
+                    System.Diagnostics.Debug.WriteLine($"AssignCarrierToOrder: Carrier {carrierId} not found");
+                    return false;
+                }
+
+                System.Diagnostics.Debug.WriteLine($"AssignCarrierToOrder: Assigning carrier {carrierId} to order {orderId}");
+                
+                order.CarrierId = carrierId;
+                var rowsAffected = context.SaveChanges();
+                
+                System.Diagnostics.Debug.WriteLine($"AssignCarrierToOrder: {rowsAffected} rows affected");
+                return rowsAffected > 0;
             }
-            catch
+            catch (Exception ex)
             {
+                System.Diagnostics.Debug.WriteLine($"AssignCarrierToOrder Error: {ex.Message}");
+                if (ex.InnerException != null)
+                {
+                    System.Diagnostics.Debug.WriteLine($"AssignCarrierToOrder Inner Exception: {ex.InnerException.Message}");
+                }
                 return false;
             }
         }
