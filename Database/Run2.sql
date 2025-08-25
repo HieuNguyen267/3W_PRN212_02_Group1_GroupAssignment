@@ -100,52 +100,52 @@ PRINT '   - Đã thêm 32 Products';
 PRINT '3. Cập nhật ProductImages...';
 INSERT INTO ProductImages (ProductID, ImageURL, IsPrimary, DisplayOrder) VALUES
 -- Điện thoại, Tablet
-('P001', 'https://example.com/images/iphone16-pro-max.jpg', 1, 1),
-('P002', 'https://example.com/images/samsung-s25-ultra.jpg', 1, 1),
-('P003', 'https://example.com/images/ipad-pro-m4.jpg', 1, 1),
-('P004', 'https://example.com/images/samsung-tab-s10.jpg', 1, 1),
+('P001', 'img/iPhone 16 Pro Max 256GB.jpg', 1, 1),
+('P002', 'img/Samsung Galaxy S25 Ultra.jpg', 1, 1),
+('P003', 'img/iPad Pro 12.9 inch M4.jpg', 1, 1),
+('P004', 'img/Samsung Galaxy Tab S10.jpg', 1, 1),
 
 -- Laptop
-('P005', 'https://example.com/images/macbook-air-m3.jpg', 1, 1),
-('P006', 'https://example.com/images/dell-xps-13-plus.jpg', 1, 1),
-('P007', 'https://example.com/images/lenovo-thinkpad-x1.jpg', 1, 1),
-('P008', 'https://example.com/images/asus-rog-strix-g16.jpg', 1, 1),
+('P005', 'img/MacBook Air M3 13 inch.jpg', 1, 1),
+('P006', 'img/Dell XPS 13 Plus.jpg', 1, 1),
+('P007', 'img/Lenovo ThinkPad X1 Carbon.jpg', 1, 1),
+('P008', 'img/ASUS ROG Strix G16.jpg', 1, 1),
 
 -- Âm thanh, Mic thu âm
-('P009', 'https://example.com/images/airpods-pro-3.jpg', 1, 1),
-('P010', 'https://example.com/images/sony-wh1000xm5.jpg', 1, 1),
-('P011', 'https://example.com/images/blue-yeti-x.jpg', 1, 1),
-('P012', 'https://example.com/images/jbl-flip-6.jpg', 1, 1),
+('P009', 'img/AirPods Pro 3.jpg', 1, 1),
+('P010', 'img/Sony WH-1000XM5.jpg', 1, 1),
+('P011', 'img/Blue Yeti X.jpg', 1, 1),
+('P012', 'img/JBL Flip 6.jpg', 1, 1),
 
 -- Đồng hồ, Camera
-('P013', 'https://example.com/images/apple-watch-series-10.jpg', 1, 1),
-('P014', 'https://example.com/images/samsung-galaxy-watch-7.jpg', 1, 1),
-('P015', 'https://example.com/images/canon-eos-r6-mark2.jpg', 1, 1),
-('P016', 'https://example.com/images/sony-a7-iv.jpg', 1, 1),
+('P013', 'img/Apple Watch Series 10.jpg', 1, 1),
+('P014', 'img/Samsung Galaxy Watch 7.jpg', 1, 1),
+('P015', 'img/Canon EOS R6 Mark II.jpg', 1, 1),
+('P016', 'img/Sony A7 IV.jpg', 1, 1),
 
 -- Đồ gia dụng
-('P017', 'https://example.com/images/samsung-smart-fridge.jpg', 1, 1),
-('P018', 'https://example.com/images/lg-smart-washer.jpg', 1, 1),
-('P019', 'https://example.com/images/sharp-microwave.jpg', 1, 1),
-('P020', 'https://example.com/images/philips-air-fryer.jpg', 1, 1),
+('P017', 'img/Samsung Smart Refrigerator.jpg', 1, 1),
+('P018', 'img/LG Smart Washing Machine.jpg', 1, 1),
+('P019', 'img/Sharp Microwave Oven.png', 1, 1),
+('P020', 'img/Philips Air Fryer.png', 1, 1),
 
 -- Phụ kiện
-('P021', 'https://example.com/images/apple-magic-keyboard.jpg', 1, 1),
-('P022', 'https://example.com/images/logitech-mx-master-3s.jpg', 1, 1),
-('P023', 'https://example.com/images/samsung-t7-ssd.jpg', 1, 1),
-('P024', 'https://example.com/images/anker-powercore-20000.jpg', 1, 1),
+('P021', 'img/Apple Magic Keyboard.jpg', 1, 1),
+('P022', 'img/Logitech MX Master 3S.jpg', 1, 1),
+('P023', 'img/Samsung T7 Portable SSD.jpg', 1, 1),
+('P024', 'img/Anker PowerCore 20000.png', 1, 1),
 
 -- PC, Màn hình, Máy in
-('P025', 'https://example.com/images/alienware-aurora-r16.jpg', 1, 1),
-('P026', 'https://example.com/images/samsung-odyssey-g9.jpg', 1, 1),
-('P027', 'https://example.com/images/hp-laserjet-pro-m404n.jpg', 1, 1),
-('P028', 'https://example.com/images/lg-27-4k-monitor.jpg', 1, 1),
+('P025', 'img/Alienware Aurora R16.jpeg', 1, 1),
+('P026', 'img/Samsung Odyssey G9.jpg', 1, 1),
+('P027', 'img/HP LaserJet Pro M404n.png', 1, 1),
+('P028', 'img/LG 27 4K Monitor.jpg', 1, 1),
 
 -- Tivi
-('P029', 'https://example.com/images/samsung-qled-65.jpg', 1, 1),
-('P030', 'https://example.com/images/lg-oled-55.jpg', 1, 1),
-('P031', 'https://example.com/images/sony-bravia-75.jpg', 1, 1),
-('P032', 'https://example.com/images/tcl-4k-50.jpg', 1, 1);
+('P029', 'img/Samsung QLED 4K 65.jpg', 1, 1),
+('P030', 'img/LG OLED 4K 55.jpg', 1, 1),
+('P031', 'img/Sony Bravia 4K 75.png', 1, 1),
+('P032', 'img/TCL 4K Smart TV 50.jpg', 1, 1);
 
 PRINT '   - Đã thêm 32 ProductImages';
 
