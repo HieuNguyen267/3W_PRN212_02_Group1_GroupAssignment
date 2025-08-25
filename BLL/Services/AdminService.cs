@@ -34,7 +34,10 @@ namespace BLL.Services
         List<Order> GetAllOrders();
         Order? GetOrderById(int orderId);
         bool UpdateOrderStatus(int orderId, string status);
+        bool AssignCarrierToOrder(int orderId, int carrierId);
         List<OrderDetail> GetOrderDetails(int orderId);
+        List<OrderDetail> GetOrderDetailsByOrderId(int orderId);
+        List<Carrier> GetAvailableCarriers();
         
         // Category Management
         List<Category> GetAllCategories();
@@ -259,12 +262,52 @@ namespace BLL.Services
             }
         }
 
+        public bool AssignCarrierToOrder(int orderId, int carrierId)
+        {
+            try
+            {
+                using var context = new ShoppingOnlineContext();
+                var order = context.Orders.Find(orderId);
+                if (order != null)
+                {
+                    order.CarrierId = carrierId;
+                    context.SaveChanges();
+                    return true;
+                }
+                return false;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
         public List<OrderDetail> GetOrderDetails(int orderId)
         {
             using var context = new ShoppingOnlineContext();
             return context.OrderDetails
                 .Include(od => od.Product)
+                    .ThenInclude(p => p.Category)
                 .Where(od => od.OrderId == orderId)
+                .ToList();
+        }
+
+        public List<OrderDetail> GetOrderDetailsByOrderId(int orderId)
+        {
+            using var context = new ShoppingOnlineContext();
+            return context.OrderDetails
+                .Include(od => od.Product)
+                    .ThenInclude(p => p.Category)
+                .Where(od => od.OrderId == orderId)
+                .ToList();
+        }
+
+        public List<Carrier> GetAvailableCarriers()
+        {
+            using var context = new ShoppingOnlineContext();
+            return context.Carriers
+                .Include(c => c.Account)
+                .Where(c => c.IsAvailable == true && c.Account!.IsActive == true)
                 .ToList();
         }
 
