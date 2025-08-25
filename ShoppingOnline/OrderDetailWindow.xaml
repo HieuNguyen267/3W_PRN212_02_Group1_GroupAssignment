@@ -186,9 +186,9 @@
                             <DataGrid.Columns>
                                 <DataGridTextColumn Header="San pham" Binding="{Binding Product.ProductName}" Width="250"/>
                                 <DataGridTextColumn Header="Danh muc" Binding="{Binding Product.Category.CategoryName}" Width="150"/>
-                                <DataGridTextColumn Header="Don gia" Binding="{Binding UnitPrice, StringFormat={}{0:N0}d}" Width="120"/>
+                                <DataGridTextColumn Header="Don gia" Binding="{Binding UnitPrice, StringFormat={}{0:N0} VND}" Width="120"/>
                                 <DataGridTextColumn Header="So luong" Binding="{Binding Quantity}" Width="100"/>
-                                <DataGridTextColumn Header="Thanh tien" Binding="{Binding SubTotal, StringFormat={}{0:N0}d}" Width="120"/>
+                                <DataGridTextColumn Header="Thanh tien" Binding="{Binding SubTotal, StringFormat={}{0:N0} VND}" Width="120"/>
                             </DataGrid.Columns>
                         </DataGrid>
                         
@@ -196,7 +196,7 @@
                         <Border Background="{StaticResource LightRed}" CornerRadius="5" Padding="15" Margin="0,15,0,0">
                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
                                 <TextBlock Text="Tong cong: " FontSize="16" FontWeight="SemiBold"/>
-                                <TextBlock x:Name="TotalAmountText" Text="0d" FontSize="18" FontWeight="Bold" 
+                                <TextBlock x:Name="TotalAmountText" Text="0 VND" FontSize="18" FontWeight="Bold" 
                                            Foreground="{StaticResource PrimaryRed}"/>
                             </StackPanel>
                         </Border>

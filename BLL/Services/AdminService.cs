@@ -14,6 +14,7 @@ namespace BLL.Services
         int GetTotalProducts();
         int GetTotalOrders();
         decimal GetTotalRevenue();
+        decimal GetTotalOrderValue();
         int GetTodayOrders();
         decimal GetTodayRevenue();
         List<Order> GetRecentOrders(int count = 10);
@@ -81,13 +82,54 @@ namespace BLL.Services
         public int GetTotalOrders()
         {
             using var context = new ShoppingOnlineContext();
-            return context.Orders.Count();
+            // Count only non-cancelled orders
+            return context.Orders
+                .Where(o => o.Notes == null || !o.Notes.Contains("[CANCELLED]"))
+                .Count();
         }
 
         public decimal GetTotalRevenue()
         {
             using var context = new ShoppingOnlineContext();
-            return context.Orders.Where(o => o.Status == "Completed").Sum(o => o.TotalAmount);
+            
+            // Debug: Check all orders
+            var allOrders = context.Orders.ToList();
+            System.Diagnostics.Debug.WriteLine($"GetTotalRevenue: Total orders in DB: {allOrders.Count}");
+            
+            foreach (var order in allOrders)
+            {
+                System.Diagnostics.Debug.WriteLine($"Order #{order.OrderId}: Status='{order.Status}', Amount={order.TotalAmount}, Notes='{order.Notes}'");
+            }
+            
+            // Calculate revenue from completed orders only, excluding cancelled orders
+            // Revenue should only include orders that are actually delivered/completed and paid
+            // Cancelled orders are marked with [CANCELLED] in the Notes field
+            var revenueOrders = context.Orders
+                .Where(o => (o.Status == "Delivered" || o.Status == "Completed") && 
+                           (o.Notes == null || !o.Notes.Contains("[CANCELLED]")))
+                .ToList();
+                
+            System.Diagnostics.Debug.WriteLine($"GetTotalRevenue: Revenue orders count: {revenueOrders.Count}");
+            
+            var totalRevenue = revenueOrders.Sum(o => o.TotalAmount);
+            System.Diagnostics.Debug.WriteLine($"GetTotalRevenue: Total revenue: {totalRevenue}");
+            
+            return totalRevenue;
+        }
+
+        public decimal GetTotalOrderValue()
+        {
+            using var context = new ShoppingOnlineContext();
+            
+            // Calculate total value of all orders (excluding cancelled orders)
+            // This includes Pending, Confirmed, Shipping, Delivered, Completed orders
+            var totalOrderValue = context.Orders
+                .Where(o => o.Notes == null || !o.Notes.Contains("[CANCELLED]"))
+                .Sum(o => o.TotalAmount);
+                
+            System.Diagnostics.Debug.WriteLine($"GetTotalOrderValue: Total order value: {totalOrderValue}");
+            
+            return totalOrderValue;
         }
 
         public int GetTodayOrders()
@@ -95,7 +137,10 @@ namespace BLL.Services
             using var context = new ShoppingOnlineContext();
             var today = DateTime.Today;
             var tomorrow = today.AddDays(1);
-            return context.Orders.Where(o => o.OrderDate >= today && o.OrderDate < tomorrow).Count();
+            return context.Orders
+                .Where(o => o.OrderDate >= today && o.OrderDate < tomorrow && 
+                           (o.Notes == null || !o.Notes.Contains("[CANCELLED]")))
+                .Count();
         }
 
         public decimal GetTodayRevenue()
@@ -104,7 +149,9 @@ namespace BLL.Services
             var today = DateTime.Today;
             var tomorrow = today.AddDays(1);
             return context.Orders
-                .Where(o => o.OrderDate >= today && o.OrderDate < tomorrow && o.Status == "Completed")
+                .Where(o => o.OrderDate >= today && o.OrderDate < tomorrow && 
+                           (o.Status == "Delivered" || o.Status == "Completed") &&
+                           (o.Notes == null || !o.Notes.Contains("[CANCELLED]")))
                 .Sum(o => o.TotalAmount);
         }
 
@@ -113,6 +160,7 @@ namespace BLL.Services
             using var context = new ShoppingOnlineContext();
             return context.Orders
                 .Include(o => o.Customer)
+                .Where(o => o.Notes == null || !o.Notes.Contains("[CANCELLED]")) // Exclude cancelled orders from recent orders
                 .OrderByDescending(o => o.OrderDate)
                 .Take(count)
                 .ToList();

@@ -97,8 +97,8 @@ namespace ShoppingOnline
             CustomerEmailText.Text = _currentOrder.Customer?.Account?.Email ?? "Khong co";
             ShippingAddressText.Text = _currentOrder.ShippingAddress ?? "Khong co";
 
-            // Total amount
-            TotalAmountText.Text = $"{_currentOrder.TotalAmount:N0}d";
+            // Total amount with VND
+            TotalAmountText.Text = $"{_currentOrder.TotalAmount:N0} VND";
 
             // Notes
             NotesTextBox.Text = _currentOrder.Notes ?? "";
