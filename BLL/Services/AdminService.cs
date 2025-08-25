@@ -36,6 +36,7 @@ namespace BLL.Services
         bool UpdateOrderStatus(int orderId, string status);
         bool AssignCarrierToOrder(int orderId, int carrierId);
         List<OrderDetail> GetOrderDetails(int orderId);
+        List<OrderDetail> GetOrderDetailsByOrderId(int orderId);
         List<Carrier> GetAvailableCarriers();
         
         // Category Management
@@ -282,6 +283,16 @@ namespace BLL.Services
         }
 
         public List<OrderDetail> GetOrderDetails(int orderId)
+        {
+            using var context = new ShoppingOnlineContext();
+            return context.OrderDetails
+                .Include(od => od.Product)
+                    .ThenInclude(p => p.Category)
+                .Where(od => od.OrderId == orderId)
+                .ToList();
+        }
+
+        public List<OrderDetail> GetOrderDetailsByOrderId(int orderId)
         {
             using var context = new ShoppingOnlineContext();
             return context.OrderDetails

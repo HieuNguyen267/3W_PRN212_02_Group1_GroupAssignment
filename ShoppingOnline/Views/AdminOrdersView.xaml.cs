@@ -28,6 +28,7 @@ namespace ShoppingOnline.Views
         private void AdminOrdersView_Loaded(object sender, RoutedEventArgs e)
         {
             LoadOrders();
+            UpdateStatistics();
         }
 
         public ObservableCollection<Order> Orders
@@ -46,6 +47,7 @@ namespace ShoppingOnline.Views
             {
                 _allOrders = _adminService.GetAllOrders();
                 ApplyOrderFilters();
+                UpdateStatistics();
             }
             catch (Exception ex)
             {
@@ -105,10 +107,55 @@ namespace ShoppingOnline.Views
                 {
                     OrdersDataGrid.ItemsSource = Orders;
                 }
+
+                // Update count display
+                if (OrderCountText != null)
+                {
+                    OrderCountText.Text = $"Hien thi: {Orders.Count} don hang";
+                }
+
+                // Update filtered revenue
+                if (FilteredRevenueText != null)
+                {
+                    var totalRevenue = Orders.Sum(o => o.TotalAmount);
+                    FilteredRevenueText.Text = $"Tong doanh thu: {totalRevenue:N0}?";
+                }
             }
             catch (Exception ex)
             {
                 MessageBox.Show($"L?i khi l?c ??n hàng: {ex.Message}", "L?i", 
+                    MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private void UpdateStatistics()
+        {
+            try
+            {
+                if (_allOrders == null) return;
+
+                // Update statistics cards
+                if (TotalOrdersText != null)
+                    TotalOrdersText.Text = _allOrders.Count.ToString();
+
+                if (PendingOrdersText != null)
+                    PendingOrdersText.Text = _allOrders.Count(o => o.Status == "Pending").ToString();
+
+                if (ConfirmedOrdersText != null)
+                    ConfirmedOrdersText.Text = _allOrders.Count(o => o.Status == "Confirmed").ToString();
+
+                if (ShippingOrdersText != null)
+                    ShippingOrdersText.Text = _allOrders.Count(o => o.Status == "Shipping").ToString();
+
+                if (TotalRevenueText != null)
+                {
+                    var totalRevenue = _allOrders.Sum(o => o.TotalAmount);
+                    TotalRevenueText.Text = $"{totalRevenue:N0}?";
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"L?i khi c?p nh?t th?ng kê: {ex.Message}", "L?i", 
                     MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
@@ -140,6 +187,62 @@ namespace ShoppingOnline.Views
             LoadOrders();
             MessageBox.Show("?ã làm m?i danh sách ??n hàng!", "Thông báo", 
                 MessageBoxButton.OK, MessageBoxImage.Information);
+        }
+
+        private void ExportExcel_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                MessageBox.Show("Ch?c n?ng Export Excel ?ang ???c phát tri?n!", "Thông báo", 
+                    MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"L?i khi export Excel: {ex.Message}", "L?i", 
+                    MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private void PrintReport_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                MessageBox.Show("Ch?c n?ng in báo cáo ?ang ???c phát tri?n!", "Thông báo", 
+                    MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"L?i khi in báo cáo: {ex.Message}", "L?i", 
+                    MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private void DetailedStats_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                MessageBox.Show("Ch?c n?ng th?ng kê chi ti?t ?ang ???c phát tri?n!", "Thông báo", 
+                    MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"L?i khi xem th?ng kê chi ti?t: {ex.Message}", "L?i", 
+                    MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private void ExportPDF_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                MessageBox.Show("Ch?c n?ng Export PDF ?ang ???c phát tri?n!", "Thông báo", 
+                    MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"L?i khi export PDF: {ex.Message}", "L?i", 
+                    MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
         private void ViewOrderDetail_Click(object sender, RoutedEventArgs e)
@@ -185,6 +288,38 @@ namespace ShoppingOnline.Views
                         else
                         {
                             MessageBox.Show("L?i khi xác nh?n ??n hàng!", "L?i", 
+                                MessageBoxButton.OK, MessageBoxImage.Error);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"L?i: {ex.Message}", "L?i", 
+                            MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
+                }
+            }
+        }
+
+        private void ShipOrder_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender is Button button && button.Tag is int orderId)
+            {
+                var result = MessageBox.Show("B?n có ch?c mu?n chuy?n ??n hàng này sang tr?ng thái ?ang giao?", 
+                    "Giao hàng", MessageBoxButton.YesNo, MessageBoxImage.Question);
+                
+                if (result == MessageBoxResult.Yes)
+                {
+                    try
+                    {
+                        if (_adminService.UpdateOrderStatus(orderId, "Shipping"))
+                        {
+                            MessageBox.Show("?ã chuy?n ??n hàng sang tr?ng thái ?ang giao!", "Thành công", 
+                                MessageBoxButton.OK, MessageBoxImage.Information);
+                            LoadOrders(); // Refresh
+                        }
+                        else
+                        {
+                            MessageBox.Show("L?i khi c?p nh?t tr?ng thái ??n hàng!", "L?i", 
                                 MessageBoxButton.OK, MessageBoxImage.Error);
                         }
                     }

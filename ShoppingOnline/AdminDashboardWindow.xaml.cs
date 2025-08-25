@@ -14,7 +14,6 @@ namespace ShoppingOnline
         private AdminDashboardView? _dashboardView;
         private AdminProductsView? _productsView;
         private AdminOrdersView? _ordersView;
-        private AdminCustomersView? _customersView;
 
         public AdminDashboardWindow()
         {
@@ -47,7 +46,7 @@ namespace ShoppingOnline
                 _dashboardView = new AdminDashboardView();
             
             MainContentControl.Content = _dashboardView;
-            UpdatePageTitle("?? Dashboard", "Tong quan he thong");
+            UpdatePageTitle("Dashboard", "Tong quan he thong");
             UpdateActiveButton("Dashboard");
             
             // Refresh dashboard data
@@ -60,7 +59,7 @@ namespace ShoppingOnline
                 _productsView = new AdminProductsView();
             
             MainContentControl.Content = _productsView;
-            UpdatePageTitle("?? Quan ly San pham", "Danh sach va thong tin san pham");
+            UpdatePageTitle("Quan ly San pham", "Danh sach va thong tin san pham");
             UpdateActiveButton("Products");
         }
 
@@ -70,17 +69,24 @@ namespace ShoppingOnline
                 _ordersView = new AdminOrdersView();
             
             MainContentControl.Content = _ordersView;
-            UpdatePageTitle("??? Quan ly Don hang", "Danh sach va trang thai don hang");
+            UpdatePageTitle("Quan ly Don hang", "Danh sach va trang thai don hang");
             UpdateActiveButton("Orders");
         }
 
         private void NavigateToCustomers()
         {
-            if (_customersView == null)
-                _customersView = new AdminCustomersView();
+            // Create a simple placeholder for now
+            var customersView = new TextBlock 
+            { 
+                Text = "Quan ly Khach hang - Dang phat trien", 
+                FontSize = 24,
+                HorizontalAlignment = HorizontalAlignment.Center,
+                VerticalAlignment = VerticalAlignment.Center,
+                Margin = new Thickness(50)
+            };
             
-            MainContentControl.Content = _customersView;
-            UpdatePageTitle("?? Quan ly Khach hang", "Danh sach khach hang");
+            MainContentControl.Content = customersView;
+            UpdatePageTitle("Quan ly Khach hang", "Danh sach khach hang");
             UpdateActiveButton("Customers");
         }
 
@@ -97,7 +103,7 @@ namespace ShoppingOnline
             };
             
             MainContentControl.Content = categoriesView;
-            UpdatePageTitle("?? Quan ly Danh muc", "Danh sach danh muc san pham");
+            UpdatePageTitle("Quan ly Danh muc", "Danh sach danh muc san pham");
             UpdateActiveButton("Categories");
         }
 
@@ -114,7 +120,7 @@ namespace ShoppingOnline
             };
             
             MainContentControl.Content = adminsView;
-            UpdatePageTitle("????? Quan ly Admin", "Quan ly tai khoan admin");
+            UpdatePageTitle("Quan ly Admin", "Quan ly tai khoan admin");
             UpdateActiveButton("Admins");
         }
 
@@ -131,7 +137,7 @@ namespace ShoppingOnline
             };
             
             MainContentControl.Content = reportsView;
-            UpdatePageTitle("?? Bao cao", "Thong ke va bao cao");
+            UpdatePageTitle("Bao cao", "Thong ke va bao cao");
             UpdateActiveButton("Reports");
         }
 

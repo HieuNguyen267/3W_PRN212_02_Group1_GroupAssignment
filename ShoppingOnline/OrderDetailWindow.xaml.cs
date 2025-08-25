@@ -12,27 +12,26 @@ namespace ShoppingOnline
     public partial class OrderDetailWindow : Window
     {
         private readonly IAdminService _adminService;
-        private readonly OrderService _orderService;
+        private readonly int _orderId;
         private Order _currentOrder;
-        private int _orderId;
-        private List<Carrier> _availableCarriers;
+        private List<OrderDetail> _orderDetails;
+        private List<Carrier> _carriers;
 
         public OrderDetailWindow(int orderId)
         {
             InitializeComponent();
             _adminService = new AdminService();
-            _orderService = new OrderService();
             _orderId = orderId;
-            _availableCarriers = new List<Carrier>();
             
-            LoadOrderData();
+            LoadOrderDetails();
             LoadCarriers();
         }
 
-        private void LoadOrderData()
+        private void LoadOrderDetails()
         {
             try
             {
+                // Load order
                 _currentOrder = _adminService.GetOrderById(_orderId);
                 if (_currentOrder == null)
                 {
@@ -42,55 +41,17 @@ namespace ShoppingOnline
                     return;
                 }
 
-                // Update header
-                OrderTitleText.Text = $"Chi ti?t ??n hàng #{_currentOrder.OrderId}";
-                OrderDateText.Text = $"Ngày ??t: {_currentOrder.OrderDate:dd/MM/yyyy HH:mm}";
+                // Load order details
+                _orderDetails = _adminService.GetOrderDetailsByOrderId(_orderId);
 
-                // Update customer info
-                CustomerNameText.Text = _currentOrder.Customer?.FullName ?? "N/A";
-                CustomerPhoneText.Text = _currentOrder.Phone ?? "N/A";
-                CustomerEmailText.Text = _currentOrder.Customer?.Account?.Email ?? "N/A";
-                ShippingAddressText.Text = _currentOrder.ShippingAddress ?? "N/A";
-
-                // Update status
-                UpdateStatusDisplay(_currentOrder.Status ?? "Pending");
-                
-                // Set status combobox
-                foreach (ComboBoxItem item in StatusComboBox.Items)
-                {
-                    if (item.Content.ToString() == _currentOrder.Status)
-                    {
-                        StatusComboBox.SelectedItem = item;
-                        break;
-                    }
-                }
-
-                // Update carrier info
-                if (_currentOrder.Carrier != null)
-                {
-                    CurrentCarrierText.Text = $"{_currentOrder.Carrier.FullName} - {_currentOrder.Carrier.Phone} ({_currentOrder.Carrier.VehicleNumber})";
-                }
-                else
-                {
-                    CurrentCarrierText.Text = "Ch?a ch?n ng??i v?n chuy?n";
-                }
-
-                // Load order items
-                var orderDetails = _adminService.GetOrderDetails(_orderId);
-                OrderItemsGrid.ItemsSource = orderDetails;
-
-                // Update total
-                TotalAmountText.Text = $"{_currentOrder.TotalAmount:N0}?";
-
-                // Load notes
-                NotesTextBox.Text = _currentOrder.Notes ?? "";
-
-                // Update button states based on status
-                UpdateButtonStates();
+                // Update UI
+                UpdateOrderInfo();
+                UpdateOrderItems();
+                UpdateStatusDisplay(_currentOrder.Status);
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"L?i khi t?i d? li?u ??n hàng: {ex.Message}", "L?i", 
+                MessageBox.Show($"L?i khi t?i chi ti?t ??n hàng: {ex.Message}", "L?i", 
                     MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
@@ -99,13 +60,23 @@ namespace ShoppingOnline
         {
             try
             {
-                _availableCarriers = _adminService.GetAvailableCarriers();
-                CarrierComboBox.ItemsSource = _availableCarriers;
+                // Load available carriers from database
+                _carriers = _adminService.GetAvailableCarriers();
+
+                CarrierComboBox.ItemsSource = _carriers;
+                CarrierComboBox.DisplayMemberPath = "FullName";
+                CarrierComboBox.SelectedValuePath = "CarrierId";
                 
-                // Select current carrier if exists
-                if (_currentOrder?.CarrierId != null)
+                // Update current carrier display
+                if (_currentOrder.CarrierId.HasValue)
                 {
+                    var currentCarrier = _carriers.FirstOrDefault(c => c.CarrierId == _currentOrder.CarrierId);
+                    CurrentCarrierText.Text = currentCarrier?.FullName ?? "Không xác ??nh";
                     CarrierComboBox.SelectedValue = _currentOrder.CarrierId;
+                }
+                else
+                {
+                    CurrentCarrierText.Text = "Ch?a ch?n";
                 }
             }
             catch (Exception ex)
@@ -115,97 +86,108 @@ namespace ShoppingOnline
             }
         }
 
+        private void UpdateOrderInfo()
+        {
+            // Order header
+            OrderTitleText.Text = $"Chi ti?t ??n hàng #{_currentOrder.OrderId}";
+            OrderDateText.Text = $"Ngày ??t: {_currentOrder.OrderDate:dd/MM/yyyy HH:mm}";
+
+            // Customer info
+            CustomerNameText.Text = _currentOrder.Customer?.FullName ?? "Không xác ??nh";
+            CustomerPhoneText.Text = _currentOrder.Phone ?? "Không có";
+            CustomerEmailText.Text = _currentOrder.Customer?.Account?.Email ?? "Không có";
+            ShippingAddressText.Text = _currentOrder.ShippingAddress ?? "Không có";
+
+            // Total amount
+            TotalAmountText.Text = $"{_currentOrder.TotalAmount:N0}?";
+
+            // Notes
+            NotesTextBox.Text = _currentOrder.Notes ?? "";
+
+            // Status combobox
+            foreach (ComboBoxItem item in StatusComboBox.Items)
+            {
+                if (item.Content.ToString() == _currentOrder.Status)
+                {
+                    StatusComboBox.SelectedItem = item;
+                    break;
+                }
+            }
+        }
+
+        private void UpdateOrderItems()
+        {
+            OrderItemsGrid.ItemsSource = _orderDetails;
+        }
+
         private void UpdateStatusDisplay(string status)
         {
-            CurrentStatusText.Text = status;
+            CurrentStatusText.Text = GetStatusDisplayText(status);
             
-            // Update status color
+            // Update status border color
             StatusBorder.Background = status switch
             {
-                "Pending" => new SolidColorBrush(Color.FromRgb(255, 193, 7)),      // Yellow
-                "Confirmed" => new SolidColorBrush(Color.FromRgb(33, 150, 243)),   // Blue
-                "Shipping" => new SolidColorBrush(Color.FromRgb(255, 152, 0)),     // Orange
-                "Delivered" => new SolidColorBrush(Color.FromRgb(76, 175, 80)),    // Green
-                "Cancelled" => new SolidColorBrush(Color.FromRgb(244, 67, 54)),    // Red
-                _ => new SolidColorBrush(Color.FromRgb(158, 158, 158))             // Gray
+                "Pending" => new SolidColorBrush(Color.FromRgb(255, 152, 0)),    // Orange
+                "Confirmed" => new SolidColorBrush(Color.FromRgb(76, 175, 80)),  // Green
+                "Shipping" => new SolidColorBrush(Color.FromRgb(33, 150, 243)),  // Blue
+                "Delivered" => new SolidColorBrush(Color.FromRgb(139, 195, 74)), // Light Green
+                "Cancelled" => new SolidColorBrush(Color.FromRgb(244, 67, 54)),  // Red
+                _ => new SolidColorBrush(Color.FromRgb(158, 158, 158))           // Gray
             };
         }
 
-        private void UpdateButtonStates()
+        private string GetStatusDisplayText(string status)
         {
-            var status = _currentOrder?.Status ?? "Pending";
-            
-            // Enable/disable buttons based on status
-            var confirmButton = FindName("ConfirmOrder_Click") as Button;
-            var cancelButton = FindName("CancelOrder_Click") as Button;
-            
-            // Update button in grid would need different approach since it's in XAML
-            // For now, we'll handle this through the button click events
+            return status switch
+            {
+                "Pending" => "? Ch? xác nh?n",
+                "Confirmed" => "? ?ã xác nh?n",
+                "Shipping" => "?? ?ang giao hàng",
+                "Delivered" => "? ?ã giao thành công",
+                "Cancelled" => "? ?ã h?y",
+                _ => "? Không xác ??nh"
+            };
         }
 
         #region Event Handlers
-
         private void UpdateStatus_Click(object sender, RoutedEventArgs e)
         {
             if (StatusComboBox.SelectedItem is ComboBoxItem selectedItem)
             {
                 var newStatus = selectedItem.Content.ToString();
-                
-                var result = MessageBox.Show($"B?n có ch?c mu?n c?p nh?t tr?ng thái thành '{newStatus}'?", 
-                    "Xác nh?n c?p nh?t", MessageBoxButton.YesNo, MessageBoxImage.Question);
-                
-                if (result == MessageBoxResult.Yes)
+                if (newStatus != _currentOrder.Status)
                 {
-                    try
+                    var result = MessageBox.Show($"B?n có ch?c mu?n c?p nh?t tr?ng thái thành '{GetStatusDisplayText(newStatus)}'?", 
+                        "Xác nh?n c?p nh?t", MessageBoxButton.YesNo, MessageBoxImage.Question);
+                    
+                    if (result == MessageBoxResult.Yes)
                     {
-                        if (_adminService.UpdateOrderStatus(_orderId, newStatus))
-                        {
-                            _currentOrder.Status = newStatus;
-                            UpdateStatusDisplay(newStatus);
-                            MessageBox.Show("C?p nh?t tr?ng thái thành công!", "Thành công", 
-                                MessageBoxButton.OK, MessageBoxImage.Information);
-                        }
-                        else
-                        {
-                            MessageBox.Show("L?i khi c?p nh?t tr?ng thái!", "L?i", 
-                                MessageBoxButton.OK, MessageBoxImage.Error);
-                        }
+                        UpdateOrderStatus(newStatus);
                     }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show($"L?i: {ex.Message}", "L?i", 
-                            MessageBoxButton.OK, MessageBoxImage.Error);
-                    }
+                }
+                else
+                {
+                    MessageBox.Show("Tr?ng thái hi?n t?i ?ã là tr?ng thái ???c ch?n!", "Thông báo", 
+                        MessageBoxButton.OK, MessageBoxImage.Information);
                 }
             }
         }
 
         private void ConfirmOrder_Click(object sender, RoutedEventArgs e)
         {
-            if (_currentOrder?.Status == "Pending")
+            var result = MessageBox.Show("B?n có ch?c mu?n xác nh?n ??n hàng này?", 
+                "Xác nh?n ??n hàng", MessageBoxButton.YesNo, MessageBoxImage.Question);
+            
+            if (result == MessageBoxResult.Yes)
             {
                 UpdateOrderStatus("Confirmed");
-            }
-            else
-            {
-                MessageBox.Show("Ch? có th? xác nh?n ??n hàng ? tr?ng thái 'Pending'!", "Thông báo", 
-                    MessageBoxButton.OK, MessageBoxImage.Warning);
             }
         }
 
         private void CancelOrder_Click(object sender, RoutedEventArgs e)
         {
-            var currentStatus = _currentOrder?.Status ?? "";
-            
-            if (currentStatus == "Shipping" || currentStatus == "Delivered")
-            {
-                MessageBox.Show("Không th? h?y ??n hàng ?ang v?n chuy?n ho?c ?ã giao!", "Thông báo", 
-                    MessageBoxButton.OK, MessageBoxImage.Warning);
-                return;
-            }
-            
-            var result = MessageBox.Show("B?n có ch?c mu?n h?y ??n hàng này?", 
-                "Xác nh?n h?y", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+            var result = MessageBox.Show("B?n có ch?c mu?n h?y ??n hàng này?\nHành ??ng này không th? hoàn tác!", 
+                "H?y ??n hàng", MessageBoxButton.YesNo, MessageBoxImage.Warning);
             
             if (result == MessageBoxResult.Yes)
             {
@@ -215,35 +197,37 @@ namespace ShoppingOnline
 
         private void AssignCarrier_Click(object sender, RoutedEventArgs e)
         {
-            if (CarrierComboBox.SelectedItem is Carrier selectedCarrier)
+            if (CarrierComboBox.SelectedValue is int carrierId)
             {
-                var result = MessageBox.Show($"B?n có ch?c mu?n ch?n '{selectedCarrier.FullName}' làm ng??i v?n chuy?n?", 
-                    "Xác nh?n ch?n ng??i v?n chuy?n", MessageBoxButton.YesNo, MessageBoxImage.Question);
-                
-                if (result == MessageBoxResult.Yes)
+                var carrier = _carriers.FirstOrDefault(c => c.CarrierId == carrierId);
+                if (carrier != null)
                 {
-                    try
+                    var result = MessageBox.Show($"B?n có ch?c mu?n giao ??n hàng cho '{carrier.FullName}'?\nS?T: {carrier.Phone}\nPh??ng ti?n: {carrier.VehicleNumber}", 
+                        "Xác nh?n ch?n ng??i v?n chuy?n", MessageBoxButton.YesNo, MessageBoxImage.Question);
+                    
+                    if (result == MessageBoxResult.Yes)
                     {
-                        if (_adminService.AssignCarrierToOrder(_orderId, selectedCarrier.CarrierId))
+                        try
                         {
-                            _currentOrder.CarrierId = selectedCarrier.CarrierId;
-                            _currentOrder.Carrier = selectedCarrier;
-                            
-                            CurrentCarrierText.Text = $"{selectedCarrier.FullName} - {selectedCarrier.Phone} ({selectedCarrier.VehicleNumber})";
-                            
-                            MessageBox.Show("?ã ch?n ng??i v?n chuy?n thành công!", "Thành công", 
-                                MessageBoxButton.OK, MessageBoxImage.Information);
+                            if (_adminService.AssignCarrierToOrder(_orderId, carrierId))
+                            {
+                                _currentOrder.CarrierId = carrierId;
+                                CurrentCarrierText.Text = carrier.FullName;
+                                
+                                MessageBox.Show($"?ã giao ??n hàng cho '{carrier.FullName}' thành công!", "Thành công", 
+                                    MessageBoxButton.OK, MessageBoxImage.Information);
+                            }
+                            else
+                            {
+                                MessageBox.Show("L?i khi giao ??n hàng cho ng??i v?n chuy?n!", "L?i", 
+                                    MessageBoxButton.OK, MessageBoxImage.Error);
+                            }
                         }
-                        else
+                        catch (Exception ex)
                         {
-                            MessageBox.Show("L?i khi ch?n ng??i v?n chuy?n!", "L?i", 
+                            MessageBox.Show($"L?i: {ex.Message}", "L?i", 
                                 MessageBoxButton.OK, MessageBoxImage.Error);
                         }
-                    }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show($"L?i khi ch?n ng??i v?n chuy?n: {ex.Message}", "L?i", 
-                            MessageBoxButton.OK, MessageBoxImage.Error);
                     }
                 }
             }
@@ -256,22 +240,16 @@ namespace ShoppingOnline
 
         private void StartShipping_Click(object sender, RoutedEventArgs e)
         {
-            if (_currentOrder?.CarrierId == null)
+            if (!_currentOrder.CarrierId.HasValue)
             {
                 MessageBox.Show("Vui lòng ch?n ng??i v?n chuy?n tr??c khi b?t ??u v?n chuy?n!", "Thông báo", 
                     MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
-            
-            if (_currentOrder?.Status != "Confirmed")
-            {
-                MessageBox.Show("Ch? có th? b?t ??u v?n chuy?n ??n hàng ?ã xác nh?n!", "Thông báo", 
-                    MessageBoxButton.OK, MessageBoxImage.Warning);
-                return;
-            }
-            
-            var result = MessageBox.Show("B?n có ch?c mu?n b?t ??u v?n chuy?n ??n hàng này?", 
-                "Xác nh?n v?n chuy?n", MessageBoxButton.YesNo, MessageBoxImage.Question);
+
+            var carrier = _carriers.FirstOrDefault(c => c.CarrierId == _currentOrder.CarrierId);
+            var result = MessageBox.Show($"B?n có ch?c mu?n b?t ??u v?n chuy?n ??n hàng này?\nNg??i giao hàng: {carrier?.FullName}", 
+                "B?t ??u v?n chuy?n", MessageBoxButton.YesNo, MessageBoxImage.Question);
             
             if (result == MessageBoxResult.Yes)
             {
@@ -281,14 +259,7 @@ namespace ShoppingOnline
 
         private void MarkAsDelivered_Click(object sender, RoutedEventArgs e)
         {
-            if (_currentOrder?.Status != "Shipping")
-            {
-                MessageBox.Show("Ch? có th? xác nh?n giao hàng cho ??n hàng ?ang v?n chuy?n!", "Thông báo", 
-                    MessageBoxButton.OK, MessageBoxImage.Warning);
-                return;
-            }
-            
-            var result = MessageBox.Show("B?n có ch?c mu?n xác nh?n ??n hàng này ?ã ???c giao thành công?", 
+            var result = MessageBox.Show("B?n có ch?c r?ng ??n hàng này ?ã ???c giao thành công?", 
                 "Xác nh?n ?ã giao", MessageBoxButton.YesNo, MessageBoxImage.Question);
             
             if (result == MessageBoxResult.Yes)
@@ -316,7 +287,7 @@ namespace ShoppingOnline
                         }
                     }
                     
-                    MessageBox.Show($"?ã c?p nh?t tr?ng thái thành '{newStatus}'!", "Thành công", 
+                    MessageBox.Show($"?ã c?p nh?t tr?ng thái thành '{GetStatusDisplayText(newStatus)}'!", "Thành công", 
                         MessageBoxButton.OK, MessageBoxImage.Information);
                 }
                 else
@@ -360,7 +331,6 @@ namespace ShoppingOnline
             this.DialogResult = true;
             this.Close();
         }
-
         #endregion
     }
 }
