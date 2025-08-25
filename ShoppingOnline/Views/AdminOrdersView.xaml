@@ -143,6 +143,35 @@
                     <DataGridTextColumn Header="So luong" Binding="{Binding TotalQuantity}" Width="80"/>
                     <DataGridTextColumn Header="So dien thoai" Binding="{Binding Phone}" Width="130"/>
                     <DataGridTextColumn Header="Ngay dat" Binding="{Binding OrderDate, StringFormat=dd/MM/yyyy HH:mm}" Width="130"/>
+                    
+                    <!-- Carrier Column -->
+                    <DataGridTemplateColumn Header="Nguoi giao hang" Width="150">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding CarrierName}" 
+                                           FontSize="11" VerticalAlignment="Center"
+                                           ToolTip="{Binding CarrierInfo}">
+                                    <TextBlock.Style>
+                                        <Style TargetType="TextBlock">
+                                            <Setter Property="Foreground" Value="#FF666666"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding CarrierName}" Value="Chua chon">
+                                                    <Setter Property="Foreground" Value="#FFFF9800"/>
+                                                    <Setter Property="FontStyle" Value="Italic"/>
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding CarrierName}" Value="{x:Null}">
+                                                    <Setter Property="Text" Value="Chua chon"/>
+                                                    <Setter Property="Foreground" Value="#FFFF9800"/>
+                                                    <Setter Property="FontStyle" Value="Italic"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBlock.Style>
+                                </TextBlock>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    
                     <DataGridTextColumn Header="Tong tien" Binding="{Binding TotalAmount, StringFormat={}{0:N0} VND}" Width="120"/>
                     
                     <!-- Status Column with Color Coding -->
@@ -179,7 +208,7 @@
                     </DataGridTemplateColumn>
                     
                     <!-- Actions Column -->
-                    <DataGridTemplateColumn Header="Thao tac" Width="180">
+                    <DataGridTemplateColumn Header="Thao tac" Width="260">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
@@ -203,6 +232,29 @@
                                                         <Setter Property="Visibility" Value="Collapsed"/>
                                                     </DataTrigger>
                                                     <DataTrigger Binding="{Binding Status}" Value="Cancelled">
+                                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Button.Style>
+                                    </Button>
+                                    <!-- Assign Carrier button -->
+                                    <Button Content="Chon NVC" Height="32" FontSize="11" Margin="2" Width="70"
+                                            Background="#FFFF9800" Click="AssignCarrierToOrder_Click" Tag="{Binding OrderId}"
+                                            Foreground="White" ToolTip="Chon nguoi van chuyen">
+                                        <Button.Style>
+                                            <Style TargetType="Button">
+                                                <Setter Property="Visibility" Value="Visible"/>
+                                                <Style.Triggers>
+                                                    <!-- Hide for delivered/cancelled orders -->
+                                                    <DataTrigger Binding="{Binding Status}" Value="Delivered">
+                                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding Status}" Value="Cancelled">
+                                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                                    </DataTrigger>
+                                                    <!-- Hide when carrier is already assigned (not "Chua chon") -->
+                                                    <DataTrigger Binding="{Binding HasCarrierAssigned}" Value="True">
                                                         <Setter Property="Visibility" Value="Collapsed"/>
                                                     </DataTrigger>
                                                 </Style.Triggers>
