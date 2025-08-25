@@ -63,7 +63,7 @@
                     BorderBrush="#FFE0E0E0" BorderThickness="1">
                 <StackPanel>
                     <TextBlock Text="Tong doanh thu" FontSize="14" Foreground="#FF666666"/>
-                    <TextBlock x:Name="TotalRevenueText" Text="0?" FontSize="24" FontWeight="Bold" 
+                    <TextBlock x:Name="TotalRevenueText" Text="0 VND" FontSize="24" FontWeight="Bold" 
                                Foreground="#E31837" Margin="0,5,0,0"/>
                     <TextBlock Text="Doanh thu" FontSize="12" Foreground="#FF999999"/>
                 </StackPanel>
@@ -91,7 +91,7 @@
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="ID" Binding="{Binding OrderId}" Width="60"/>
                             <DataGridTextColumn Header="Khach hang" Binding="{Binding Customer.FullName}" Width="120"/>
-                            <DataGridTextColumn Header="Tong tien" Binding="{Binding TotalAmount, StringFormat={}{0:N0}?}" Width="100"/>
+                            <DataGridTextColumn Header="Tong tien" Binding="{Binding TotalAmount, StringFormat={}{0:N0} VND}" Width="100"/>
                             <DataGridTextColumn Header="Trang thai" Binding="{Binding Status}" Width="80"/>
                         </DataGrid.Columns>
                     </DataGrid>
@@ -112,7 +112,7 @@
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="Ten san pham" Binding="{Binding ProductName}" Width="150"/>
                             <DataGridTextColumn Header="Ton kho" Binding="{Binding StockQuantity}" Width="80"/>
-                            <DataGridTextColumn Header="Gia" Binding="{Binding Price, StringFormat={}{0:N0}?}" Width="100"/>
+                            <DataGridTextColumn Header="Gia" Binding="{Binding Price, StringFormat={}{0:N0} VND}" Width="100"/>
                         </DataGrid.Columns>
                     </DataGrid>
                 </StackPanel>

@@ -33,11 +33,14 @@ namespace ShoppingOnline.Views
                 var totalOrders = _adminService.GetTotalOrders();
                 var totalRevenue = _adminService.GetTotalRevenue();
 
-                // Update UI
+                // Debug logging
+                System.Diagnostics.Debug.WriteLine($"Dashboard Stats - Customers: {totalCustomers}, Products: {totalProducts}, Orders: {totalOrders}, Revenue: {totalRevenue}");
+
+                // Update UI with VND currency
                 TotalCustomersText.Text = totalCustomers.ToString("N0");
                 TotalProductsText.Text = totalProducts.ToString("N0");
                 TotalOrdersText.Text = totalOrders.ToString("N0");
-                TotalRevenueText.Text = $"{totalRevenue:N0}?";
+                TotalRevenueText.Text = totalRevenue > 0 ? $"{totalRevenue:N0} VND" : "0 VND";
 
                 // Load recent orders
                 var recentOrders = _adminService.GetRecentOrders(10);
