@@ -1,4 +1,4 @@
-<UserControl x:Class="ShoppingOnline.Views.AdminAdminsView"
+<UserControl x:Class="ShoppingOnline.Views.AdminCarriersView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="clr-namespace:ShoppingOnline.Views">
@@ -31,10 +31,10 @@
 
             <!-- Search Box -->
             <Grid Grid.Column="0" Margin="0,0,10,0">
-                <TextBox x:Name="AdminSearchBox" Height="35" FontSize="14" 
+                <TextBox x:Name="CarrierSearchBox" Height="35" FontSize="14" 
                          Padding="10" VerticalContentAlignment="Center"
-                         TextChanged="AdminSearch_TextChanged"/>
-                <TextBlock x:Name="AdminSearchPlaceholder" Text="Search by admin name, email, phone..." 
+                         TextChanged="CarrierSearch_TextChanged"/>
+                <TextBlock x:Name="CarrierSearchPlaceholder" Text="Search by carrier name, email, phone..." 
                            FontSize="14" Foreground="Gray" Margin="15,0,0,0"
                            VerticalAlignment="Center" HorizontalAlignment="Left"
                            IsHitTestVisible="False"/>
@@ -49,20 +49,20 @@
                 <ComboBoxItem Content="Locked"/>
             </ComboBox>
 
-            <!-- Add Admin Button -->
-            <Button Grid.Column="2" Content="Add Admin" Height="35" Width="100" Margin="0,0,10,0"
-                    Click="AddAdmin_Click" Background="#FF4CAF50" Foreground="White"
+            <!-- Add Carrier Button -->
+            <Button Grid.Column="2" Content="Add Carrier" Height="35" Width="100" Margin="0,0,10,0"
+                    Click="AddCarrier_Click" Background="#FF4CAF50" Foreground="White"
                     Style="{DynamicResource ModernButton}"/>
 
             <!-- Refresh Button -->
             <Button Grid.Column="3" Content="Refresh" Height="35" Width="80"
-                    Click="RefreshAdmins_Click" Style="{DynamicResource ModernButton}"/>
+                    Click="RefreshCarriers_Click" Style="{DynamicResource ModernButton}"/>
         </Grid>
 
-        <!-- Admins DataGrid -->
+        <!-- Carriers DataGrid -->
         <Border Grid.Row="1" Background="White" CornerRadius="10" Padding="20" 
                 BorderBrush="#FFE0E0E0" BorderThickness="1">
-            <DataGrid x:Name="AdminsDataGrid" 
+            <DataGrid x:Name="CarriersDataGrid" 
                     AutoGenerateColumns="False"
                     HeadersVisibility="Column"
                     GridLinesVisibility="Horizontal"
@@ -77,10 +77,11 @@
                     SelectionMode="Single"
                     RowHeight="50">
                 <DataGrid.Columns>
-                    <DataGridTextColumn Header="ID" Binding="{Binding AdminId}" Width="80"/>
-                    <DataGridTextColumn Header="Admin Name" Binding="{Binding FullName}" Width="180"/>
+                    <DataGridTextColumn Header="ID" Binding="{Binding CarrierId}" Width="80"/>
+                    <DataGridTextColumn Header="Carrier Name" Binding="{Binding FullName}" Width="180"/>
                     <DataGridTextColumn Header="Email" Binding="{Binding Account.Email}" Width="200"/>
                     <DataGridTextColumn Header="Phone" Binding="{Binding Phone}" Width="120"/>
+                    <DataGridTextColumn Header="Vehicle Number" Binding="{Binding VehicleNumber}" Width="100"/>
                     <DataGridTextColumn Header="Created Date" Binding="{Binding CreatedDate, StringFormat=dd/MM/yyyy}" Width="100"/>
                     
                     <!-- Status Column -->
@@ -95,24 +96,43 @@
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
+
+                    <!-- Available Status Column -->
+                    <DataGridTemplateColumn Header="Available" Width="100">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center">
+                                    <TextBlock.Text>
+                                        <Binding Path="IsAvailable" Converter="{StaticResource BoolToStatusConverter}"/>
+                                    </TextBlock.Text>
+                                </TextBlock>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
                     
                     <!-- Actions Column -->
-                    <DataGridTemplateColumn Header="Actions" Width="280">
+                    <DataGridTemplateColumn Header="Actions" Width="320">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                                     <Button Content="View" Height="30" FontSize="11" Margin="2" Width="50"
-                                            Click="ViewAdmin_Click" Tag="{Binding AdminId}" 
+                                            Click="ViewCarrier_Click" Tag="{Binding CarrierId}" 
                                             Background="#FF2196F3" Foreground="White"
                                             Style="{DynamicResource ModernButton}"/>
                                     <Button Content="Edit" Height="30" FontSize="11" Margin="2" Width="50"
-                                            Background="#FFFF9800" Foreground="White" Click="EditAdmin_Click" Tag="{Binding AdminId}"
+                                            Background="#FFFF9800" Foreground="White" Click="EditCarrier_Click" Tag="{Binding CarrierId}"
                                             Style="{DynamicResource ModernButton}"/>
                                     <Button Content="Delete" Height="30" FontSize="11" Margin="2" Width="50"
-                                            Background="#FFF44336" Foreground="White" Click="DeleteAdmin_Click" Tag="{Binding AdminId}"
+                                            Background="#FFF44336" Foreground="White" Click="DeleteCarrier_Click" Tag="{Binding CarrierId}"
                                             Style="{DynamicResource ModernButton}"/>
-                                    <Button Height="30" FontSize="11" Margin="2" Width="70"
-                                            Click="ToggleAdminStatus_Click" Tag="{Binding AdminId}"
+                                    <Button Height="30" FontSize="10" Margin="2" Width="60"
+                                            Click="ToggleCarrierAvailable_Click" Tag="{Binding CarrierId}"
+                                            Content="{Binding IsAvailable, Converter={StaticResource BoolToToggleButtonConverter}}"
+                                            Background="{Binding IsAvailable, Converter={StaticResource BoolToToggleButtonBackgroundConverter}}"
+                                            Foreground="White"
+                                            Style="{DynamicResource ModernButton}"/>
+                                    <Button Height="30" FontSize="10" Margin="2" Width="60"
+                                            Click="ToggleCarrierStatus_Click" Tag="{Binding CarrierId}"
                                             Foreground="White"
                                             Style="{DynamicResource ModernButton}">
                                         <Button.Content>
@@ -132,7 +152,7 @@
 
         <!-- Footer -->
         <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,20,0,0">
-            <TextBlock x:Name="AdminCountText" Text="Total: 0 admins" FontSize="14" 
+            <TextBlock x:Name="CarrierCountText" Text="Total: 0 carriers" FontSize="14" 
                        VerticalAlignment="Center" Margin="0,0,20,0"/>
         </StackPanel>
     </Grid>
