@@ -89,10 +89,12 @@
                               CanUserAddRows="False" CanUserDeleteRows="False" CanUserReorderColumns="False"
                               CanUserResizeRows="False" SelectionMode="Single" RowHeight="40">
                         <DataGrid.Columns>
-                            <DataGridTextColumn Header="ID" Binding="{Binding OrderId}" Width="60"/>
-                            <DataGridTextColumn Header="Khach hang" Binding="{Binding Customer.FullName}" Width="120"/>
-                            <DataGridTextColumn Header="Tong tien" Binding="{Binding TotalAmount, StringFormat={}{0:N0} VND}" Width="100"/>
-                            <DataGridTextColumn Header="Trang thai" Binding="{Binding Status}" Width="80"/>
+                            <DataGridTextColumn Header="ID" Binding="{Binding OrderId}" Width="50"/>
+                            <DataGridTextColumn Header="Khach hang" Binding="{Binding Customer.FullName}" Width="100"/>
+                            <DataGridTextColumn Header="San pham" Binding="{Binding ProductNames}" Width="150"/>
+                            <DataGridTextColumn Header="SL" Binding="{Binding TotalQuantity}" Width="40"/>
+                            <DataGridTextColumn Header="Tong tien" Binding="{Binding TotalAmount, StringFormat={}{0:N0} VND}" Width="90"/>
+                            <DataGridTextColumn Header="Trang thai" Binding="{Binding Status}" Width="70"/>
                         </DataGrid.Columns>
                     </DataGrid>
                 </StackPanel>

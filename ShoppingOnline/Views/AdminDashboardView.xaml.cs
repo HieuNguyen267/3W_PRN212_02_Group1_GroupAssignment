@@ -1,6 +1,8 @@
 using BLL.Services;
+using DAL.Entities;
 using System;
 using System.ComponentModel;
+using System.Linq;
 using System.Windows.Controls;
 
 namespace ShoppingOnline.Views
@@ -42,9 +44,36 @@ namespace ShoppingOnline.Views
                 TotalOrdersText.Text = totalOrders.ToString("N0");
                 TotalRevenueText.Text = totalOrderValue > 0 ? $"{totalOrderValue:N0} VND" : "0 VND"; // Changed to show total order value
 
-                // Load recent orders
+                // Load recent orders with product information
                 var recentOrders = _adminService.GetRecentOrders(10);
-                RecentOrdersGrid.ItemsSource = recentOrders;
+                var recentOrdersWithProducts = recentOrders.Select(o => 
+                {
+                    // Get order details to show product information
+                    var orderDetails = _adminService.GetOrderDetailsByOrderId(o.OrderId);
+                    var productNames = orderDetails.Any() 
+                        ? string.Join(", ", orderDetails.Take(2).Select(od => od.Product?.ProductName).Where(name => !string.IsNullOrEmpty(name)))
+                        : "Khong co san pham";
+                    
+                    // Add "..." if there are more than 2 products
+                    if (orderDetails.Count > 2)
+                    {
+                        productNames += "...";
+                    }
+                    
+                    var totalQuantity = orderDetails.Sum(od => od.Quantity);
+                    
+                    return new DashboardOrderViewModel
+                    {
+                        OrderId = o.OrderId,
+                        Customer = o.Customer,
+                        TotalAmount = o.TotalAmount,
+                        Status = o.Status,
+                        ProductNames = productNames,
+                        TotalQuantity = totalQuantity
+                    };
+                }).ToList();
+                
+                RecentOrdersGrid.ItemsSource = recentOrdersWithProducts;
 
                 // Load low stock products
                 var lowStockProducts = _adminService.GetLowStockProducts(10);
@@ -65,5 +94,16 @@ namespace ShoppingOnline.Views
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
         #endregion
+    }
+
+    // ViewModel for dashboard recent orders with product information
+    public class DashboardOrderViewModel
+    {
+        public int OrderId { get; set; }
+        public Customer? Customer { get; set; }
+        public decimal TotalAmount { get; set; }
+        public string? Status { get; set; }
+        public string ProductNames { get; set; } = "";
+        public int TotalQuantity { get; set; }
     }
 }

@@ -137,10 +137,12 @@
                     SelectionMode="Single"
                     RowHeight="55">
                 <DataGrid.Columns>
-                    <DataGridTextColumn Header="ID" Binding="{Binding OrderId}" Width="80"/>
-                    <DataGridTextColumn Header="Khach hang" Binding="{Binding Customer.FullName}" Width="200"/>
+                    <DataGridTextColumn Header="ID" Binding="{Binding OrderId}" Width="60"/>
+                    <DataGridTextColumn Header="Khach hang" Binding="{Binding Customer.FullName}" Width="150"/>
+                    <DataGridTextColumn Header="San pham" Binding="{Binding ProductNames}" Width="200"/>
+                    <DataGridTextColumn Header="So luong" Binding="{Binding TotalQuantity}" Width="80"/>
                     <DataGridTextColumn Header="So dien thoai" Binding="{Binding Phone}" Width="130"/>
-                    <DataGridTextColumn Header="Ngay dat" Binding="{Binding OrderDate, StringFormat=dd/MM/yyyy HH:mm}" Width="140"/>
+                    <DataGridTextColumn Header="Ngay dat" Binding="{Binding OrderDate, StringFormat=dd/MM/yyyy HH:mm}" Width="130"/>
                     <DataGridTextColumn Header="Tong tien" Binding="{Binding TotalAmount, StringFormat={}{0:N0} VND}" Width="120"/>
                     
                     <!-- Status Column with Color Coding -->
@@ -175,11 +177,9 @@
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
-
-                    <DataGridTextColumn Header="Dia chi giao hang" Binding="{Binding ShippingAddress}" Width="250"/>
                     
-                    <!-- Actions Column - Added Cancel Button Back -->
-                    <DataGridTemplateColumn Header="Thao tac" Width="200">
+                    <!-- Actions Column -->
+                    <DataGridTemplateColumn Header="Thao tac" Width="180">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
@@ -209,7 +209,7 @@
                                             </Style>
                                         </Button.Style>
                                     </Button>
-                                    <!-- Cancel button restored for admin -->
+                                    <!-- Cancel button -->
                                     <Button Content="Huy" Height="32" FontSize="11" Margin="2" Width="50"
                                             Background="#FFDC3545" Click="CancelOrder_Click" Tag="{Binding OrderId}"
                                             Foreground="White">
@@ -239,7 +239,7 @@
         <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,20,0,0">
             <TextBlock x:Name="OrderCountText" Text="Hien thi: 0 don hang" FontSize="14" 
                        VerticalAlignment="Center" Margin="0,0,20,0" Foreground="#FF666666"/>
-            <TextBlock x:Name="FilteredRevenueText" Text="Tong doanh thu: 0 VND" FontSize="14" 
+            <TextBlock x:Name="FilteredRevenueText" Text="Tong gia tri don hang: 0 VND" FontSize="14" 
                        VerticalAlignment="Center" Foreground="#E31837" FontWeight="SemiBold"/>
         </StackPanel>
     </Grid>
