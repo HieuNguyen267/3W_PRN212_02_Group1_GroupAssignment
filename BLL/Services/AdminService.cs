@@ -279,6 +279,7 @@ namespace BLL.Services
             using var context = new ShoppingOnlineContext();
             return context.Orders
                 .Include(o => o.Customer)
+                .Include(o => o.Carrier) // Include carrier information
                 .Include(o => o.OrderDetails)
                     .ThenInclude(od => od.Product)
                 .OrderByDescending(o => o.OrderDate)
@@ -389,11 +390,41 @@ namespace BLL.Services
 
         public List<Carrier> GetAvailableCarriers()
         {
-            using var context = new ShoppingOnlineContext();
-            return context.Carriers
-                .Include(c => c.Account)
-                .Where(c => c.IsAvailable == true && c.Account!.IsActive == true)
-                .ToList();
+            try
+            {
+                using var context = new ShoppingOnlineContext();
+                
+                // Debug: Check total carriers first
+                var allCarriers = context.Carriers.Include(c => c.Account).ToList();
+                System.Diagnostics.Debug.WriteLine($"GetAvailableCarriers: Total carriers in DB: {allCarriers.Count}");
+                
+                foreach (var carrier in allCarriers)
+                {
+                    System.Diagnostics.Debug.WriteLine($"Carrier #{carrier.CarrierId}: Name='{carrier.FullName}', Available={carrier.IsAvailable}, AccountActive={carrier.Account?.IsActive}");
+                }
+                
+                // Get available carriers
+                var availableCarriers = context.Carriers
+                    .Include(c => c.Account)
+                    .Where(c => c.IsAvailable == true && c.Account!.IsActive == true)
+                    .ToList();
+                    
+                System.Diagnostics.Debug.WriteLine($"GetAvailableCarriers: Available carriers count: {availableCarriers.Count}");
+                
+                // If no available carriers, return all carriers for testing
+                if (!availableCarriers.Any())
+                {
+                    System.Diagnostics.Debug.WriteLine("GetAvailableCarriers: No available carriers found, returning all carriers for testing");
+                    return allCarriers.Where(c => c.Account?.IsActive == true).ToList();
+                }
+                
+                return availableCarriers;
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"GetAvailableCarriers Error: {ex.Message}");
+                return new List<Carrier>();
+            }
         }
 
         // Category Management

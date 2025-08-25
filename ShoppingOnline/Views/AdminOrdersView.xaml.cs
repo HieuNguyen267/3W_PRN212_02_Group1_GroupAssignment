@@ -113,7 +113,7 @@ namespace ShoppingOnline.Views
                     };
                 }
 
-                // Convert to display models with product information and sort
+                // Convert to display models with product information and carrier information, then sort
                 var displayOrders = filteredOrders.Select(o => 
                 {
                     // Get order details to show product information
@@ -130,6 +130,16 @@ namespace ShoppingOnline.Views
                     
                     var totalQuantity = orderDetails.Sum(od => od.Quantity);
                     
+                    // Get carrier information
+                    string carrierName = "Chua chon";
+                    string carrierInfo = "Chua gan nguoi giao hang";
+                    
+                    if (o.CarrierId.HasValue && o.Carrier != null)
+                    {
+                        carrierName = o.Carrier.FullName ?? "Khong ro ten";
+                        carrierInfo = $"Ten: {o.Carrier.FullName ?? "Khong ro"}\nSo dien thoai: {o.Carrier.Phone ?? "Khong co"}\nXe: {o.Carrier.VehicleNumber ?? "Khong co"}";
+                    }
+                    
                     return new OrderDisplayModel
                     {
                         OrderId = o.OrderId,
@@ -142,7 +152,10 @@ namespace ShoppingOnline.Views
                         ActualStatus = o.Status, // Keep actual status for internal use
                         Notes = o.Notes,
                         ProductNames = productNames,
-                        TotalQuantity = totalQuantity
+                        TotalQuantity = totalQuantity,
+                        CarrierName = carrierName,
+                        CarrierInfo = carrierInfo,
+                        CarrierId = o.CarrierId
                     };
                 }).OrderByDescending(o => o.OrderDate).ToList();
 
@@ -354,6 +367,49 @@ namespace ShoppingOnline.Views
             }
         }
 
+        private void AssignCarrierToOrder_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender is Button button && button.Tag is int orderId)
+            {
+                try
+                {
+                    // Find the order
+                    var order = _allOrders.FirstOrDefault(o => o.OrderId == orderId);
+                    if (order == null)
+                    {
+                        MessageBox.Show("Khong tim thay don hang!", "Loi", 
+                            MessageBoxButton.OK, MessageBoxImage.Error);
+                        return;
+                    }
+
+                    // Check if order is cancelled
+                    if (order.Notes?.Contains("[CANCELLED]") == true)
+                    {
+                        MessageBox.Show("Don hang da bi huy - khong the gan nguoi giao hang!", "Loi", 
+                                      MessageBoxButton.OK, MessageBoxImage.Warning);
+                        return;
+                    }
+
+                    // Create and show carrier selection dialog
+                    var carrierSelectionDialog = new CarrierSelectionDialog(orderId);
+                    var result = carrierSelectionDialog.ShowDialog();
+                    
+                    if (result == true)
+                    {
+                        // Refresh the orders list to show updated carrier information
+                        LoadOrders();
+                        MessageBox.Show("Da gan nguoi giao hang thanh cong!", "Thanh cong", 
+                                      MessageBoxButton.OK, MessageBoxImage.Information);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Loi khi chon nguoi giao hang: {ex.Message}", "Loi", 
+                        MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }
+        }
+
         private void CancelOrder_Click(object sender, RoutedEventArgs e)
         {
             if (sender is Button button && button.Tag is int orderId)
@@ -455,8 +511,14 @@ namespace ShoppingOnline.Views
             public string? ShippingAddress { get; set; }
             public string? ActualStatus { get; set; } // Original database status
             public string? Notes { get; set; }
-            public string ProductNames { get; set; } = ""; // New: Product names in order
-            public int TotalQuantity { get; set; } // New: Total quantity of all products
+            public string ProductNames { get; set; } = ""; // Product names in order
+            public int TotalQuantity { get; set; } // Total quantity of all products
+            public string CarrierName { get; set; } = "Chua chon"; // Carrier name
+            public string CarrierInfo { get; set; } = "Chua gan nguoi giao hang"; // Carrier details for tooltip
+            public int? CarrierId { get; set; } // Carrier ID
+            
+            // Property to check if carrier is assigned
+            public bool HasCarrierAssigned => !string.IsNullOrEmpty(CarrierName) && CarrierName != "Chua chon";
         }
     }
 }

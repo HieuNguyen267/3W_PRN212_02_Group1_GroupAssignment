@@ -156,10 +156,8 @@
                             </StackPanel>
                             
                             <StackPanel Grid.Column="1" VerticalAlignment="Top">
-                                <Button Content="Gan nguoi giao hang" Style="{StaticResource ModernButton}" 
+                                <Button x:Name="AssignCarrierButton" Content="Gan nguoi giao hang" Style="{StaticResource ModernButton}" 
                                         Background="#FFFF9800" Click="AssignCarrier_Click" Margin="0,20,0,10"/>
-                                <Button Content="Bat dau giao hang" Style="{StaticResource ModernButton}" 
-                                        Background="#FF2196F3" Click="StartShipping_Click"/>
                             </StackPanel>
                         </Grid>
                     </StackPanel>

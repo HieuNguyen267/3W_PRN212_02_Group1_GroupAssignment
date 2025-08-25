@@ -60,23 +60,84 @@ namespace ShoppingOnline
             try
             {
                 var carriers = _adminService.GetAvailableCarriers();
-                CarrierComboBox.ItemsSource = carriers;
                 
-                if (_currentOrder?.CarrierId.HasValue == true)
+                // Debug: Check if we have carriers
+                System.Diagnostics.Debug.WriteLine($"LoadCarriers: Found {carriers?.Count ?? 0} carriers");
+                
+                if (carriers?.Any() == true)
                 {
-                    var currentCarrier = carriers.FirstOrDefault(c => c.CarrierId == _currentOrder.CarrierId);
-                    CurrentCarrierText.Text = currentCarrier?.FullName ?? "Khong xac dinh";
-                    CarrierComboBox.SelectedValue = _currentOrder.CarrierId;
+                    CarrierComboBox.ItemsSource = carriers;
+                    
+                    // Find the assign button
+                    var assignButton = this.FindName("AssignCarrierButton") as Button;
+                    
+                    // If order has a carrier assigned, show it and select it
+                    if (_currentOrder?.CarrierId.HasValue == true)
+                    {
+                        var currentCarrier = carriers.FirstOrDefault(c => c.CarrierId == _currentOrder.CarrierId);
+                        if (currentCarrier != null)
+                        {
+                            CurrentCarrierText.Text = $"Ten: {currentCarrier.FullName}\n" +
+                                                    $"So dien thoai: {currentCarrier.Phone ?? "Khong co"}\n" +
+                                                    $"So xe: {currentCarrier.VehicleNumber ?? "Khong co"}";
+                            CarrierComboBox.SelectedValue = _currentOrder.CarrierId;
+                            
+                            // Hide the assign button since carrier is already assigned
+                            if (assignButton != null)
+                            {
+                                assignButton.Visibility = Visibility.Collapsed;
+                            }
+                            
+                            // Also disable the combobox to prevent changes
+                            CarrierComboBox.IsEnabled = false;
+                        }
+                        else
+                        {
+                            CurrentCarrierText.Text = "Nguoi giao hang khong co san";
+                            if (assignButton != null)
+                            {
+                                assignButton.Visibility = Visibility.Visible;
+                            }
+                            CarrierComboBox.IsEnabled = true;
+                        }
+                    }
+                    else
+                    {
+                        CurrentCarrierText.Text = "Chua chon nguoi giao hang";
+                        if (assignButton != null)
+                        {
+                            assignButton.Visibility = Visibility.Visible;
+                        }
+                        CarrierComboBox.IsEnabled = true;
+                    }
                 }
                 else
                 {
-                    CurrentCarrierText.Text = "Chua chon nguoi giao hang";
+                    // No carriers available
+                    CarrierComboBox.ItemsSource = null;
+                    CurrentCarrierText.Text = "Khong co nguoi giao hang nao san sang";
+                    
+                    // Find and disable the assign button if no carriers
+                    var assignButton = this.FindName("AssignCarrierButton") as Button;
+                    if (assignButton != null)
+                    {
+                        assignButton.IsEnabled = false;
+                        assignButton.ToolTip = "Khong co nguoi giao hang san sang";
+                    }
                 }
             }
             catch (Exception ex)
             {
                 MessageBox.Show($"Loi khi tai danh sach nguoi giao hang: {ex.Message}", "Loi", 
                               MessageBoxButton.OK, MessageBoxImage.Error);
+                CurrentCarrierText.Text = "Loi khi tai danh sach nguoi giao hang";
+                CarrierComboBox.ItemsSource = null;
+                
+                var assignButton = this.FindName("AssignCarrierButton") as Button;
+                if (assignButton != null)
+                {
+                    assignButton.IsEnabled = false;
+                }
             }
         }
 
@@ -140,6 +201,9 @@ namespace ShoppingOnline
             UpdateStatusButton.IsEnabled = !isCancelled;
             ConfirmOrderButton.IsEnabled = !isCancelled;
             CancelOrderButton.IsEnabled = !isCancelled;
+            
+            // Also disable carrier assignment controls for cancelled orders
+            CarrierComboBox.IsEnabled = !isCancelled;
 
             // Set tooltips
             if (isCancelled)
@@ -149,6 +213,7 @@ namespace ShoppingOnline
                 UpdateStatusButton.ToolTip = tooltip;
                 ConfirmOrderButton.ToolTip = tooltip;
                 CancelOrderButton.ToolTip = "Don hang da bi huy";
+                CarrierComboBox.ToolTip = tooltip;
             }
             else
             {
@@ -156,6 +221,7 @@ namespace ShoppingOnline
                 UpdateStatusButton.ToolTip = null;
                 ConfirmOrderButton.ToolTip = null;
                 CancelOrderButton.ToolTip = null;
+                CarrierComboBox.ToolTip = null;
             }
 
             // Visual feedback for disabled state
@@ -165,6 +231,7 @@ namespace ShoppingOnline
                 UpdateStatusButton.Opacity = 0.5;
                 ConfirmOrderButton.Opacity = 0.5;
                 CancelOrderButton.Opacity = 0.5;
+                CarrierComboBox.Opacity = 0.5;
             }
             else
             {
@@ -172,9 +239,10 @@ namespace ShoppingOnline
                 UpdateStatusButton.Opacity = 1.0;
                 ConfirmOrderButton.Opacity = 1.0;
                 CancelOrderButton.Opacity = 1.0;
+                CarrierComboBox.Opacity = 1.0;
             }
         }
-
+        
         private void UpdateOrderItems()
         {
             if (_orderDetails != null)
@@ -536,27 +604,85 @@ namespace ShoppingOnline
 
         private void AssignCarrier_Click(object sender, RoutedEventArgs e)
         {
-            MessageBox.Show("Chuc nang dang phat trien!", "Thong bao", 
-                          MessageBoxButton.OK, MessageBoxImage.Information);
-        }
-
-        private void StartShipping_Click(object sender, RoutedEventArgs e)
-        {
-            // Check if order is already cancelled
-            if (_currentOrder?.Notes?.Contains("[CANCELLED]") == true)
+            try
             {
-                MessageBox.Show("DON HANG DA BI HUY!\n\n" +
-                              "Khong the bat dau giao hang cho don hang da bi huy.", 
-                              "Don hang da bi huy", MessageBoxButton.OK, MessageBoxImage.Warning);
-                return;
+                // Check if order is cancelled
+                if (_currentOrder?.Notes?.Contains("[CANCELLED]") == true)
+                {
+                    MessageBox.Show("Don hang da bi huy - khong the gan nguoi giao hang!", "Loi", 
+                                  MessageBoxButton.OK, MessageBoxImage.Warning);
+                    return;
+                }
+
+                // Check if a carrier is selected
+                if (CarrierComboBox.SelectedItem == null)
+                {
+                    MessageBox.Show("Vui long chon nguoi giao hang tu danh sach!", "Thong bao", 
+                                  MessageBoxButton.OK, MessageBoxImage.Warning);
+                    return;
+                }
+
+                var selectedCarrier = CarrierComboBox.SelectedItem as Carrier;
+                if (selectedCarrier == null)
+                {
+                    MessageBox.Show("Khong tim thay thong tin nguoi giao hang!", "Loi", 
+                                  MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
+                }
+
+                // Check if the same carrier is already assigned
+                if (_currentOrder?.CarrierId == selectedCarrier.CarrierId)
+                {
+                    MessageBox.Show($"Nguoi giao hang {selectedCarrier.FullName} da duoc gan cho don hang nay!", 
+                                  "Thong bao", MessageBoxButton.OK, MessageBoxImage.Information);
+                    return;
+                }
+
+                // Show confirmation dialog
+                var result = MessageBox.Show($"Gan nguoi giao hang '{selectedCarrier.FullName}' cho don hang #{_orderId}?", 
+                    "Xac nhan", MessageBoxButton.YesNo, MessageBoxImage.Question);
+
+                if (result == MessageBoxResult.Yes)
+                {
+                    // Call the service to assign carrier
+                    if (_adminService.AssignCarrierToOrder(_orderId, selectedCarrier.CarrierId))
+                    {
+                        // Update local order data
+                        if (_currentOrder != null)
+                        {
+                            _currentOrder.CarrierId = selectedCarrier.CarrierId;
+                            _currentOrder.Carrier = selectedCarrier;
+                        }
+
+                        // Update UI display
+                        CurrentCarrierText.Text = $"Ten: {selectedCarrier.FullName}\n" +
+                                                $"So dien thoai: {selectedCarrier.Phone ?? "Khong co"}\n" +
+                                                $"So xe: {selectedCarrier.VehicleNumber ?? "Khong co"}";
+
+                        // Hide the assign button since carrier is now assigned
+                        var assignButton = this.FindName("AssignCarrierButton") as Button;
+                        if (assignButton != null)
+                        {
+                            assignButton.Visibility = Visibility.Collapsed;
+                        }
+                        
+                        // Disable the combobox to prevent further changes
+                        CarrierComboBox.IsEnabled = false;
+
+                        MessageBox.Show($"Da gan nguoi giao hang thanh cong!\nNguoi giao hang: {selectedCarrier.FullName}", 
+                                      "Thanh cong", MessageBoxButton.OK, MessageBoxImage.Information);
+                    }
+                    else
+                    {
+                        MessageBox.Show("Loi khi gan nguoi giao hang. Vui long thu lai!", "Loi", 
+                                      MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
+                }
             }
-
-            var result = MessageBox.Show($"Bat dau giao hang don hang #{_orderId}?", 
-                                       "Xac nhan", MessageBoxButton.YesNo, MessageBoxImage.Question);
-            
-            if (result == MessageBoxResult.Yes)
+            catch (Exception ex)
             {
-                UpdateOrderStatus("Shipping");
+                MessageBox.Show($"Loi khi gan nguoi giao hang: {ex.Message}", "Loi", 
+                              MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
