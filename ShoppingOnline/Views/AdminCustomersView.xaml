@@ -34,7 +34,11 @@
                 <TextBox x:Name="CustomerSearchBox" Style="{StaticResource AdminTextBox}"
                          TextChanged="CustomerSearch_TextChanged"/>
                 <TextBlock x:Name="CustomerSearchPlaceholder" Text="Search by customer name, email, phone..." 
+<<<<<<< HEAD
                            Style="{StaticResource AdminMutedText}" Margin="15,0,0,0"
+=======
+                           FontSize="14" Foreground="Gray" Margin="15,0,0,0"
+>>>>>>> 7b28022ee6f00bcdf2fa70cce5dc358443b8e74e
                            VerticalAlignment="Center" HorizontalAlignment="Left"
                            IsHitTestVisible="False"/>
             </Grid>
@@ -49,12 +53,22 @@
             </ComboBox>
 
             <!-- Add Customer Button -->
+<<<<<<< HEAD
             <Button Grid.Column="2" Content="Add Customer" Width="100" Margin="0,0,10,0"
                     Click="AddCustomer_Click" Style="{StaticResource AdminSuccessButton}"/>
 
             <!-- Refresh Button -->
             <Button Grid.Column="3" Content="Refresh" Width="80"
                     Click="RefreshCustomers_Click" Style="{StaticResource AdminModernButton}"/>
+=======
+            <Button Grid.Column="2" Content="Add Customer" Height="35" Width="100" Margin="0,0,10,0"
+                    Click="AddCustomer_Click" Background="#FF4CAF50" Foreground="White"
+                    Style="{DynamicResource ModernButton}"/>
+
+            <!-- Refresh Button -->
+            <Button Grid.Column="3" Content="Refresh" Height="35" Width="80"
+                    Click="RefreshCustomers_Click" Style="{DynamicResource ModernButton}"/>
+>>>>>>> 7b28022ee6f00bcdf2fa70cce5dc358443b8e74e
         </Grid>
 
         <!-- Customers DataGrid -->
@@ -82,6 +96,7 @@
                     </DataGridTemplateColumn>
                     
                     <!-- Actions Column -->
+<<<<<<< HEAD
                     <DataGridTemplateColumn Header="Actions" Width="280">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
@@ -97,6 +112,23 @@
                                     <Button Width="50" Margin="2"
                                             Click="BlockCustomer_Click" Tag="{Binding CustomerId}"
                                             Style="{StaticResource AdminSmallButton}">
+=======
+                    <DataGridTemplateColumn Header="Actions" Width="360">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                    <Button Content="View" Height="30" FontSize="11" Margin="2" Width="50"
+                                            Click="ViewCustomer_Click" Tag="{Binding CustomerId}" 
+                                            Background="#FF2196F3" Foreground="White"
+                                            Style="{DynamicResource ModernButton}"/>
+                                    <Button Content="Edit" Height="30" FontSize="11" Margin="2" Width="50"
+                                            Background="#FFFF9800" Foreground="White" Click="EditCustomer_Click" Tag="{Binding CustomerId}"
+                                            Style="{DynamicResource ModernButton}"/>
+                                    <Button Height="30" FontSize="11" Margin="2" Width="50"
+                                            Click="BlockCustomer_Click" Tag="{Binding CustomerId}"
+                                            Foreground="White"
+                                            Style="{DynamicResource ModernButton}">
+>>>>>>> 7b28022ee6f00bcdf2fa70cce5dc358443b8e74e
                                         <Button.Background>
                                             <Binding Path="Account.IsActive" Converter="{StaticResource BoolToToggleButtonBackgroundConverter}"/>
                                         </Button.Background>
@@ -104,10 +136,16 @@
                                             <Binding Path="Account.IsActive" Converter="{StaticResource BoolToToggleButtonConverter}"/>
                                         </Button.Content>
                                     </Button>
+<<<<<<< HEAD
                                     <Button Content="Delete" Width="50" Margin="2"
                                             Click="DeleteCustomer_Click" Tag="{Binding CustomerId}"
                                             Style="{StaticResource AdminSmallButton}"
                                             Background="{StaticResource AdminDangerRed}"/>
+=======
+                                    <Button Content="Delete" Height="30" FontSize="11" Margin="2" Width="50"
+                                            Background="#FFF44336" Foreground="White" Click="DeleteCustomer_Click" Tag="{Binding CustomerId}"
+                                            Style="{DynamicResource ModernButton}"/>
+>>>>>>> 7b28022ee6f00bcdf2fa70cce5dc358443b8e74e
                                 </StackPanel>
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
@@ -118,7 +156,11 @@
 
         <!-- Footer -->
         <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,20,0,0">
+<<<<<<< HEAD
             <TextBlock x:Name="CustomerCountText" Text="Total: 0 customers" Style="{StaticResource AdminBodyText}" 
+=======
+            <TextBlock x:Name="CustomerCountText" Text="Total: 0 customers" FontSize="14" 
+>>>>>>> 7b28022ee6f00bcdf2fa70cce5dc358443b8e74e
                        VerticalAlignment="Center" Margin="0,0,20,0"/>
         </StackPanel>
     </Grid>

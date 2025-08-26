@@ -112,6 +112,7 @@ namespace ShoppingOnline
 
         private void NavigateToReports()
         {
+<<<<<<< HEAD
             // Use placeholder for reports
             var reportsView = new TextBlock 
             { 
@@ -123,6 +124,29 @@ namespace ShoppingOnline
             };
             MainContentControl.Content = reportsView;
             UpdatePageTitle("Bao cao", "Thong ke va bao cao");
+=======
+            // Try to use AdminAccountManagementView for account management
+            try 
+            {
+                var accountsView = new AdminAccountManagementView();
+                MainContentControl.Content = accountsView;
+                UpdatePageTitle("Quan ly Tai khoan", "Quan ly tat ca tai khoan");
+            }
+            catch
+            {
+                // If view doesn't exist, use placeholder
+                var reportsView = new TextBlock 
+                { 
+                    Text = "Bao cao - Dang phat trien", 
+                    FontSize = 24,
+                    HorizontalAlignment = HorizontalAlignment.Center,
+                    VerticalAlignment = VerticalAlignment.Center,
+                    Margin = new Thickness(50)
+                };
+                MainContentControl.Content = reportsView;
+                UpdatePageTitle("Bao cao", "Thong ke va bao cao");
+            }
+>>>>>>> 7b28022ee6f00bcdf2fa70cce5dc358443b8e74e
             UpdateActiveButton("Reports");
         }
 
@@ -136,6 +160,19 @@ namespace ShoppingOnline
             UpdateActiveButton("Carriers");
         }
 
+<<<<<<< HEAD
+=======
+        private void NavigateToAccounts()
+        {
+            // Use the actual AdminAccountManagementView 
+            var accountsView = new AdminAccountManagementView();
+            
+            MainContentControl.Content = accountsView;
+            UpdatePageTitle("Quan ly Tai khoan", "Quan ly tat ca tai khoan");
+            UpdateActiveButton("Accounts");
+        }
+
+>>>>>>> 7b28022ee6f00bcdf2fa70cce5dc358443b8e74e
         private void UpdatePageTitle(string title, string subtitle)
         {
             PageTitle.Text = title;
@@ -176,6 +213,8 @@ namespace ShoppingOnline
                     AdminsBtn.Style = (Style)FindResource("ActiveSidebarButton");
                     break;
                 case "Reports":
+                case "Accounts":
+                case "Carriers":
                     ReportsBtn.Style = (Style)FindResource("ActiveSidebarButton");
                     break;
                 case "Carriers":
@@ -224,6 +263,14 @@ namespace ShoppingOnline
         {
             NavigateToCarriers();
         }
+<<<<<<< HEAD
+=======
+
+        private void Accounts_Click(object sender, RoutedEventArgs e)
+        {
+            NavigateToAccounts();
+        }
+>>>>>>> 7b28022ee6f00bcdf2fa70cce5dc358443b8e74e
         #endregion
 
         #region Event Handlers
