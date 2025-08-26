@@ -42,6 +42,26 @@
 				</Setter.Value>
 			</Setter>
 		</Style>
+
+		<!-- Small action buttons derived from ModernButton -->
+		<Style x:Key="SmallButton" TargetType="Button" BasedOn="{StaticResource ModernButton}">
+			<Setter Property="Height" Value="30"/>
+			<Setter Property="FontSize" Value="11"/>
+			<Setter Property="Margin" Value="2"/>
+			<Setter Property="Width" Value="50"/>
+		</Style>
+
+		<Style x:Key="ViewButtonStyle" TargetType="Button" BasedOn="{StaticResource SmallButton}">
+			<Setter Property="Background" Value="#007BFF"/>
+		</Style>
+
+		<Style x:Key="EditButtonStyle" TargetType="Button" BasedOn="{StaticResource SmallButton}">
+			<Setter Property="Background" Value="#FFFF9800"/>
+		</Style>
+
+		<Style x:Key="DeleteButtonStyle" TargetType="Button" BasedOn="{StaticResource SmallButton}">
+			<Setter Property="Background" Value="#FFF44336"/>
+		</Style>
 	</Window.Resources>
 
 	<Grid Margin="20">

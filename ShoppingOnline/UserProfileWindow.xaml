@@ -130,6 +130,53 @@
                         </StackPanel>
                     </Border>
                     
+                    <!-- Action Buttons -->
+                    <Border Style="{StaticResource CardStyle}">
+                        <StackPanel>
+                            <TextBlock Text="Thao tác" Style="{StaticResource SectionTitleStyle}"/>
+                            
+                            <Button Content="Cài đặt tài khoản" Style="{StaticResource ActionButtonStyle}" Click="AccountSettings_Click"/>
+                            <Button Content="Xem đơn hàng" Style="{StaticResource ActionButtonStyle}" Click="ViewOrders_Click"/>
+                            <Button Content="Giỏ hàng" Style="{StaticResource ActionButtonStyle}" Click="ViewCart_Click"/>
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+                
+                <!-- Right Content - Recent Orders and Statistics -->
+                <StackPanel Grid.Column="1">
+                    <!-- Recent Orders -->
+                    <Border Style="{StaticResource CardStyle}">
+                        <StackPanel>
+                            <TextBlock Text="Đơn hàng gần đây" Style="{StaticResource SectionTitleStyle}"/>
+                            
+                            <ItemsControl ItemsSource="{Binding RecentOrders}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border Style="{StaticResource OrderItemStyle}">
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                </Grid.ColumnDefinitions>
+                                                
+                                                <StackPanel Grid.Column="0">
+                                                    <TextBlock Text="{Binding OrderId, StringFormat='Đơn hàng #{0}'}" FontWeight="Bold"/>
+                                                    <TextBlock Text="{Binding OrderDate, StringFormat='Ngày đặt: {0:dd/MM/yyyy HH:mm}'}" FontSize="12" Foreground="{StaticResource DarkGray}"/>
+                                                    <TextBlock Text="{Binding Status}" FontSize="12" Foreground="{StaticResource PrimaryRed}"/>
+                                                </StackPanel>
+                                                
+
+                                            </Grid>
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                            
+                            <TextBlock Text="Không có đơn hàng nào" HorizontalAlignment="Center" Foreground="{StaticResource DarkGray}" 
+                                       Margin="0,20" x:Name="NoOrdersText"/>
+                        </StackPanel>
+                    </Border>
+                    
                     <!-- Statistics -->
                     <Border Style="{StaticResource CardStyle}">
                         <StackPanel>
@@ -160,52 +207,6 @@
                             
                             <TextBlock Text="{Binding MembershipLevel}" FontSize="16" FontWeight="Bold" 
                                        Foreground="{StaticResource PrimaryRed}" HorizontalAlignment="Center" Margin="0,10"/>
-                        </StackPanel>
-                    </Border>
-                    
-                    <!-- Action Buttons -->
-                    <Border Style="{StaticResource CardStyle}">
-                        <StackPanel>
-                            <TextBlock Text="Thao tác" Style="{StaticResource SectionTitleStyle}"/>
-                            
-                            <Button Content="Cài đặt tài khoản" Style="{StaticResource ActionButtonStyle}" Click="AccountSettings_Click"/>
-                            <Button Content="Xem đơn hàng" Style="{StaticResource ActionButtonStyle}" Click="ViewOrders_Click"/>
-                            <Button Content="Giỏ hàng" Style="{StaticResource ActionButtonStyle}" Click="ViewCart_Click"/>
-                        </StackPanel>
-                    </Border>
-                </StackPanel>
-                
-                <!-- Right Content - Recent Orders -->
-                <StackPanel Grid.Column="1">
-                    <Border Style="{StaticResource CardStyle}">
-                        <StackPanel>
-                            <TextBlock Text="Đơn hàng gần đây" Style="{StaticResource SectionTitleStyle}"/>
-                            
-                            <ItemsControl ItemsSource="{Binding RecentOrders}">
-                                <ItemsControl.ItemTemplate>
-                                    <DataTemplate>
-                                        <Border Style="{StaticResource OrderItemStyle}">
-                                            <Grid>
-                                                <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition Width="*"/>
-                                                    <ColumnDefinition Width="Auto"/>
-                                                </Grid.ColumnDefinitions>
-                                                
-                                                <StackPanel Grid.Column="0">
-                                                    <TextBlock Text="{Binding OrderId, StringFormat='Đơn hàng #{0}'}" FontWeight="Bold"/>
-                                                    <TextBlock Text="{Binding OrderDate, StringFormat='Ngày đặt: {0:dd/MM/yyyy HH:mm}'}" FontSize="12" Foreground="{StaticResource DarkGray}"/>
-                                                    <TextBlock Text="{Binding Status}" FontSize="12" Foreground="{StaticResource PrimaryRed}"/>
-                                                </StackPanel>
-                                                
-
-                                            </Grid>
-                                        </Border>
-                                    </DataTemplate>
-                                </ItemsControl.ItemTemplate>
-                            </ItemsControl>
-                            
-                            <TextBlock Text="Không có đơn hàng nào" HorizontalAlignment="Center" Foreground="{StaticResource DarkGray}" 
-                                       Margin="0,20" x:Name="NoOrdersText"/>
                         </StackPanel>
                     </Border>
                 </StackPanel>
