@@ -21,52 +21,47 @@
             </Grid.ColumnDefinitions>
 
             <!-- Total Orders Card -->
-            <Border Grid.Column="0" Background="White" CornerRadius="8" Padding="15" Margin="0,0,5,0"
-                    BorderBrush="#FFE0E0E0" BorderThickness="1">
+            <Border Grid.Column="0" Style="{StaticResource AdminCard}" Margin="0,0,5,0" Padding="15">
                 <StackPanel>
-                    <TextBlock Text="Tong don hang" FontSize="12" Foreground="#FF666666" FontWeight="SemiBold"/>
+                    <TextBlock Text="Tong don hang" Style="{StaticResource AdminMutedText}" FontWeight="SemiBold"/>
                     <TextBlock x:Name="TotalOrdersText" Text="0" FontSize="20" FontWeight="Bold" 
-                               Foreground="#E31837" Margin="0,5,0,0"/>
+                               Foreground="{StaticResource AdminPrimaryRed}" Margin="0,5,0,0"/>
                 </StackPanel>
             </Border>
 
             <!-- Pending Orders Card -->
-            <Border Grid.Column="1" Background="White" CornerRadius="8" Padding="15" Margin="5,0"
-                    BorderBrush="#FFE0E0E0" BorderThickness="1">
+            <Border Grid.Column="1" Style="{StaticResource AdminCard}" Margin="5,0" Padding="15">
                 <StackPanel>
-                    <TextBlock Text="Cho xac nhan" FontSize="12" Foreground="#FF666666" FontWeight="SemiBold"/>
+                    <TextBlock Text="Cho xac nhan" Style="{StaticResource AdminMutedText}" FontWeight="SemiBold"/>
                     <TextBlock x:Name="PendingOrdersText" Text="0" FontSize="20" FontWeight="Bold" 
-                               Foreground="#FFFF9800" Margin="0,5,0,0"/>
+                               Foreground="{StaticResource AdminWarningOrange}" Margin="0,5,0,0"/>
                 </StackPanel>
             </Border>
 
             <!-- Confirmed Orders Card -->
-            <Border Grid.Column="2" Background="White" CornerRadius="8" Padding="15" Margin="5,0"
-                    BorderBrush="#FFE0E0E0" BorderThickness="1">
+            <Border Grid.Column="2" Style="{StaticResource AdminCard}" Margin="5,0" Padding="15">
                 <StackPanel>
-                    <TextBlock Text="Da xac nhan" FontSize="12" Foreground="#FF666666" FontWeight="SemiBold"/>
+                    <TextBlock Text="Da xac nhan" Style="{StaticResource AdminMutedText}" FontWeight="SemiBold"/>
                     <TextBlock x:Name="ConfirmedOrdersText" Text="0" FontSize="20" FontWeight="Bold" 
-                               Foreground="#FF4CAF50" Margin="0,5,0,0"/>
+                               Foreground="{StaticResource AdminSuccessGreen}" Margin="0,5,0,0"/>
                 </StackPanel>
             </Border>
 
             <!-- Shipping Orders Card -->
-            <Border Grid.Column="3" Background="White" CornerRadius="8" Padding="15" Margin="5,0"
-                    BorderBrush="#FFE0E0E0" BorderThickness="1">
+            <Border Grid.Column="3" Style="{StaticResource AdminCard}" Margin="5,0" Padding="15">
                 <StackPanel>
-                    <TextBlock Text="Dang giao" FontSize="12" Foreground="#FF666666" FontWeight="SemiBold"/>
+                    <TextBlock Text="Dang giao" Style="{StaticResource AdminMutedText}" FontWeight="SemiBold"/>
                     <TextBlock x:Name="ShippingOrdersText" Text="0" FontSize="20" FontWeight="Bold" 
-                               Foreground="#FF2196F3" Margin="0,5,0,0"/>
+                               Foreground="{StaticResource AdminInfoBlue}" Margin="0,5,0,0"/>
                 </StackPanel>
             </Border>
 
             <!-- Total Order Value Card -->
-            <Border Grid.Column="4" Background="White" CornerRadius="8" Padding="15" Margin="5,0,0,0"
-                    BorderBrush="#FFE0E0E0" BorderThickness="1">
+            <Border Grid.Column="4" Style="{StaticResource AdminCard}" Margin="5,0,0,0" Padding="15">
                 <StackPanel>
-                    <TextBlock Text="Tong gia tri don hang" FontSize="12" Foreground="#FF666666" FontWeight="SemiBold"/>
+                    <TextBlock Text="Tong gia tri don hang" Style="{StaticResource AdminMutedText}" FontWeight="SemiBold"/>
                     <TextBlock x:Name="TotalRevenueText" Text="0 VND" FontSize="18" FontWeight="Bold" 
-                               Foreground="#E31837" Margin="0,5,0,0"/>
+                               Foreground="{StaticResource AdminPrimaryRed}" Margin="0,5,0,0"/>
                 </StackPanel>
             </Border>
         </Grid>
@@ -82,18 +77,17 @@
 
             <!-- Search Box -->
             <Grid Grid.Column="0" Margin="0,0,10,0">
-                <TextBox x:Name="OrderSearchBox" Height="35" FontSize="14" 
-                         Padding="10" VerticalContentAlignment="Center"
+                <TextBox x:Name="OrderSearchBox" Style="{StaticResource AdminTextBox}"
                          TextChanged="OrderSearch_TextChanged"/>
                 <TextBlock x:Name="SearchPlaceholder" Text="Tim kiem theo ID don hang, ten khach hang, so dien thoai..." 
-                           FontSize="14" Foreground="Gray" Margin="15,0,0,0"
+                           Style="{StaticResource AdminMutedText}" Margin="15,0,0,0"
                            VerticalAlignment="Center" HorizontalAlignment="Left"
                            IsHitTestVisible="False"/>
             </Grid>
 
             <!-- Status Filter -->
-            <ComboBox x:Name="StatusFilterComboBox" Grid.Column="1" Width="150" Height="35" 
-                      FontSize="14" Margin="0,0,10,0"
+            <ComboBox x:Name="StatusFilterComboBox" Grid.Column="1" Width="150" 
+                      Style="{StaticResource AdminComboBox}" Margin="0,0,10,0"
                       SelectionChanged="StatusFilter_Changed">
                 <ComboBoxItem Content="Tat ca trang thai" IsSelected="True"/>
                 <ComboBoxItem Content="Pending"/>
@@ -104,8 +98,8 @@
             </ComboBox>
 
             <!-- Date Filter -->
-            <ComboBox x:Name="DateFilterComboBox" Grid.Column="2" Width="120" Height="35" 
-                      FontSize="14" Margin="0,0,10,0"
+            <ComboBox x:Name="DateFilterComboBox" Grid.Column="2" Width="120" 
+                      Style="{StaticResource AdminComboBox}" Margin="0,0,10,0"
                       SelectionChanged="DateFilter_Changed">
                 <ComboBoxItem Content="Tat ca" IsSelected="True"/>
                 <ComboBoxItem Content="Hom nay"/>
@@ -115,27 +109,13 @@
             </ComboBox>
 
             <!-- Refresh Button -->
-            <Button Grid.Column="3" Content="Lam moi" Height="35" Width="80"
-                    Click="RefreshOrders_Click" Background="#FF007BFF" Foreground="White"/>
+            <Button Grid.Column="3" Content="Lam moi" Width="80"
+                    Click="RefreshOrders_Click" Style="{StaticResource AdminModernButton}"/>
         </Grid>
 
         <!-- Orders DataGrid -->
-        <Border Grid.Row="2" Background="White" CornerRadius="10" Padding="20" 
-                BorderBrush="#FFE0E0E0" BorderThickness="1">
-            <DataGrid x:Name="OrdersDataGrid" 
-                    AutoGenerateColumns="False"
-                    HeadersVisibility="Column"
-                    GridLinesVisibility="Horizontal"
-                    RowBackground="Transparent"
-                    AlternatingRowBackground="#FFF8F9FA"
-                    BorderThickness="1"
-                    BorderBrush="#FFE0E0E0"
-                    CanUserAddRows="False"
-                    CanUserDeleteRows="False"
-                    CanUserReorderColumns="False"
-                    CanUserResizeRows="False"
-                    SelectionMode="Single"
-                    RowHeight="55">
+        <Border Grid.Row="2" Style="{StaticResource AdminCard}">
+            <DataGrid x:Name="OrdersDataGrid" Style="{StaticResource AdminDataGrid}" RowHeight="55">
                 <DataGrid.Columns>
                     <DataGridTextColumn Header="ID" Binding="{Binding OrderId}" Width="60"/>
                     <DataGridTextColumn Header="Khach hang" Binding="{Binding Customer.FullName}" Width="150"/>
@@ -153,15 +133,15 @@
                                            ToolTip="{Binding CarrierInfo}">
                                     <TextBlock.Style>
                                         <Style TargetType="TextBlock">
-                                            <Setter Property="Foreground" Value="#FF666666"/>
+                                            <Setter Property="Foreground" Value="{StaticResource AdminTextSecondary}"/>
                                             <Style.Triggers>
                                                 <DataTrigger Binding="{Binding CarrierName}" Value="Chua chon">
-                                                    <Setter Property="Foreground" Value="#FFFF9800"/>
+                                                    <Setter Property="Foreground" Value="{StaticResource AdminWarningOrange}"/>
                                                     <Setter Property="FontStyle" Value="Italic"/>
                                                 </DataTrigger>
                                                 <DataTrigger Binding="{Binding CarrierName}" Value="{x:Null}">
                                                     <Setter Property="Text" Value="Chua chon"/>
-                                                    <Setter Property="Foreground" Value="#FFFF9800"/>
+                                                    <Setter Property="Foreground" Value="{StaticResource AdminWarningOrange}"/>
                                                     <Setter Property="FontStyle" Value="Italic"/>
                                                 </DataTrigger>
                                             </Style.Triggers>
@@ -181,22 +161,22 @@
                                 <Border CornerRadius="12" Padding="8,4" HorizontalAlignment="Center">
                                     <Border.Style>
                                         <Style TargetType="Border">
-                                            <Setter Property="Background" Value="#FFBDC3C7"/>
+                                            <Setter Property="Background" Value="{StaticResource AdminNeutralGray}"/>
                                             <Style.Triggers>
                                                 <DataTrigger Binding="{Binding Status}" Value="Pending">
-                                                    <Setter Property="Background" Value="#FFFF9800"/>
+                                                    <Setter Property="Background" Value="{StaticResource AdminWarningOrange}"/>
                                                 </DataTrigger>
                                                 <DataTrigger Binding="{Binding Status}" Value="Confirmed">
-                                                    <Setter Property="Background" Value="#FF4CAF50"/>
+                                                    <Setter Property="Background" Value="{StaticResource AdminSuccessGreen}"/>
                                                 </DataTrigger>
                                                 <DataTrigger Binding="{Binding Status}" Value="Shipping">
-                                                    <Setter Property="Background" Value="#FF2196F3"/>
+                                                    <Setter Property="Background" Value="{StaticResource AdminInfoBlue}"/>
                                                 </DataTrigger>
                                                 <DataTrigger Binding="{Binding Status}" Value="Delivered">
                                                     <Setter Property="Background" Value="#FF8BC34A"/>
                                                 </DataTrigger>
                                                 <DataTrigger Binding="{Binding Status}" Value="Cancelled">
-                                                    <Setter Property="Background" Value="#FFF44336"/>
+                                                    <Setter Property="Background" Value="{StaticResource AdminDangerRed}"/>
                                                 </DataTrigger>
                                             </Style.Triggers>
                                         </Style>
@@ -212,14 +192,19 @@
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                                    <Button Content="Xem" Height="32" FontSize="11" Margin="2" Width="50"
-                                            Click="ViewOrderDetail_Click" Tag="{Binding OrderId}" 
-                                            Background="#FF17A2B8" Foreground="White"/>
-                                    <Button Content="Xac nhan" Height="32" FontSize="11" Margin="2" Width="65"
-                                            Background="#FF28A745" Click="ConfirmOrder_Click" Tag="{Binding OrderId}"
-                                            Foreground="White">
+                                    <Button Content="Xem" Width="50" Margin="2"
+                                            Click="ViewOrderDetail_Click" Tag="{Binding OrderId}">
                                         <Button.Style>
-                                            <Style TargetType="Button">
+                                            <Style TargetType="Button" BasedOn="{StaticResource AdminSmallButton}">
+                                                <Setter Property="Background" Value="{StaticResource AdminInfoBlue}"/>
+                                            </Style>
+                                        </Button.Style>
+                                    </Button>
+                                    <Button Content="Xac nhan" Width="65" Margin="2"
+                                            Click="ConfirmOrder_Click" Tag="{Binding OrderId}">
+                                        <Button.Style>
+                                            <Style TargetType="Button" BasedOn="{StaticResource AdminSmallButton}">
+                                                <Setter Property="Background" Value="{StaticResource AdminSuccessGreen}"/>
                                                 <Setter Property="Visibility" Value="Visible"/>
                                                 <Style.Triggers>
                                                     <DataTrigger Binding="{Binding Status}" Value="Confirmed">
@@ -238,22 +223,20 @@
                                             </Style>
                                         </Button.Style>
                                     </Button>
-                                    <!-- Assign Carrier button -->
-                                    <Button Content="Chon NVC" Height="32" FontSize="11" Margin="2" Width="70"
-                                            Background="#FFFF9800" Click="AssignCarrierToOrder_Click" Tag="{Binding OrderId}"
-                                            Foreground="White" ToolTip="Chon nguoi van chuyen">
+                                    <Button Content="Chon NVC" Width="70" Margin="2"
+                                            Click="AssignCarrierToOrder_Click" Tag="{Binding OrderId}"
+                                            ToolTip="Chon nguoi van chuyen">
                                         <Button.Style>
-                                            <Style TargetType="Button">
+                                            <Style TargetType="Button" BasedOn="{StaticResource AdminSmallButton}">
+                                                <Setter Property="Background" Value="{StaticResource AdminWarningOrange}"/>
                                                 <Setter Property="Visibility" Value="Visible"/>
                                                 <Style.Triggers>
-                                                    <!-- Hide for delivered/cancelled orders -->
                                                     <DataTrigger Binding="{Binding Status}" Value="Delivered">
                                                         <Setter Property="Visibility" Value="Collapsed"/>
                                                     </DataTrigger>
                                                     <DataTrigger Binding="{Binding Status}" Value="Cancelled">
                                                         <Setter Property="Visibility" Value="Collapsed"/>
                                                     </DataTrigger>
-                                                    <!-- Hide when carrier is already assigned (not "Chua chon") -->
                                                     <DataTrigger Binding="{Binding HasCarrierAssigned}" Value="True">
                                                         <Setter Property="Visibility" Value="Collapsed"/>
                                                     </DataTrigger>
@@ -261,12 +244,11 @@
                                             </Style>
                                         </Button.Style>
                                     </Button>
-                                    <!-- Cancel button -->
-                                    <Button Content="Huy" Height="32" FontSize="11" Margin="2" Width="50"
-                                            Background="#FFDC3545" Click="CancelOrder_Click" Tag="{Binding OrderId}"
-                                            Foreground="White">
+                                    <Button Content="Huy" Width="50" Margin="2"
+                                            Click="CancelOrder_Click" Tag="{Binding OrderId}">
                                         <Button.Style>
-                                            <Style TargetType="Button">
+                                            <Style TargetType="Button" BasedOn="{StaticResource AdminSmallButton}">
+                                                <Setter Property="Background" Value="{StaticResource AdminDangerRed}"/>
                                                 <Setter Property="Visibility" Value="Visible"/>
                                                 <Style.Triggers>
                                                     <DataTrigger Binding="{Binding Status}" Value="Delivered">
@@ -289,10 +271,10 @@
 
         <!-- Footer with Statistics -->
         <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,20,0,0">
-            <TextBlock x:Name="OrderCountText" Text="Hien thi: 0 don hang" FontSize="14" 
-                       VerticalAlignment="Center" Margin="0,0,20,0" Foreground="#FF666666"/>
-            <TextBlock x:Name="FilteredRevenueText" Text="Tong gia tri don hang: 0 VND" FontSize="14" 
-                       VerticalAlignment="Center" Foreground="#E31837" FontWeight="SemiBold"/>
+            <TextBlock x:Name="OrderCountText" Text="Hien thi: 0 don hang" Style="{StaticResource AdminBodyText}" 
+                       VerticalAlignment="Center" Margin="0,0,20,0"/>
+            <TextBlock x:Name="FilteredRevenueText" Text="Tong gia tri don hang: 0 VND" Style="{StaticResource AdminBodyText}" 
+                       VerticalAlignment="Center" Foreground="{StaticResource AdminPrimaryRed}" FontWeight="SemiBold"/>
         </StackPanel>
     </Grid>
 </UserControl>

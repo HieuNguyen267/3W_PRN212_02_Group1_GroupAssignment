@@ -6,88 +6,7 @@
         Height="900" Width="1400"
         WindowStartupLocation="CenterScreen"
         WindowState="Maximized"
-        Background="#FFF8F9FA">
-    
-    <Window.Resources>
-        <!-- Red Theme Colors -->
-        <SolidColorBrush x:Key="PrimaryRed" Color="#E31837"/>
-        <SolidColorBrush x:Key="DarkRed" Color="#C41230"/>
-        <SolidColorBrush x:Key="LightRed" Color="#FFE8EB"/>
-        <SolidColorBrush x:Key="AccentRed" Color="#FF6B7C"/>
-        
-        <!-- Modern Button Style -->
-        <Style x:Key="ModernButton" TargetType="Button">
-            <Setter Property="Background" Value="{StaticResource PrimaryRed}"/>
-            <Setter Property="Foreground" Value="White"/>
-            <Setter Property="FontSize" Value="14"/>
-            <Setter Property="FontWeight" Value="SemiBold"/>
-            <Setter Property="Height" Value="40"/>
-            <Setter Property="BorderThickness" Value="0"/>
-            <Setter Property="Cursor" Value="Hand"/>
-            <Setter Property="Padding" Value="20,0"/>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="Button">
-                        <Border Background="{TemplateBinding Background}" 
-                                CornerRadius="8"
-                                BorderBrush="{TemplateBinding BorderBrush}"
-                                BorderThickness="{TemplateBinding BorderThickness}">
-                            <ContentPresenter HorizontalAlignment="Center" 
-                                            VerticalAlignment="Center"/>
-                        </Border>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsMouseOver" Value="True">
-                                <Setter Property="Background" Value="{StaticResource DarkRed}"/>
-                            </Trigger>
-                            <Trigger Property="IsPressed" Value="True">
-                                <Setter Property="Background" Value="#B01029"/>
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-
-        <!-- Sidebar Button Style -->
-        <Style x:Key="SidebarButton" TargetType="Button">
-            <Setter Property="Background" Value="Transparent"/>
-            <Setter Property="Foreground" Value="White"/>
-            <Setter Property="FontSize" Value="14"/>
-            <Setter Property="FontWeight" Value="Medium"/>
-            <Setter Property="Height" Value="50"/>
-            <Setter Property="BorderThickness" Value="0"/>
-            <Setter Property="Cursor" Value="Hand"/>
-            <Setter Property="HorizontalContentAlignment" Value="Left"/>
-            <Setter Property="Padding" Value="20,0"/>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="Button">
-                        <Border Background="{TemplateBinding Background}" 
-                                BorderBrush="{TemplateBinding BorderBrush}"
-                                BorderThickness="{TemplateBinding BorderThickness}">
-                            <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" 
-                                            VerticalAlignment="Center"
-                                            Margin="{TemplateBinding Padding}"/>
-                        </Border>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsMouseOver" Value="True">
-                                <Setter Property="Background" Value="{StaticResource DarkRed}"/>
-                            </Trigger>
-                            <Trigger Property="IsPressed" Value="True">
-                                <Setter Property="Background" Value="{StaticResource LightRed}"/>
-                                <Setter Property="Foreground" Value="{StaticResource DarkRed}"/>
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-
-        <!-- Active Sidebar Button Style -->
-        <Style x:Key="ActiveSidebarButton" TargetType="Button" BasedOn="{StaticResource SidebarButton}">
-            <Setter Property="Background" Value="{StaticResource DarkRed}"/>
-        </Style>
-    </Window.Resources>
+        Style="{StaticResource AdminWindow}">
 
     <Grid>
         <Grid.ColumnDefinitions>
@@ -96,10 +15,10 @@
         </Grid.ColumnDefinitions>
 
         <!-- Sidebar -->
-        <Border Grid.Column="0" Background="{StaticResource PrimaryRed}">
+        <Border Grid.Column="0" Background="{StaticResource AdminPrimaryRed}">
             <StackPanel>
                 <!-- Header -->
-                <Border Background="{StaticResource DarkRed}" Height="80">
+                <Border Background="{StaticResource AdminDarkRed}" Height="80">
                     <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
                         <TextBlock Text="ADMIN" FontSize="24" HorizontalAlignment="Center" Foreground="White" FontWeight="Bold"/>
                         <TextBlock Text="DASHBOARD" FontSize="16" FontWeight="Bold" 
@@ -109,25 +28,27 @@
 
                 <!-- Navigation Menu -->
                 <StackPanel Margin="0,20,0,0">
-                    <Button Content="📊 Dashboard" Style="{StaticResource ActiveSidebarButton}" 
+                    <Button Content="📊 Dashboard" Style="{StaticResource AdminActiveSidebarButton}" 
                           Click="Dashboard_Click" x:Name="DashboardBtn"/>
-                    <Button Content="👥 Quan ly Khach hang" Style="{StaticResource SidebarButton}" 
+                    <Button Content="👥 Quan ly Khach hang" Style="{StaticResource AdminSidebarButton}" 
                           Click="Customers_Click" x:Name="CustomersBtn"/>
-                    <Button Content="📦 Quan ly San pham" Style="{StaticResource SidebarButton}" 
+                    <Button Content="📦 Quan ly San pham" Style="{StaticResource AdminSidebarButton}" 
                           Click="Products_Click" x:Name="ProductsBtn"/>
-                    <Button Content="🛍️ Quan ly Don hang" Style="{StaticResource SidebarButton}" 
+                    <Button Content="🛍️ Quan ly Don hang" Style="{StaticResource AdminSidebarButton}" 
                           Click="Orders_Click" x:Name="OrdersBtn"/>
-                    <Button Content="📋 Quan ly Danh muc" Style="{StaticResource SidebarButton}" 
+                    <Button Content="📋 Quan ly Danh muc" Style="{StaticResource AdminSidebarButton}" 
                           Click="Categories_Click" x:Name="CategoriesBtn"/>
-                    <Button Content="👨‍💻 Quan ly Admin" Style="{StaticResource SidebarButton}" 
+                    <Button Content="👨‍💻 Quan ly Admin" Style="{StaticResource AdminSidebarButton}" 
                           Click="Admins_Click" x:Name="AdminsBtn"/>
-                    <Button Content="📈 Bao cao" Style="{StaticResource SidebarButton}" 
+                    <Button Content="📈 Bao cao" Style="{StaticResource AdminSidebarButton}" 
                           Click="Reports_Click" x:Name="ReportsBtn"/>
+                    <Button Content="🚚 Quan ly Carrier" Style="{StaticResource AdminSidebarButton}" 
+                          Click="Carriers_Click" x:Name="CarriersBtn"/>
                 </StackPanel>
 
                 <!-- User Info -->
                 <StackPanel VerticalAlignment="Bottom" Margin="0,0,0,20">
-                    <Border Background="{StaticResource DarkRed}" CornerRadius="5" Margin="10" Padding="15">
+                    <Border Background="{StaticResource AdminDarkRed}" CornerRadius="5" Margin="10" Padding="15">
                         <StackPanel>
                             <TextBlock x:Name="AdminNameText" Text="Admin User" 
                                      Foreground="White" FontWeight="SemiBold" FontSize="14"/>
@@ -135,7 +56,7 @@
                                      Foreground="#FFBDC3C7" FontSize="12" Margin="0,2,0,0"/>
                         </StackPanel>
                     </Border>
-                    <Button Content="🚪 Dang xuat" Style="{StaticResource SidebarButton}" 
+                    <Button Content="🚪 Dang xuat" Style="{StaticResource AdminSidebarButton}" 
                           Click="Logout_Click" Background="#B01029"/>
                 </StackPanel>
             </StackPanel>
@@ -145,12 +66,11 @@
         <ScrollViewer Grid.Column="1" VerticalScrollBarVisibility="Auto">
             <StackPanel>
                 <!-- Page Title -->
-                <Border Background="White" Margin="20,20,20,0" CornerRadius="10" Padding="25">
+                <Border Style="{StaticResource AdminCard}" Margin="20,20,20,0">
                     <StackPanel Orientation="Horizontal">
-                        <TextBlock x:Name="PageTitle" Text="📊 Dashboard" FontSize="28" 
-                                 FontWeight="Bold" Foreground="{StaticResource PrimaryRed}" VerticalAlignment="Center"/>
-                        <TextBlock x:Name="PageSubtitle" Text="Tong quan he thong" FontSize="16" 
-                                 Foreground="#FF7F8C8D" VerticalAlignment="Center" Margin="20,0,0,0"/>
+                        <TextBlock x:Name="PageTitle" Text="📊 Dashboard" Style="{StaticResource AdminHeaderText}" VerticalAlignment="Center"/>
+                        <TextBlock x:Name="PageSubtitle" Text="Tong quan he thong" Style="{StaticResource AdminBodyText}" 
+                                 VerticalAlignment="Center" Margin="20,0,0,0"/>
                     </StackPanel>
                 </Border>
 

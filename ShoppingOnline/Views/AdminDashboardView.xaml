@@ -11,9 +11,8 @@
 
         <!-- Header -->
         <StackPanel Grid.Row="0" Margin="0,0,0,20">
-            <TextBlock Text="Dashboard Quan ly" FontSize="24" FontWeight="Bold" 
-                       Foreground="#E31837"/>
-            <TextBlock Text="Tong quan he thong va thong ke" FontSize="14" Foreground="#FF666666" Margin="0,5,0,0"/>
+            <TextBlock Text="Dashboard Quan ly" Style="{StaticResource AdminHeaderText}"/>
+            <TextBlock Text="Tong quan he thong va thong ke" Style="{StaticResource AdminBodyText}" Margin="0,5,0,0"/>
         </StackPanel>
 
         <!-- Statistics Cards -->
@@ -26,46 +25,38 @@
             </Grid.ColumnDefinitions>
 
             <!-- Total Customers Card -->
-            <Border Grid.Column="0" Background="White" CornerRadius="10" Padding="20" Margin="0,0,10,0"
-                    BorderBrush="#FFE0E0E0" BorderThickness="1">
+            <Border Grid.Column="0" Style="{StaticResource AdminCard}" Margin="0,0,10,0">
                 <StackPanel>
-                    <TextBlock Text="Tong khach hang" FontSize="14" Foreground="#FF666666"/>
-                    <TextBlock x:Name="TotalCustomersText" Text="0" FontSize="24" FontWeight="Bold" 
-                               Foreground="#E31837" Margin="0,5,0,0"/>
-                    <TextBlock Text="Khach hang" FontSize="12" Foreground="#FF999999"/>
+                    <TextBlock Text="Tong khach hang" Style="{StaticResource AdminBodyText}"/>
+                    <TextBlock x:Name="TotalCustomersText" Text="0" Style="{StaticResource AdminHeaderText}" Margin="0,5,0,0"/>
+                    <TextBlock Text="Khach hang" Style="{StaticResource AdminMutedText}"/>
                 </StackPanel>
             </Border>
 
             <!-- Total Products Card -->
-            <Border Grid.Column="1" Background="White" CornerRadius="10" Padding="20" Margin="5,0"
-                    BorderBrush="#FFE0E0E0" BorderThickness="1">
+            <Border Grid.Column="1" Style="{StaticResource AdminCard}" Margin="5,0">
                 <StackPanel>
-                    <TextBlock Text="Tong san pham" FontSize="14" Foreground="#FF666666"/>
-                    <TextBlock x:Name="TotalProductsText" Text="0" FontSize="24" FontWeight="Bold" 
-                               Foreground="#E31837" Margin="0,5,0,0"/>
-                    <TextBlock Text="San pham" FontSize="12" Foreground="#FF999999"/>
+                    <TextBlock Text="Tong san pham" Style="{StaticResource AdminBodyText}"/>
+                    <TextBlock x:Name="TotalProductsText" Text="0" Style="{StaticResource AdminHeaderText}" Margin="0,5,0,0"/>
+                    <TextBlock Text="San pham" Style="{StaticResource AdminMutedText}"/>
                 </StackPanel>
             </Border>
 
             <!-- Total Orders Card -->
-            <Border Grid.Column="2" Background="White" CornerRadius="10" Padding="20" Margin="5,0"
-                    BorderBrush="#FFE0E0E0" BorderThickness="1">
+            <Border Grid.Column="2" Style="{StaticResource AdminCard}" Margin="5,0">
                 <StackPanel>
-                    <TextBlock Text="Tong don hang" FontSize="14" Foreground="#FF666666"/>
-                    <TextBlock x:Name="TotalOrdersText" Text="0" FontSize="24" FontWeight="Bold" 
-                               Foreground="#E31837" Margin="0,5,0,0"/>
-                    <TextBlock Text="Don hang" FontSize="12" Foreground="#FF999999"/>
+                    <TextBlock Text="Tong don hang" Style="{StaticResource AdminBodyText}"/>
+                    <TextBlock x:Name="TotalOrdersText" Text="0" Style="{StaticResource AdminHeaderText}" Margin="0,5,0,0"/>
+                    <TextBlock Text="Don hang" Style="{StaticResource AdminMutedText}"/>
                 </StackPanel>
             </Border>
 
             <!-- Total Order Value Card -->
-            <Border Grid.Column="3" Background="White" CornerRadius="10" Padding="20" Margin="10,0,0,0"
-                    BorderBrush="#FFE0E0E0" BorderThickness="1">
+            <Border Grid.Column="3" Style="{StaticResource AdminCard}" Margin="10,0,0,0">
                 <StackPanel>
-                    <TextBlock Text="Tong gia tri don hang" FontSize="14" Foreground="#FF666666"/>
-                    <TextBlock x:Name="TotalRevenueText" Text="0 VND" FontSize="24" FontWeight="Bold" 
-                               Foreground="#E31837" Margin="0,5,0,0"/>
-                    <TextBlock Text="Gia tri don hang" FontSize="12" Foreground="#FF999999"/>
+                    <TextBlock Text="Tong gia tri don hang" Style="{StaticResource AdminBodyText}"/>
+                    <TextBlock x:Name="TotalRevenueText" Text="0 VND" Style="{StaticResource AdminHeaderText}" Margin="0,5,0,0"/>
+                    <TextBlock Text="Gia tri don hang" Style="{StaticResource AdminMutedText}"/>
                 </StackPanel>
             </Border>
         </Grid>
@@ -78,16 +69,10 @@
             </Grid.ColumnDefinitions>
 
             <!-- Recent Orders -->
-            <Border Grid.Column="0" Background="White" CornerRadius="10" Padding="20" Margin="0,0,10,0"
-                    BorderBrush="#FFE0E0E0" BorderThickness="1">
+            <Border Grid.Column="0" Style="{StaticResource AdminCard}" Margin="0,0,10,0">
                 <StackPanel>
-                    <TextBlock Text="Don hang gan day" FontSize="16" FontWeight="SemiBold" 
-                               Foreground="#E31837" Margin="0,0,0,15"/>
-                    <DataGrid x:Name="RecentOrdersGrid" AutoGenerateColumns="False" HeadersVisibility="Column"
-                              GridLinesVisibility="Horizontal" RowBackground="Transparent"
-                              AlternatingRowBackground="#FFF8F9FA" BorderThickness="0"
-                              CanUserAddRows="False" CanUserDeleteRows="False" CanUserReorderColumns="False"
-                              CanUserResizeRows="False" SelectionMode="Single" RowHeight="40">
+                    <TextBlock Text="Don hang gan day" Style="{StaticResource AdminSubHeaderText}" Margin="0,0,0,15"/>
+                    <DataGrid x:Name="RecentOrdersGrid" Style="{StaticResource AdminDataGrid}">
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="ID" Binding="{Binding OrderId}" Width="50"/>
                             <DataGridTextColumn Header="Khach hang" Binding="{Binding Customer.FullName}" Width="100"/>
@@ -101,16 +86,10 @@
             </Border>
 
             <!-- Low Stock Products -->
-            <Border Grid.Column="1" Background="White" CornerRadius="10" Padding="20" Margin="10,0,0,0"
-                    BorderBrush="#FFE0E0E0" BorderThickness="1">
+            <Border Grid.Column="1" Style="{StaticResource AdminCard}" Margin="10,0,0,0">
                 <StackPanel>
-                    <TextBlock Text="San pham sap het hang" FontSize="16" FontWeight="SemiBold" 
-                               Foreground="#E31837" Margin="0,0,0,15"/>
-                    <DataGrid x:Name="LowStockGrid" AutoGenerateColumns="False" HeadersVisibility="Column"
-                              GridLinesVisibility="Horizontal" RowBackground="Transparent"
-                              AlternatingRowBackground="#FFF8F9FA" BorderThickness="0"
-                              CanUserAddRows="False" CanUserDeleteRows="False" CanUserReorderColumns="False"
-                              CanUserResizeRows="False" SelectionMode="Single" RowHeight="40">
+                    <TextBlock Text="San pham sap het hang" Style="{StaticResource AdminSubHeaderText}" Margin="0,0,0,15"/>
+                    <DataGrid x:Name="LowStockGrid" Style="{StaticResource AdminDataGrid}">
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="Ten san pham" Binding="{Binding ProductName}" Width="150"/>
                             <DataGridTextColumn Header="Ton kho" Binding="{Binding StockQuantity}" Width="80"/>

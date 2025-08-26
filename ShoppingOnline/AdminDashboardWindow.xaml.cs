@@ -112,6 +112,19 @@ namespace ShoppingOnline
 
         private void NavigateToReports()
         {
+<<<<<<< HEAD
+            // Use placeholder for reports
+            var reportsView = new TextBlock 
+            { 
+                Text = "Bao cao - Dang phat trien", 
+                FontSize = 24,
+                HorizontalAlignment = HorizontalAlignment.Center,
+                VerticalAlignment = VerticalAlignment.Center,
+                Margin = new Thickness(50)
+            };
+            MainContentControl.Content = reportsView;
+            UpdatePageTitle("Bao cao", "Thong ke va bao cao");
+=======
             // Try to use AdminAccountManagementView for account management
             try 
             {
@@ -133,6 +146,7 @@ namespace ShoppingOnline
                 MainContentControl.Content = reportsView;
                 UpdatePageTitle("Bao cao", "Thong ke va bao cao");
             }
+>>>>>>> 7b28022ee6f00bcdf2fa70cce5dc358443b8e74e
             UpdateActiveButton("Reports");
         }
 
@@ -146,6 +160,8 @@ namespace ShoppingOnline
             UpdateActiveButton("Carriers");
         }
 
+<<<<<<< HEAD
+=======
         private void NavigateToAccounts()
         {
             // Use the actual AdminAccountManagementView 
@@ -156,6 +172,7 @@ namespace ShoppingOnline
             UpdateActiveButton("Accounts");
         }
 
+>>>>>>> 7b28022ee6f00bcdf2fa70cce5dc358443b8e74e
         private void UpdatePageTitle(string title, string subtitle)
         {
             PageTitle.Text = title;
@@ -172,6 +189,7 @@ namespace ShoppingOnline
             CategoriesBtn.Style = (Style)FindResource("SidebarButton");
             AdminsBtn.Style = (Style)FindResource("SidebarButton");
             ReportsBtn.Style = (Style)FindResource("SidebarButton");
+            CarriersBtn.Style = (Style)FindResource("SidebarButton");
 
             // Set active button style
             switch (activeButton)
@@ -198,6 +216,9 @@ namespace ShoppingOnline
                 case "Accounts":
                 case "Carriers":
                     ReportsBtn.Style = (Style)FindResource("ActiveSidebarButton");
+                    break;
+                case "Carriers":
+                    CarriersBtn.Style = (Style)FindResource("ActiveSidebarButton");
                     break;
             }
         }
@@ -242,11 +263,14 @@ namespace ShoppingOnline
         {
             NavigateToCarriers();
         }
+<<<<<<< HEAD
+=======
 
         private void Accounts_Click(object sender, RoutedEventArgs e)
         {
             NavigateToAccounts();
         }
+>>>>>>> 7b28022ee6f00bcdf2fa70cce5dc358443b8e74e
         #endregion
 
         #region Event Handlers
