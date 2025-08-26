@@ -31,30 +31,17 @@
 
             <!-- Search Box -->
             <Grid Grid.Column="0" Margin="0,0,10,0">
-<<<<<<< HEAD
                 <TextBox x:Name="CarrierSearchBox" Style="{StaticResource AdminTextBox}"
                          TextChanged="CarrierSearch_TextChanged"/>
                 <TextBlock x:Name="CarrierSearchPlaceholder" Text="Search by carrier name, email, phone..." 
                            Style="{StaticResource AdminMutedText}" Margin="15,0,0,0"
-=======
-                <TextBox x:Name="CarrierSearchBox" Height="35" FontSize="14" 
-                         Padding="10" VerticalContentAlignment="Center"
-                         TextChanged="CarrierSearch_TextChanged"/>
-                <TextBlock x:Name="CarrierSearchPlaceholder" Text="Search by carrier name, email, phone..." 
-                           FontSize="14" Foreground="Gray" Margin="15,0,0,0"
->>>>>>> 7b28022ee6f00bcdf2fa70cce5dc358443b8e74e
                            VerticalAlignment="Center" HorizontalAlignment="Left"
                            IsHitTestVisible="False"/>
             </Grid>
 
             <!-- Status Filter -->
-<<<<<<< HEAD
             <ComboBox x:Name="StatusFilterComboBox" Grid.Column="1" Width="150" 
                       Style="{StaticResource AdminComboBox}" Margin="0,0,10,0"
-=======
-            <ComboBox x:Name="StatusFilterComboBox" Grid.Column="1" Width="150" Height="35" 
-                      FontSize="14" Margin="0,0,10,0"
->>>>>>> 7b28022ee6f00bcdf2fa70cce5dc358443b8e74e
                       SelectionChanged="StatusFilter_Changed">
                 <ComboBoxItem Content="All Status" IsSelected="True"/>
                 <ComboBoxItem Content="Active"/>
@@ -62,7 +49,6 @@
             </ComboBox>
 
             <!-- Add Carrier Button -->
-<<<<<<< HEAD
             <Button Grid.Column="2" Content="Add Carrier" Width="100" Margin="0,0,10,0"
                     Click="AddCarrier_Click" Style="{StaticResource AdminSuccessButton}"/>
 
@@ -74,34 +60,6 @@
         <!-- Carriers DataGrid -->
         <Border Grid.Row="1" Style="{StaticResource AdminCard}">
             <DataGrid x:Name="CarriersDataGrid" Style="{StaticResource AdminDataGrid}">
-=======
-            <Button Grid.Column="2" Content="Add Carrier" Height="35" Width="100" Margin="0,0,10,0"
-                    Click="AddCarrier_Click" Background="#FF4CAF50" Foreground="White"
-                    Style="{DynamicResource ModernButton}"/>
-
-            <!-- Refresh Button -->
-            <Button Grid.Column="3" Content="Refresh" Height="35" Width="80"
-                    Click="RefreshCarriers_Click" Style="{DynamicResource ModernButton}"/>
-        </Grid>
-
-        <!-- Carriers DataGrid -->
-        <Border Grid.Row="1" Background="White" CornerRadius="10" Padding="20" 
-                BorderBrush="#FFE0E0E0" BorderThickness="1">
-            <DataGrid x:Name="CarriersDataGrid" 
-                    AutoGenerateColumns="False"
-                    HeadersVisibility="Column"
-                    GridLinesVisibility="Horizontal"
-                    RowBackground="Transparent"
-                    AlternatingRowBackground="#FFF8F9FA"
-                    BorderThickness="1"
-                    BorderBrush="#FFE0E0E0"
-                    CanUserAddRows="False"
-                    CanUserDeleteRows="False"
-                    CanUserReorderColumns="False"
-                    CanUserResizeRows="False"
-                    SelectionMode="Single"
-                    RowHeight="50">
->>>>>>> 7b28022ee6f00bcdf2fa70cce5dc358443b8e74e
                 <DataGrid.Columns>
                     <DataGridTextColumn Header="ID" Binding="{Binding CarrierId}" Width="80"/>
                     <DataGridTextColumn Header="Carrier Name" Binding="{Binding FullName}" Width="180"/>
@@ -141,7 +99,6 @@
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-<<<<<<< HEAD
                                     <Button Content="View" Width="50" Margin="2"
                                             Click="ViewCarrier_Click" Tag="{Binding CarrierId}" 
                                             Style="{StaticResource AdminSmallButton}"
@@ -162,28 +119,6 @@
                                     <Button Width="60" Margin="2"
                                             Click="ToggleCarrierStatus_Click" Tag="{Binding CarrierId}"
                                             Style="{StaticResource AdminSmallButton}">
-=======
-                                    <Button Content="View" Height="30" FontSize="11" Margin="2" Width="50"
-                                            Click="ViewCarrier_Click" Tag="{Binding CarrierId}" 
-                                            Background="#FF2196F3" Foreground="White"
-                                            Style="{DynamicResource ModernButton}"/>
-                                    <Button Content="Edit" Height="30" FontSize="11" Margin="2" Width="50"
-                                            Background="#FFFF9800" Foreground="White" Click="EditCarrier_Click" Tag="{Binding CarrierId}"
-                                            Style="{DynamicResource ModernButton}"/>
-                                    <Button Content="Delete" Height="30" FontSize="11" Margin="2" Width="50"
-                                            Background="#FFF44336" Foreground="White" Click="DeleteCarrier_Click" Tag="{Binding CarrierId}"
-                                            Style="{DynamicResource ModernButton}"/>
-                                    <Button Height="30" FontSize="10" Margin="2" Width="60"
-                                            Click="ToggleCarrierAvailable_Click" Tag="{Binding CarrierId}"
-                                            Content="{Binding IsAvailable, Converter={StaticResource BoolToToggleButtonConverter}}"
-                                            Background="{Binding IsAvailable, Converter={StaticResource BoolToToggleButtonBackgroundConverter}}"
-                                            Foreground="White"
-                                            Style="{DynamicResource ModernButton}"/>
-                                    <Button Height="30" FontSize="10" Margin="2" Width="60"
-                                            Click="ToggleCarrierStatus_Click" Tag="{Binding CarrierId}"
-                                            Foreground="White"
-                                            Style="{DynamicResource ModernButton}">
->>>>>>> 7b28022ee6f00bcdf2fa70cce5dc358443b8e74e
                                         <Button.Content>
                                             <Binding Path="Account.IsActive" Converter="{StaticResource BoolToToggleButtonConverter}"/>
                                         </Button.Content>
@@ -201,11 +136,7 @@
 
         <!-- Footer -->
         <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,20,0,0">
-<<<<<<< HEAD
             <TextBlock x:Name="CarrierCountText" Text="Total: 0 carriers" Style="{StaticResource AdminBodyText}" 
-=======
-            <TextBlock x:Name="CarrierCountText" Text="Total: 0 carriers" FontSize="14" 
->>>>>>> 7b28022ee6f00bcdf2fa70cce5dc358443b8e74e
                        VerticalAlignment="Center" Margin="0,0,20,0"/>
         </StackPanel>
     </Grid>
