@@ -172,6 +172,7 @@ namespace ShoppingOnline
             CategoriesBtn.Style = (Style)FindResource("SidebarButton");
             AdminsBtn.Style = (Style)FindResource("SidebarButton");
             ReportsBtn.Style = (Style)FindResource("SidebarButton");
+            CarriersBtn.Style = (Style)FindResource("SidebarButton");
 
             // Set active button style
             switch (activeButton)
@@ -196,8 +197,10 @@ namespace ShoppingOnline
                     break;
                 case "Reports":
                 case "Accounts":
-                case "Carriers":
                     ReportsBtn.Style = (Style)FindResource("ActiveSidebarButton");
+                    break;
+                case "Carriers":
+                    CarriersBtn.Style = (Style)FindResource("ActiveSidebarButton");
                     break;
             }
         }
