@@ -121,7 +121,10 @@
                     <TextBlock Text="Giá sản phẩm" Style="{StaticResource PriceLabelStyle}"/>
                     <TextBlock Text="{Binding CurrentProduct.Price, StringFormat='{}{0:N0}₫'}"  Style="{StaticResource CurrentPriceStyle }" />
                     
-                    
+                    <!-- Stock Information -->
+                    <TextBlock Text="Tình trạng kho" Style="{StaticResource PriceLabelStyle}" Margin="0,15,0,0"/>
+                    <TextBlock Text="{Binding StockStatus}" FontSize="16" FontWeight="Bold" Margin="0,0,0,10"/>
+                    <TextBlock Text="{Binding StockMessage}" FontSize="12" Foreground="{StaticResource DarkGray}" Margin="0,0,0,20"/>
 
                     <!-- Add to Cart Button -->
                     <Button Content="THÊM VÀO GIỎ HÀNG" 
@@ -130,8 +133,9 @@
                             FontSize="16" 
                             FontWeight="Bold"
                             Padding="20,15"
-                            Margin="0,20,0,0"
-                            Click="AddToCart_Click">
+                            Margin="0,0,0,0"
+                            Click="AddToCart_Click"
+                            IsEnabled="{Binding CanAddToCart}">
                         <Button.Template>
                             <ControlTemplate TargetType="Button">
                                 <Border Background="{TemplateBinding Background}"

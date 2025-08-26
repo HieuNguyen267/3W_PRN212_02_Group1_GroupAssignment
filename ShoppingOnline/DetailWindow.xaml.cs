@@ -77,6 +77,39 @@ namespace ShoppingOnline
             }
         }
 
+        private string _stockStatus = "";
+        public string StockStatus
+        {
+            get => _stockStatus;
+            set
+            {
+                _stockStatus = value;
+                OnPropertyChanged(nameof(StockStatus));
+            }
+        }
+
+        private string _stockMessage = "";
+        public string StockMessage
+        {
+            get => _stockMessage;
+            set
+            {
+                _stockMessage = value;
+                OnPropertyChanged(nameof(StockMessage));
+            }
+        }
+
+        private bool _canAddToCart = true;
+        public bool CanAddToCart
+        {
+            get => _canAddToCart;
+            set
+            {
+                _canAddToCart = value;
+                OnPropertyChanged(nameof(CanAddToCart));
+            }
+        }
+
         private void LoadProduct(string productId)
         {
             try
@@ -85,6 +118,7 @@ namespace ShoppingOnline
                 if (product != null)
                 {
                     CurrentProduct = product;
+                    UpdateStockInformation(product);
                 }
                 else
                 {
@@ -96,6 +130,28 @@ namespace ShoppingOnline
             {
                 MessageBox.Show($"Lỗi khi tải thông tin sản phẩm: {ex.Message}", "Lỗi", MessageBoxButton.OK, MessageBoxImage.Error);
                 this.Close();
+            }
+        }
+
+        private void UpdateStockInformation(Product product)
+        {
+            if (product.StockQuantity <= 0)
+            {
+                StockStatus = "HẾT HÀNG";
+                StockMessage = "Sản phẩm hiện tại đã hết hàng, vui lòng chọn sản phẩm khác.";
+                CanAddToCart = false;
+            }
+            else if (product.StockQuantity <= 5)
+            {
+                StockStatus = $"CÒN {product.StockQuantity} SẢN PHẨM";
+                StockMessage = "Sản phẩm sắp hết hàng, hãy đặt hàng sớm!";
+                CanAddToCart = true;
+            }
+            else
+            {
+                StockStatus = "CÒN HÀNG";
+                StockMessage = $"Còn {product.StockQuantity} sản phẩm trong kho.";
+                CanAddToCart = true;
             }
         }
 
@@ -137,6 +193,13 @@ namespace ShoppingOnline
 
                 if (CurrentProduct != null && UserSession.IsLoggedIn)
                 {
+                    // Check stock before adding to cart
+                    if (CurrentProduct.StockQuantity <= 0)
+                    {
+                        MessageBox.Show("Sản phẩm đã hết hàng, vui lòng chọn sản phẩm khác!", "Thông báo", MessageBoxButton.OK, MessageBoxImage.Warning);
+                        return;
+                    }
+
                     // Add to cart using CartService
                     var cartService = new CartService();
                     cartService.AddToCart(UserSession.CustomerId!.Value, CurrentProduct.ProductId, 1);
@@ -148,6 +211,10 @@ namespace ShoppingOnline
                     var cartWindow = new CartWindow();
                     cartWindow.Show();
                 }
+            }
+            catch (InvalidOperationException ex)
+            {
+                MessageBox.Show(ex.Message, "Thông báo", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
             catch (Exception ex)
             {
