@@ -1,0 +1,215 @@
+<Window x:Class="ShoppingOnline.AdminReportsWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Admin Reports"
+        Height="700" Width="1200"
+        WindowStartupLocation="CenterScreen"
+        WindowState="Maximized"
+        Background="#FFF8F9FA">
+    
+    <Window.Resources>
+        <!-- Red Theme Colors -->
+        <SolidColorBrush x:Key="PrimaryRed" Color="#E31837"/>
+        <SolidColorBrush x:Key="DarkRed" Color="#C41230"/>
+        <SolidColorBrush x:Key="LightRed" Color="#FFE8EB"/>
+        
+        <!-- Modern Button Style -->
+        <Style x:Key="ModernButton" TargetType="Button">
+            <Setter Property="Background" Value="{StaticResource PrimaryRed}"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Height" Value="35"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Padding" Value="15,0"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" 
+                                CornerRadius="5"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}">
+                            <ContentPresenter HorizontalAlignment="Center" 
+                                            VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="{StaticResource DarkRed}"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Card Style -->
+        <Style x:Key="CardStyle" TargetType="Border">
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="CornerRadius" Value="10"/>
+            <Setter Property="Padding" Value="20"/>
+            <Setter Property="Margin" Value="10"/>
+            <Setter Property="BorderBrush" Value="#FFE0E0E0"/>
+            <Setter Property="BorderThickness" Value="1"/>
+        </Style>
+    </Window.Resources>
+
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Header -->
+        <StackPanel Grid.Row="0" Margin="0,0,0,20">
+            <TextBlock Text="Bao cao va Thong ke" FontSize="24" FontWeight="Bold" 
+                       Foreground="{StaticResource PrimaryRed}"/>
+            <TextBlock Text="Bao cao doanh thu va thong ke hoat dong" FontSize="14" Foreground="#FF666666" Margin="0,5,0,0"/>
+        </StackPanel>
+
+        <!-- Main Content -->
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+            <StackPanel>
+                <!-- Date Range Selection -->
+                <Border Style="{StaticResource CardStyle}">
+                    <StackPanel>
+                        <TextBlock Text="Chon khoang thoi gian" FontSize="16" FontWeight="SemiBold" 
+                                   Foreground="{StaticResource PrimaryRed}" Margin="0,0,0,15"/>
+                        
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            
+                            <TextBlock Grid.Column="0" Text="Tu ngay:" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                            <DatePicker x:Name="StartDatePicker" Grid.Column="1" Margin="0,0,20,0"/>
+                            
+                            <TextBlock Grid.Column="2" Text="Den ngay:" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                            <DatePicker x:Name="EndDatePicker" Grid.Column="3" Margin="0,0,20,0"/>
+                            
+                            <Button Grid.Column="4" Content="Tao bao cao" Style="{StaticResource ModernButton}" 
+                                    Click="GenerateReport_Click"/>
+                        </Grid>
+                    </StackPanel>
+                </Border>
+
+                <!-- Quick Reports -->
+                <Border Style="{StaticResource CardStyle}">
+                    <StackPanel>
+                        <TextBlock Text="Bao cao nhanh" FontSize="16" FontWeight="SemiBold" 
+                                   Foreground="{StaticResource PrimaryRed}" Margin="0,0,0,15"/>
+                        
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            
+                            <Button Grid.Column="0" Content="Hom nay" Style="{StaticResource ModernButton}" 
+                                    Margin="0,0,10,0" Click="TodayReport_Click"/>
+                            <Button Grid.Column="1" Content="7 ngay qua" Style="{StaticResource ModernButton}" 
+                                    Margin="0,0,10,0" Click="WeekReport_Click"/>
+                            <Button Grid.Column="2" Content="Thang nay" Style="{StaticResource ModernButton}" 
+                                    Margin="0,0,10,0" Click="MonthReport_Click"/>
+                            <Button Grid.Column="3" Content="Nam nay" Style="{StaticResource ModernButton}" 
+                                    Click="YearReport_Click"/>
+                        </Grid>
+                    </StackPanel>
+                </Border>
+
+                <!-- Report Results -->
+                <Border Style="{StaticResource CardStyle}">
+                    <StackPanel>
+                        <TextBlock Text="Ket qua bao cao" FontSize="16" FontWeight="SemiBold" 
+                                   Foreground="{StaticResource PrimaryRed}" Margin="0,0,0,15"/>
+                        
+                        <!-- Summary Statistics -->
+                        <Grid Margin="0,0,0,20">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            
+                            <Border Grid.Column="0" Background="{StaticResource LightRed}" CornerRadius="5" Padding="15" Margin="0,0,10,0">
+                                <StackPanel>
+                                    <TextBlock Text="Tong don hang" FontSize="12" Foreground="#FF666666"/>
+                                    <TextBlock x:Name="TotalOrdersReport" Text="0" FontSize="20" FontWeight="Bold" 
+                                               Foreground="{StaticResource PrimaryRed}"/>
+                                </StackPanel>
+                            </Border>
+                            
+                            <Border Grid.Column="1" Background="{StaticResource LightRed}" CornerRadius="5" Padding="15" Margin="0,0,10,0">
+                                <StackPanel>
+                                    <TextBlock Text="Tong doanh thu" FontSize="12" Foreground="#FF666666"/>
+                                    <TextBlock x:Name="TotalRevenueReport" Text="0d" FontSize="18" FontWeight="Bold" 
+                                               Foreground="{StaticResource PrimaryRed}"/>
+                                </StackPanel>
+                            </Border>
+                            
+                            <Border Grid.Column="2" Background="{StaticResource LightRed}" CornerRadius="5" Padding="15" Margin="0,0,10,0">
+                                <StackPanel>
+                                    <TextBlock Text="San pham ban chay" FontSize="12" Foreground="#FF666666"/>
+                                    <TextBlock x:Name="TopProductReport" Text="N/A" FontSize="16" FontWeight="Bold" 
+                                               Foreground="{StaticResource PrimaryRed}"/>
+                                </StackPanel>
+                            </Border>
+                            
+                            <Border Grid.Column="3" Background="{StaticResource LightRed}" CornerRadius="5" Padding="15">
+                                <StackPanel>
+                                    <TextBlock Text="Khach hang moi" FontSize="12" Foreground="#FF666666"/>
+                                    <TextBlock x:Name="NewCustomersReport" Text="0" FontSize="20" FontWeight="Bold" 
+                                               Foreground="{StaticResource PrimaryRed}"/>
+                                </StackPanel>
+                            </Border>
+                        </Grid>
+                        
+                        <!-- Detailed Data -->
+                        <DataGrid x:Name="ReportDataGrid" 
+                                AutoGenerateColumns="False"
+                                HeadersVisibility="Column"
+                                GridLinesVisibility="Horizontal"
+                                RowBackground="Transparent"
+                                AlternatingRowBackground="#FFF8F9FA"
+                                BorderThickness="1"
+                                BorderBrush="#FFE0E0E0"
+                                CanUserAddRows="False"
+                                CanUserDeleteRows="False"
+                                CanUserReorderColumns="False"
+                                CanUserResizeRows="False"
+                                SelectionMode="Single"
+                                RowHeight="40">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="Ngay" Binding="{Binding Date, StringFormat=dd/MM/yyyy}" Width="100"/>
+                                <DataGridTextColumn Header="So don hang" Binding="{Binding OrderCount}" Width="120"/>
+                                <DataGridTextColumn Header="Doanh thu" Binding="{Binding Revenue, StringFormat={}{0:N0}d}" Width="150"/>
+                                <DataGridTextColumn Header="Khach hang moi" Binding="{Binding NewCustomers}" Width="120"/>
+                                <DataGridTextColumn Header="San pham ban" Binding="{Binding ProductsSold}" Width="120"/>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+        </ScrollViewer>
+
+        <!-- Footer -->
+        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,20,0,0">
+            <Button Content="Xuat Excel" Style="{StaticResource ModernButton}" 
+                    Background="#FF28A745" Margin="0,0,10,0" Click="ExportExcel_Click"/>
+            <Button Content="In bao cao" Style="{StaticResource ModernButton}" 
+                    Background="#FF6C757D" Margin="0,0,10,0" Click="PrintReport_Click"/>
+            <Button Content="Quay lai Dashboard" Style="{StaticResource ModernButton}" 
+                    Background="#FF007BFF" Margin="0,0,10,0" Click="BackToDashboard_Click"/>
+            <Button Content="Dong" Style="{StaticResource ModernButton}" 
+                    Background="#FF6C757D" Click="Close_Click"/>
+        </StackPanel>
+    </Grid>
+</Window>

@@ -1,0 +1,124 @@
+<UserControl x:Class="ShoppingOnline.Views.AdminDashboardView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- Header -->
+        <StackPanel Grid.Row="0" Margin="0,0,0,20">
+            <TextBlock Text="Dashboard Quan ly" FontSize="24" FontWeight="Bold" 
+                       Foreground="#E31837"/>
+            <TextBlock Text="Tong quan he thong va thong ke" FontSize="14" Foreground="#FF666666" Margin="0,5,0,0"/>
+        </StackPanel>
+
+        <!-- Statistics Cards -->
+        <Grid Grid.Row="1" Margin="0,0,0,30">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- Total Customers Card -->
+            <Border Grid.Column="0" Background="White" CornerRadius="10" Padding="20" Margin="0,0,10,0"
+                    BorderBrush="#FFE0E0E0" BorderThickness="1">
+                <StackPanel>
+                    <TextBlock Text="Tong khach hang" FontSize="14" Foreground="#FF666666"/>
+                    <TextBlock x:Name="TotalCustomersText" Text="0" FontSize="24" FontWeight="Bold" 
+                               Foreground="#E31837" Margin="0,5,0,0"/>
+                    <TextBlock Text="Khach hang" FontSize="12" Foreground="#FF999999"/>
+                </StackPanel>
+            </Border>
+
+            <!-- Total Products Card -->
+            <Border Grid.Column="1" Background="White" CornerRadius="10" Padding="20" Margin="5,0"
+                    BorderBrush="#FFE0E0E0" BorderThickness="1">
+                <StackPanel>
+                    <TextBlock Text="Tong san pham" FontSize="14" Foreground="#FF666666"/>
+                    <TextBlock x:Name="TotalProductsText" Text="0" FontSize="24" FontWeight="Bold" 
+                               Foreground="#E31837" Margin="0,5,0,0"/>
+                    <TextBlock Text="San pham" FontSize="12" Foreground="#FF999999"/>
+                </StackPanel>
+            </Border>
+
+            <!-- Total Orders Card -->
+            <Border Grid.Column="2" Background="White" CornerRadius="10" Padding="20" Margin="5,0"
+                    BorderBrush="#FFE0E0E0" BorderThickness="1">
+                <StackPanel>
+                    <TextBlock Text="Tong don hang" FontSize="14" Foreground="#FF666666"/>
+                    <TextBlock x:Name="TotalOrdersText" Text="0" FontSize="24" FontWeight="Bold" 
+                               Foreground="#E31837" Margin="0,5,0,0"/>
+                    <TextBlock Text="Don hang" FontSize="12" Foreground="#FF999999"/>
+                </StackPanel>
+            </Border>
+
+            <!-- Total Order Value Card -->
+            <Border Grid.Column="3" Background="White" CornerRadius="10" Padding="20" Margin="10,0,0,0"
+                    BorderBrush="#FFE0E0E0" BorderThickness="1">
+                <StackPanel>
+                    <TextBlock Text="Tong gia tri don hang" FontSize="14" Foreground="#FF666666"/>
+                    <TextBlock x:Name="TotalRevenueText" Text="0 VND" FontSize="24" FontWeight="Bold" 
+                               Foreground="#E31837" Margin="0,5,0,0"/>
+                    <TextBlock Text="Gia tri don hang" FontSize="12" Foreground="#FF999999"/>
+                </StackPanel>
+            </Border>
+        </Grid>
+
+        <!-- Data Grids -->
+        <Grid Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- Recent Orders -->
+            <Border Grid.Column="0" Background="White" CornerRadius="10" Padding="20" Margin="0,0,10,0"
+                    BorderBrush="#FFE0E0E0" BorderThickness="1">
+                <StackPanel>
+                    <TextBlock Text="Don hang gan day" FontSize="16" FontWeight="SemiBold" 
+                               Foreground="#E31837" Margin="0,0,0,15"/>
+                    <DataGrid x:Name="RecentOrdersGrid" AutoGenerateColumns="False" HeadersVisibility="Column"
+                              GridLinesVisibility="Horizontal" RowBackground="Transparent"
+                              AlternatingRowBackground="#FFF8F9FA" BorderThickness="0"
+                              CanUserAddRows="False" CanUserDeleteRows="False" CanUserReorderColumns="False"
+                              CanUserResizeRows="False" SelectionMode="Single" RowHeight="40">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="ID" Binding="{Binding OrderId}" Width="50"/>
+                            <DataGridTextColumn Header="Khach hang" Binding="{Binding Customer.FullName}" Width="100"/>
+                            <DataGridTextColumn Header="San pham" Binding="{Binding ProductNames}" Width="150"/>
+                            <DataGridTextColumn Header="SL" Binding="{Binding TotalQuantity}" Width="40"/>
+                            <DataGridTextColumn Header="Tong tien" Binding="{Binding TotalAmount, StringFormat={}{0:N0} VND}" Width="90"/>
+                            <DataGridTextColumn Header="Trang thai" Binding="{Binding Status}" Width="70"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </StackPanel>
+            </Border>
+
+            <!-- Low Stock Products -->
+            <Border Grid.Column="1" Background="White" CornerRadius="10" Padding="20" Margin="10,0,0,0"
+                    BorderBrush="#FFE0E0E0" BorderThickness="1">
+                <StackPanel>
+                    <TextBlock Text="San pham sap het hang" FontSize="16" FontWeight="SemiBold" 
+                               Foreground="#E31837" Margin="0,0,0,15"/>
+                    <DataGrid x:Name="LowStockGrid" AutoGenerateColumns="False" HeadersVisibility="Column"
+                              GridLinesVisibility="Horizontal" RowBackground="Transparent"
+                              AlternatingRowBackground="#FFF8F9FA" BorderThickness="0"
+                              CanUserAddRows="False" CanUserDeleteRows="False" CanUserReorderColumns="False"
+                              CanUserResizeRows="False" SelectionMode="Single" RowHeight="40">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Ten san pham" Binding="{Binding ProductName}" Width="150"/>
+                            <DataGridTextColumn Header="Ton kho" Binding="{Binding StockQuantity}" Width="80"/>
+                            <DataGridTextColumn Header="Gia" Binding="{Binding Price, StringFormat={}{0:N0} VND}" Width="100"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </StackPanel>
+            </Border>
+        </Grid>
+    </Grid>
+</UserControl>

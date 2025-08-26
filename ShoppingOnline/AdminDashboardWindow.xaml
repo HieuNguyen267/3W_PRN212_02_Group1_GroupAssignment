@@ -15,34 +15,6 @@
         <SolidColorBrush x:Key="LightRed" Color="#FFE8EB"/>
         <SolidColorBrush x:Key="AccentRed" Color="#FF6B7C"/>
         
-        <!-- Modern Card Style -->
-        <Style x:Key="CardStyle" TargetType="Border">
-            <Setter Property="Background" Value="White"/>
-            <Setter Property="CornerRadius" Value="10"/>
-            <Setter Property="Padding" Value="20"/>
-            <Setter Property="Margin" Value="10"/>
-            <Setter Property="Effect">
-                <Setter.Value>
-                    <DropShadowEffect Color="#E0E0E0" BlurRadius="10" 
-                                    ShadowDepth="2" Opacity="0.3"/>
-                </Setter.Value>
-            </Setter>
-        </Style>
-
-        <!-- Stat Card Style -->
-        <Style x:Key="StatCardStyle" TargetType="Border">
-            <Setter Property="Background" Value="White"/>
-            <Setter Property="CornerRadius" Value="15"/>
-            <Setter Property="Padding" Value="25"/>
-            <Setter Property="Margin" Value="10"/>
-            <Setter Property="Effect">
-                <Setter.Value>
-                    <DropShadowEffect Color="#E0E0E0" BlurRadius="15" 
-                                    ShadowDepth="3" Opacity="0.2"/>
-                </Setter.Value>
-            </Setter>
-        </Style>
-
         <!-- Modern Button Style -->
         <Style x:Key="ModernButton" TargetType="Button">
             <Setter Property="Background" Value="{StaticResource PrimaryRed}"/>
@@ -110,6 +82,11 @@
                 </Setter.Value>
             </Setter>
         </Style>
+
+        <!-- Active Sidebar Button Style -->
+        <Style x:Key="ActiveSidebarButton" TargetType="Button" BasedOn="{StaticResource SidebarButton}">
+            <Setter Property="Background" Value="{StaticResource DarkRed}"/>
+        </Style>
     </Window.Resources>
 
     <Grid>
@@ -132,7 +109,7 @@
 
                 <!-- Navigation Menu -->
                 <StackPanel Margin="0,20,0,0">
-                    <Button Content="📊 Dashboard" Style="{StaticResource SidebarButton}" 
+                    <Button Content="📊 Dashboard" Style="{StaticResource ActiveSidebarButton}" 
                           Click="Dashboard_Click" x:Name="DashboardBtn"/>
                     <Button Content="👥 Quan ly Khach hang" Style="{StaticResource SidebarButton}" 
                           Click="Customers_Click" x:Name="CustomersBtn"/>
@@ -166,7 +143,7 @@
 
         <!-- Main Content Area -->
         <ScrollViewer Grid.Column="1" VerticalScrollBarVisibility="Auto">
-            <StackPanel x:Name="MainContent">
+            <StackPanel>
                 <!-- Page Title -->
                 <Border Background="White" Margin="20,20,20,0" CornerRadius="10" Padding="25">
                     <StackPanel Orientation="Horizontal">
@@ -177,250 +154,8 @@
                     </StackPanel>
                 </Border>
 
-                <!-- Dashboard Content -->
-                <StackPanel x:Name="DashboardContent" Visibility="Visible">
-                    <!-- Statistics Cards -->
-                    <Grid Margin="20,20,20,0">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="*"/>
-                        </Grid.ColumnDefinitions>
-
-                        <!-- Total Customers Card -->
-                        <Border Grid.Column="0" Style="{StaticResource StatCardStyle}">
-                            <StackPanel>
-                                <StackPanel Orientation="Horizontal">
-                                    <Border Background="{StaticResource PrimaryRed}" Width="50" Height="50" CornerRadius="25">
-                                        <TextBlock Text="👥" FontSize="24" HorizontalAlignment="Center" 
-                                                 VerticalAlignment="Center" Foreground="White"/>
-                                    </Border>
-                                    <StackPanel Margin="15,0,0,0" VerticalAlignment="Center">
-                                        <TextBlock x:Name="TotalCustomersText" Text="0" FontSize="24" 
-                                                 FontWeight="Bold" Foreground="{StaticResource PrimaryRed}"/>
-                                        <TextBlock Text="Khach hang" FontSize="14" Foreground="#FF7F8C8D"/>
-                                    </StackPanel>
-                                </StackPanel>
-                            </StackPanel>
-                        </Border>
-
-                        <!-- Total Products Card -->
-                        <Border Grid.Column="1" Style="{StaticResource StatCardStyle}">
-                            <StackPanel>
-                                <StackPanel Orientation="Horizontal">
-                                    <Border Background="{StaticResource AccentRed}" Width="50" Height="50" CornerRadius="25">
-                                        <TextBlock Text="📦" FontSize="24" HorizontalAlignment="Center" 
-                                                 VerticalAlignment="Center" Foreground="White"/>
-                                    </Border>
-                                    <StackPanel Margin="15,0,0,0" VerticalAlignment="Center">
-                                        <TextBlock x:Name="TotalProductsText" Text="0" FontSize="24" 
-                                                 FontWeight="Bold" Foreground="{StaticResource PrimaryRed}"/>
-                                        <TextBlock Text="San pham" FontSize="14" Foreground="#FF7F8C8D"/>
-                                    </StackPanel>
-                                </StackPanel>
-                            </StackPanel>
-                        </Border>
-
-                        <!-- Total Orders Card -->
-                        <Border Grid.Column="2" Style="{StaticResource StatCardStyle}">
-                            <StackPanel>
-                                <StackPanel Orientation="Horizontal">
-                                    <Border Background="{StaticResource DarkRed}" Width="50" Height="50" CornerRadius="25">
-                                        <TextBlock Text="🛍️" FontSize="24" HorizontalAlignment="Center" 
-                                                 VerticalAlignment="Center" Foreground="White"/>
-                                    </Border>
-                                    <StackPanel Margin="15,0,0,0" VerticalAlignment="Center">
-                                        <TextBlock x:Name="TotalOrdersText" Text="0" FontSize="24" 
-                                                 FontWeight="Bold" Foreground="{StaticResource PrimaryRed}"/>
-                                        <TextBlock Text="Don hang" FontSize="14" Foreground="#FF7F8C8D"/>
-                                    </StackPanel>
-                                </StackPanel>
-                            </StackPanel>
-                        </Border>
-
-                        <!-- Total Revenue Card -->
-                        <Border Grid.Column="3" Style="{StaticResource StatCardStyle}">
-                            <StackPanel>
-                                <StackPanel Orientation="Horizontal">
-                                    <Border Background="#E74C3C" Width="50" Height="50" CornerRadius="25">
-                                        <TextBlock Text="💰" FontSize="24" HorizontalAlignment="Center" 
-                                                 VerticalAlignment="Center" Foreground="White"/>
-                                    </Border>
-                                    <StackPanel Margin="15,0,0,0" VerticalAlignment="Center">
-                                        <TextBlock x:Name="TotalRevenueText" Text="0đ" FontSize="20" 
-                                                 FontWeight="Bold" Foreground="{StaticResource PrimaryRed}"/>
-                                        <TextBlock Text="Doanh thu" FontSize="14" Foreground="#FF7F8C8D"/>
-                                    </StackPanel>
-                                </StackPanel>
-                            </StackPanel>
-                        </Border>
-                    </Grid>
-
-                    <!-- Today Stats -->
-                    <Grid Margin="20,20,20,0">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="*"/>
-                        </Grid.ColumnDefinitions>
-
-                        <!-- Today Orders Card -->
-                        <Border Grid.Column="0" Style="{StaticResource StatCardStyle}">
-                            <StackPanel>
-                                <TextBlock Text="📅 Hom nay" FontSize="16" FontWeight="SemiBold" 
-                                         Foreground="{StaticResource PrimaryRed}" Margin="0,0,0,15"/>
-                                <StackPanel Orientation="Horizontal">
-                                    <Border Background="{StaticResource AccentRed}" Width="40" Height="40" CornerRadius="20">
-                                        <TextBlock Text="📊" FontSize="20" HorizontalAlignment="Center" 
-                                                 VerticalAlignment="Center" Foreground="White"/>
-                                    </Border>
-                                    <StackPanel Margin="15,0,0,0" VerticalAlignment="Center">
-                                        <TextBlock x:Name="TodayOrdersText" Text="0" FontSize="20" 
-                                                 FontWeight="Bold" Foreground="{StaticResource PrimaryRed}"/>
-                                        <TextBlock Text="Don hang moi" FontSize="12" Foreground="#FF7F8C8D"/>
-                                    </StackPanel>
-                                </StackPanel>
-                            </StackPanel>
-                        </Border>
-
-                        <!-- Today Revenue Card -->
-                        <Border Grid.Column="1" Style="{StaticResource StatCardStyle}">
-                            <StackPanel>
-                                <TextBlock Text="💸 Doanh thu hom nay" FontSize="16" FontWeight="SemiBold" 
-                                         Foreground="{StaticResource PrimaryRed}" Margin="0,0,0,15"/>
-                                <StackPanel Orientation="Horizontal">
-                                    <Border Background="{StaticResource DarkRed}" Width="40" Height="40" CornerRadius="20">
-                                        <TextBlock Text="💳" FontSize="20" HorizontalAlignment="Center" 
-                                                 VerticalAlignment="Center" Foreground="White"/>
-                                    </Border>
-                                    <StackPanel Margin="15,0,0,0" VerticalAlignment="Center">
-                                        <TextBlock x:Name="TodayRevenueText" Text="0đ" FontSize="18" 
-                                                 FontWeight="Bold" Foreground="{StaticResource PrimaryRed}"/>
-                                        <TextBlock Text="Tu don da hoan thanh" FontSize="12" Foreground="#FF7F8C8D"/>
-                                    </StackPanel>
-                                </StackPanel>
-                            </StackPanel>
-                        </Border>
-                    </Grid>
-
-                    <!-- Recent Orders and Low Stock -->
-                    <Grid Margin="20,20,20,20">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="*"/>
-                        </Grid.ColumnDefinitions>
-
-                        <!-- Recent Orders -->
-                        <Border Grid.Column="0" Style="{StaticResource CardStyle}">
-                            <StackPanel>
-                                <StackPanel Orientation="Horizontal" Margin="0,0,0,15">
-                                    <TextBlock Text="🕒 Don hang gan day" FontSize="18" FontWeight="SemiBold" 
-                                             Foreground="{StaticResource PrimaryRed}"/>
-                                    <Button Content="Xem tat ca" Style="{StaticResource ModernButton}" 
-                                          Height="30" FontSize="12" Margin="20,0,0,0"
-                                          Click="ViewAllOrders_Click"/>
-                                </StackPanel>
-                                
-                                <DataGrid x:Name="RecentOrdersGrid" 
-                                        AutoGenerateColumns="False"
-                                        HeadersVisibility="Column"
-                                        GridLinesVisibility="None"
-                                        RowBackground="Transparent"
-                                        AlternatingRowBackground="#FFF8F9FA"
-                                        BorderThickness="0"
-                                        CanUserAddRows="False"
-                                        CanUserDeleteRows="False"
-                                        CanUserReorderColumns="False"
-                                        CanUserResizeRows="False"
-                                        SelectionMode="Single">
-                                    <DataGrid.Columns>
-                                        <DataGridTextColumn Header="ID" Binding="{Binding OrderId}" Width="60"/>
-                                        <DataGridTextColumn Header="Khach hang" Binding="{Binding Customer.FullName}" Width="150"/>
-                                        <DataGridTextColumn Header="Ngay" Binding="{Binding OrderDate, StringFormat=dd/MM/yyyy}" Width="100"/>
-                                        <DataGridTextColumn Header="Tong tien" Binding="{Binding TotalAmount, StringFormat=N0}" Width="120"/>
-                                        <DataGridTextColumn Header="Trang thai" Binding="{Binding Status}" Width="100"/>
-                                    </DataGrid.Columns>
-                                </DataGrid>
-                            </StackPanel>
-                        </Border>
-
-                        <!-- Low Stock Products -->
-                        <Border Grid.Column="1" Style="{StaticResource CardStyle}">
-                            <StackPanel>
-                                <StackPanel Orientation="Horizontal" Margin="0,0,0,15">
-                                    <TextBlock Text="⚠️ San pham sap het" FontSize="18" FontWeight="SemiBold" 
-                                             Foreground="{StaticResource PrimaryRed}"/>
-                                    <Button Content="Quan ly kho" Style="{StaticResource ModernButton}" 
-                                          Height="30" FontSize="12" Margin="20,0,0,0"
-                                          Background="#FFFF6B6B"
-                                          Click="ManageStock_Click"/>
-                                </StackPanel>
-                                
-                                <DataGrid x:Name="LowStockGrid" 
-                                        AutoGenerateColumns="False"
-                                        HeadersVisibility="Column"
-                                        GridLinesVisibility="None"
-                                        RowBackground="Transparent"
-                                        AlternatingRowBackground="#FFF8F9FA"
-                                        BorderThickness="0"
-                                        CanUserAddRows="False"
-                                        CanUserDeleteRows="False"
-                                        CanUserReorderColumns="False"
-                                        CanUserResizeRows="False"
-                                        SelectionMode="Single">
-                                    <DataGrid.Columns>
-                                        <DataGridTextColumn Header="Ten san pham" Binding="{Binding ProductName}" Width="200"/>
-                                        <DataGridTextColumn Header="Danh muc" Binding="{Binding Category.CategoryName}" Width="120"/>
-                                        <DataGridTextColumn Header="Ton kho" Binding="{Binding StockQuantity}" Width="80"/>
-                                    </DataGrid.Columns>
-                                </DataGrid>
-                            </StackPanel>
-                        </Border>
-                    </Grid>
-                </StackPanel>
-
-                <!-- Other Content Panels -->
-                <StackPanel x:Name="CustomersContent" Visibility="Collapsed">
-                    <!-- Customer management content will be added here -->
-                    <TextBlock Text="Customer Management Coming Soon..." FontSize="20" 
-                             HorizontalAlignment="Center" VerticalAlignment="Center" 
-                             Foreground="#FF7F8C8D" Margin="50"/>
-                </StackPanel>
-
-                <StackPanel x:Name="ProductsContent" Visibility="Collapsed">
-                    <!-- Product management content will be added here -->
-                    <TextBlock Text="Product Management Coming Soon..." FontSize="20" 
-                             HorizontalAlignment="Center" VerticalAlignment="Center" 
-                             Foreground="#FF7F8C8D" Margin="50"/>
-                </StackPanel>
-
-                <StackPanel x:Name="OrdersContent" Visibility="Collapsed">
-                    <!-- Order management content will be added here -->
-                    <TextBlock Text="Order Management Coming Soon..." FontSize="20" 
-                             HorizontalAlignment="Center" VerticalAlignment="Center" 
-                             Foreground="#FF7F8C8D" Margin="50"/>
-                </StackPanel>
-
-                <StackPanel x:Name="CategoriesContent" Visibility="Collapsed">
-                    <!-- Category management content will be added here -->
-                    <TextBlock Text="Category Management Coming Soon..." FontSize="20" 
-                             HorizontalAlignment="Center" VerticalAlignment="Center" 
-                             Foreground="#FF7F8C8D" Margin="50"/>
-                </StackPanel>
-
-                <StackPanel x:Name="AdminsContent" Visibility="Collapsed">
-                    <!-- Admin management content will be added here -->
-                    <TextBlock Text="Admin Management Coming Soon..." FontSize="20" 
-                             HorizontalAlignment="Center" VerticalAlignment="Center" 
-                             Foreground="#FF7F8C8D" Margin="50"/>
-                </StackPanel>
-
-                <StackPanel x:Name="ReportsContent" Visibility="Collapsed">
-                    <!-- Reports content will be added here -->
-                    <TextBlock Text="Reports Coming Soon..." FontSize="20" 
-                             HorizontalAlignment="Center" VerticalAlignment="Center" 
-                             Foreground="#FF7F8C8D" Margin="50"/>
-                </StackPanel>
+                <!-- Dynamic Content Area -->
+                <ContentControl x:Name="MainContentControl" Margin="0,20,0,20"/>
             </StackPanel>
         </ScrollViewer>
     </Grid>

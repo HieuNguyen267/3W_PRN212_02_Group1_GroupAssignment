@@ -1,17 +1,19 @@
 using BLL.Services;
 using DAL.Entities;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using ShoppingOnline.Views;
 
 namespace ShoppingOnline
 {
     public partial class AdminDashboardWindow : Window, INotifyPropertyChanged
     {
         private readonly IAdminService _adminService;
+        private AdminDashboardView? _dashboardView;
+        private AdminProductsView? _productsView;
+        private AdminOrdersView? _ordersView;
 
         public AdminDashboardWindow()
         {
@@ -29,7 +31,7 @@ namespace ShoppingOnline
             }
             
             InitializeAdminInfo();
-            LoadDashboardData();
+            NavigateToDashboard(); // Load dashboard by default
         }
 
         private void InitializeAdminInfo()
@@ -38,259 +40,235 @@ namespace ShoppingOnline
             AdminEmailText.Text = AdminSession.Email ?? "admin@shop.com";
         }
 
-        private void LoadDashboardData()
+        private void NavigateToDashboard()
         {
-            try
+            if (_dashboardView == null)
+                _dashboardView = new AdminDashboardView();
+            
+            MainContentControl.Content = _dashboardView;
+            UpdatePageTitle("Dashboard", "Tong quan he thong");
+            UpdateActiveButton("Dashboard");
+            
+            // Refresh dashboard data
+            _dashboardView.LoadDashboardData();
+        }
+
+        private void NavigateToProducts()
+        {
+            if (_productsView == null)
+                _productsView = new AdminProductsView();
+            
+            MainContentControl.Content = _productsView;
+            UpdatePageTitle("Quan ly San pham", "Danh sach va thong tin san pham");
+            UpdateActiveButton("Products");
+        }
+
+        private void NavigateToOrders()
+        {
+            if (_ordersView == null)
+                _ordersView = new AdminOrdersView();
+            
+            MainContentControl.Content = _ordersView;
+            UpdatePageTitle("Quan ly Don hang", "Danh sach va trang thai don hang");
+            UpdateActiveButton("Orders");
+        }
+
+        private void NavigateToCustomers()
+        {
+            // Use the actual AdminCustomersView instead of placeholder
+            var customersView = new AdminCustomersView();
+            
+            MainContentControl.Content = customersView;
+            UpdatePageTitle("Quan ly Khach hang", "Danh sach khach hang");
+            UpdateActiveButton("Customers");
+        }
+
+        private void NavigateToCategories()
+        {
+            // Use placeholder since AdminCategoriesView doesn't exist yet
+            var categoriesView = new TextBlock 
+            { 
+                Text = "Quan ly Danh muc - Dang phat trien", 
+                FontSize = 24,
+                HorizontalAlignment = HorizontalAlignment.Center,
+                VerticalAlignment = VerticalAlignment.Center,
+                Margin = new Thickness(50)
+            };
+            MainContentControl.Content = categoriesView;
+            
+            UpdatePageTitle("Quan ly Danh muc", "Danh sach danh muc san pham");
+            UpdateActiveButton("Categories");
+        }
+
+        private void NavigateToAdmins()
+        {
+            // Use the actual AdminAdminsView instead of placeholder
+            var adminsView = new AdminAdminsView();
+            
+            MainContentControl.Content = adminsView;
+            UpdatePageTitle("Quan ly Admin", "Quan ly tai khoan admin");
+            UpdateActiveButton("Admins");
+        }
+
+        private void NavigateToReports()
+        {
+            // Try to use AdminAccountManagementView for account management
+            try 
             {
-                // Load statistics
-                var totalCustomers = _adminService.GetTotalCustomers();
-                var totalProducts = _adminService.GetTotalProducts();
-                var totalOrders = _adminService.GetTotalOrders();
-                var totalRevenue = _adminService.GetTotalRevenue();
-                var todayOrders = _adminService.GetTodayOrders();
-                var todayRevenue = _adminService.GetTodayRevenue();
-
-                // Update UI
-                TotalCustomersText.Text = totalCustomers.ToString("N0");
-                TotalProductsText.Text = totalProducts.ToString("N0");
-                TotalOrdersText.Text = totalOrders.ToString("N0");
-                TotalRevenueText.Text = $"{totalRevenue:N0}?";
-                TodayOrdersText.Text = todayOrders.ToString("N0");
-                TodayRevenueText.Text = $"{todayRevenue:N0}?";
-
-                // Load recent orders
-                var recentOrders = _adminService.GetRecentOrders(10);
-                RecentOrdersGrid.ItemsSource = recentOrders;
-
-                // Load low stock products
-                var lowStockProducts = _adminService.GetLowStockProducts(10);
-                LowStockGrid.ItemsSource = lowStockProducts;
+                var accountsView = new AdminAccountManagementView();
+                MainContentControl.Content = accountsView;
+                UpdatePageTitle("Quan ly Tai khoan", "Quan ly tat ca tai khoan");
             }
-            catch (Exception ex)
+            catch
             {
-                MessageBox.Show($"Loi khi tai du lieu dashboard: {ex.Message}", "Loi", 
-                    MessageBoxButton.OK, MessageBoxImage.Error);
+                // If view doesn't exist, use placeholder
+                var reportsView = new TextBlock 
+                { 
+                    Text = "Bao cao - Dang phat trien", 
+                    FontSize = 24,
+                    HorizontalAlignment = HorizontalAlignment.Center,
+                    VerticalAlignment = VerticalAlignment.Center,
+                    Margin = new Thickness(50)
+                };
+                MainContentControl.Content = reportsView;
+                UpdatePageTitle("Bao cao", "Thong ke va bao cao");
+            }
+            UpdateActiveButton("Reports");
+        }
+
+        private void NavigateToCarriers()
+        {
+            // Use the actual AdminCarriersView 
+            var carriersView = new AdminCarriersView();
+            
+            MainContentControl.Content = carriersView;
+            UpdatePageTitle("Quan ly Nha van chuyen", "Danh sach nha van chuyen");
+            UpdateActiveButton("Carriers");
+        }
+
+        private void NavigateToAccounts()
+        {
+            // Use the actual AdminAccountManagementView 
+            var accountsView = new AdminAccountManagementView();
+            
+            MainContentControl.Content = accountsView;
+            UpdatePageTitle("Quan ly Tai khoan", "Quan ly tat ca tai khoan");
+            UpdateActiveButton("Accounts");
+        }
+
+        private void UpdatePageTitle(string title, string subtitle)
+        {
+            PageTitle.Text = title;
+            PageSubtitle.Text = subtitle;
+        }
+
+        private void UpdateActiveButton(string activeButton)
+        {
+            // Reset all buttons to normal style
+            DashboardBtn.Style = (Style)FindResource("SidebarButton");
+            CustomersBtn.Style = (Style)FindResource("SidebarButton");
+            ProductsBtn.Style = (Style)FindResource("SidebarButton");
+            OrdersBtn.Style = (Style)FindResource("SidebarButton");
+            CategoriesBtn.Style = (Style)FindResource("SidebarButton");
+            AdminsBtn.Style = (Style)FindResource("SidebarButton");
+            ReportsBtn.Style = (Style)FindResource("SidebarButton");
+
+            // Set active button style
+            switch (activeButton)
+            {
+                case "Dashboard":
+                    DashboardBtn.Style = (Style)FindResource("ActiveSidebarButton");
+                    break;
+                case "Customers":
+                    CustomersBtn.Style = (Style)FindResource("ActiveSidebarButton");
+                    break;
+                case "Products":
+                    ProductsBtn.Style = (Style)FindResource("ActiveSidebarButton");
+                    break;
+                case "Orders":
+                    OrdersBtn.Style = (Style)FindResource("ActiveSidebarButton");
+                    break;
+                case "Categories":
+                    CategoriesBtn.Style = (Style)FindResource("ActiveSidebarButton");
+                    break;
+                case "Admins":
+                    AdminsBtn.Style = (Style)FindResource("ActiveSidebarButton");
+                    break;
+                case "Reports":
+                case "Accounts":
+                case "Carriers":
+                    ReportsBtn.Style = (Style)FindResource("ActiveSidebarButton");
+                    break;
             }
         }
 
         #region Navigation Methods
         private void Dashboard_Click(object sender, RoutedEventArgs e)
         {
-            ShowContent("Dashboard");
-            PageTitle.Text = "[D] Dashboard";
-            PageSubtitle.Text = "Tong quan he thong";
-            LoadDashboardData();
+            NavigateToDashboard();
         }
 
         private void Customers_Click(object sender, RoutedEventArgs e)
         {
-            ShowContent("Customers");
-            PageTitle.Text = "[U] Quan ly Khach hang";
-            PageSubtitle.Text = "Danh sach va thong tin khach hang";
-            LoadCustomersData();
+            NavigateToCustomers();
         }
 
         private void Products_Click(object sender, RoutedEventArgs e)
         {
-            ShowContent("Products");
-            PageTitle.Text = "[P] Quan ly San pham";
-            PageSubtitle.Text = "Danh sach va thong tin san pham";
-            LoadProductsData();
+            NavigateToProducts();
         }
 
         private void Orders_Click(object sender, RoutedEventArgs e)
         {
-            ShowContent("Orders");
-            PageTitle.Text = "[O] Quan ly Don hang";
-            PageSubtitle.Text = "Danh sach va trang thai don hang";
-            LoadOrdersData();
+            NavigateToOrders();
         }
 
         private void Categories_Click(object sender, RoutedEventArgs e)
         {
-            ShowContent("Categories");
-            PageTitle.Text = "[C] Quan ly Danh muc";
-            PageSubtitle.Text = "Danh sach va phan loai san pham";
-            LoadCategoriesData();
+            NavigateToCategories();
         }
 
         private void Admins_Click(object sender, RoutedEventArgs e)
         {
-            ShowContent("Admins");
-            PageTitle.Text = "[A] Quan ly Admin";
-            PageSubtitle.Text = "Danh sach quan tri vien";
-            LoadAdminsData();
+            NavigateToAdmins();
         }
 
         private void Reports_Click(object sender, RoutedEventArgs e)
         {
-            ShowContent("Reports");
-            PageTitle.Text = "[R] Bao cao";
-            PageSubtitle.Text = "Thong ke va phan tich";
-            LoadReportsData();
+            NavigateToReports();
         }
 
-        private void ShowContent(string contentName)
+        private void Carriers_Click(object sender, RoutedEventArgs e)
         {
-            // Hide all content panels
-            DashboardContent.Visibility = Visibility.Collapsed;
-            CustomersContent.Visibility = Visibility.Collapsed;
-            ProductsContent.Visibility = Visibility.Collapsed;
-            OrdersContent.Visibility = Visibility.Collapsed;
-            CategoriesContent.Visibility = Visibility.Collapsed;
-            AdminsContent.Visibility = Visibility.Collapsed;
-            ReportsContent.Visibility = Visibility.Collapsed;
-
-            // Show selected content
-            switch (contentName)
-            {
-                case "Dashboard":
-                    DashboardContent.Visibility = Visibility.Visible;
-                    break;
-                case "Customers":
-                    CustomersContent.Visibility = Visibility.Visible;
-                    break;
-                case "Products":
-                    ProductsContent.Visibility = Visibility.Visible;
-                    break;
-                case "Orders":
-                    OrdersContent.Visibility = Visibility.Visible;
-                    break;
-                case "Categories":
-                    CategoriesContent.Visibility = Visibility.Visible;
-                    break;
-                case "Admins":
-                    AdminsContent.Visibility = Visibility.Visible;
-                    break;
-                case "Reports":
-                    ReportsContent.Visibility = Visibility.Visible;
-                    break;
-            }
-        }
-        #endregion
-
-        #region Data Loading Methods
-        private void LoadCustomersData()
-        {
-            try
-            {
-                // Load customers data
-                var customers = _adminService.GetAllCustomers();
-                // TODO: Populate customers content
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"L?i khi t?i d? li?u khách hàng: {ex.Message}", "L?i", 
-                    MessageBoxButton.OK, MessageBoxImage.Error);
-            }
+            NavigateToCarriers();
         }
 
-        private void LoadProductsData()
+        private void Accounts_Click(object sender, RoutedEventArgs e)
         {
-            try
-            {
-                // Load products data
-                var products = _adminService.GetAllProducts();
-                // TODO: Populate products content
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"L?i khi t?i d? li?u s?n ph?m: {ex.Message}", "L?i", 
-                    MessageBoxButton.OK, MessageBoxImage.Error);
-            }
-        }
-
-        private void LoadOrdersData()
-        {
-            try
-            {
-                // Load orders data
-                var orders = _adminService.GetAllOrders();
-                // TODO: Populate orders content
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"L?i khi t?i d? li?u ??n hàng: {ex.Message}", "L?i", 
-                    MessageBoxButton.OK, MessageBoxImage.Error);
-            }
-        }
-
-        private void LoadCategoriesData()
-        {
-            try
-            {
-                // Load categories data
-                var categories = _adminService.GetAllCategories();
-                // TODO: Populate categories content
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"L?i khi t?i d? li?u danh m?c: {ex.Message}", "L?i", 
-                    MessageBoxButton.OK, MessageBoxImage.Error);
-            }
-        }
-
-        private void LoadAdminsData()
-        {
-            try
-            {
-                // Load admins data
-                var admins = _adminService.GetAllAdmins();
-                // TODO: Populate admins content
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"L?i khi t?i d? li?u admin: {ex.Message}", "L?i", 
-                    MessageBoxButton.OK, MessageBoxImage.Error);
-            }
-        }
-
-        private void LoadReportsData()
-        {
-            try
-            {
-                // Load reports data
-                // TODO: Populate reports content
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"L?i khi t?i d? li?u báo cáo: {ex.Message}", "L?i", 
-                    MessageBoxButton.OK, MessageBoxImage.Error);
-            }
+            NavigateToAccounts();
         }
         #endregion
 
         #region Event Handlers
-        private void ViewAllOrders_Click(object sender, RoutedEventArgs e)
-        {
-            Orders_Click(sender, e);
-        }
-
-        private void ManageStock_Click(object sender, RoutedEventArgs e)
-        {
-            Products_Click(sender, e);
-        }
-
         private void Logout_Click(object sender, RoutedEventArgs e)
         {
-            var result = MessageBox.Show($"Ban co muon dang xuat khoi Admin Panel?", 
-                "Xac nhan dang xuat", MessageBoxButton.YesNo, MessageBoxImage.Question);
+            var result = MessageBox.Show("B?n có mu?n ??ng xu?t kh?i Admin Panel?", 
+                "Xác nh?n ??ng xu?t", MessageBoxButton.YesNo, MessageBoxImage.Question);
             
             if (result == MessageBoxResult.Yes)
             {
                 AdminSession.Logout();
-                MessageBox.Show("Da dang xuat thanh cong!", "Thong bao", 
+                MessageBox.Show("?ã ??ng xu?t thành công!", "Thông báo", 
                     MessageBoxButton.OK, MessageBoxImage.Information);
                 
-                // Close the current admin dashboard
                 this.Close();
             }
         }
 
         protected override void OnClosing(CancelEventArgs e)
         {
-            var result = MessageBox.Show("Ban co muon thoat Admin Dashboard?", 
-                "Xac nhan thoat", MessageBoxButton.YesNo, MessageBoxImage.Question);
+            var result = MessageBox.Show("B?n có mu?n thoát Admin Dashboard?", 
+                "Xác nh?n thoát", MessageBoxButton.YesNo, MessageBoxImage.Question);
             
             if (result == MessageBoxResult.No)
             {

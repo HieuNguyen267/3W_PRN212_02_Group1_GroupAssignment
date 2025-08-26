@@ -1,0 +1,170 @@
+<Window x:Class="ShoppingOnline.CarrierSelectionDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Chon nguoi giao hang" 
+        Height="500" Width="700"
+        WindowStartupLocation="CenterOwner"
+        Background="#FFF8F9FA"
+        ResizeMode="NoResize">
+    
+    <Window.Resources>
+        <!-- Red Theme Colors -->
+        <SolidColorBrush x:Key="PrimaryRed" Color="#E31837"/>
+        <SolidColorBrush x:Key="DarkRed" Color="#C41230"/>
+        <SolidColorBrush x:Key="LightRed" Color="#FFE8EB"/>
+        
+        <!-- Modern Button Style -->
+        <Style x:Key="ModernButton" TargetType="Button">
+            <Setter Property="Background" Value="{StaticResource PrimaryRed}"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Height" Value="35"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Padding" Value="15,0"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" 
+                                CornerRadius="5"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}">
+                            <ContentPresenter HorizontalAlignment="Center" 
+                                            VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="{StaticResource DarkRed}"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Header -->
+        <StackPanel Grid.Row="0" Margin="0,0,0,20">
+            <TextBlock x:Name="OrderTitleText" Text="Chon nguoi giao hang cho don hang #0" FontSize="20" FontWeight="Bold" 
+                       Foreground="{StaticResource PrimaryRed}"/>
+            <TextBlock Text="Chon mot nguoi giao hang tu danh sach ben duoi" FontSize="14" Foreground="#FF666666" Margin="0,5,0,0"/>
+        </StackPanel>
+
+        <!-- Current Carrier Info -->
+        <Border Grid.Row="1" Background="White" CornerRadius="10" Padding="15" Margin="0,0,0,15" 
+                BorderBrush="#FFE0E0E0" BorderThickness="1">
+            <StackPanel>
+                <TextBlock Text="Nguoi giao hang hien tai" FontSize="14" FontWeight="SemiBold" 
+                           Foreground="{StaticResource PrimaryRed}" Margin="0,0,0,10"/>
+                <TextBlock x:Name="CurrentCarrierText" Text="Chua chon nguoi giao hang" FontSize="12" 
+                           Foreground="#FF666666"/>
+            </StackPanel>
+        </Border>
+
+        <!-- Carriers List -->
+        <Border Grid.Row="2" Background="White" CornerRadius="10" Padding="20" 
+                BorderBrush="#FFE0E0E0" BorderThickness="1">
+            <StackPanel>
+                <TextBlock Text="Danh sach nguoi giao hang" FontSize="16" FontWeight="SemiBold" 
+                           Foreground="{StaticResource PrimaryRed}" Margin="0,0,0,15"/>
+                
+                <DataGrid x:Name="CarriersGrid" 
+                        AutoGenerateColumns="False"
+                        HeadersVisibility="Column"
+                        GridLinesVisibility="Horizontal"
+                        RowBackground="Transparent"
+                        AlternatingRowBackground="#FFF8F9FA"
+                        BorderThickness="0"
+                        CanUserAddRows="False"
+                        CanUserDeleteRows="False"
+                        IsReadOnly="True"
+                        SelectionMode="Single"
+                        SelectedItem="{Binding SelectedCarrier}"
+                        RowHeight="45">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Ten nguoi giao hang" Binding="{Binding FullName}" Width="200"/>
+                        <DataGridTextColumn Header="So dien thoai" Binding="{Binding Phone}" Width="120"/>
+                        <DataGridTextColumn Header="So xe" Binding="{Binding VehicleNumber}" Width="100"/>
+                        <DataGridTemplateColumn Header="Trang thai" Width="120">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Border CornerRadius="10" Padding="8,4" HorizontalAlignment="Center">
+                                        <Border.Style>
+                                            <Style TargetType="Border">
+                                                <Setter Property="Background" Value="#FF4CAF50"/>
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding IsAvailable}" Value="False">
+                                                        <Setter Property="Background" Value="#FFDC3545"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Border.Style>
+                                        <TextBlock Foreground="White" FontWeight="SemiBold" FontSize="11">
+                                            <TextBlock.Style>
+                                                <Style TargetType="TextBlock">
+                                                    <Setter Property="Text" Value="San sang"/>
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding IsAvailable}" Value="False">
+                                                            <Setter Property="Text" Value="Ban"/>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </TextBlock.Style>
+                                        </TextBlock>
+                                    </Border>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTemplateColumn Header="Thao tac" Width="100">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Button Content="Chon" Height="30" FontSize="11" Width="60"
+                                            Click="SelectCarrier_Click" Tag="{Binding CarrierId}" 
+                                            Background="{StaticResource PrimaryRed}" Foreground="White">
+                                        <Button.Style>
+                                            <Style TargetType="Button" BasedOn="{StaticResource ModernButton}">
+                                                <Setter Property="IsEnabled" Value="True"/>
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding IsAvailable}" Value="False">
+                                                        <Setter Property="IsEnabled" Value="False"/>
+                                                        <Setter Property="Background" Value="#FFBDC3C7"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Button.Style>
+                                    </Button>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                    </DataGrid.Columns>
+                </DataGrid>
+                
+                <!-- Empty state -->
+                <StackPanel x:Name="EmptyStatePanel" Visibility="Collapsed" 
+                           HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,50,0,0">
+                    <TextBlock Text="Khong co nguoi giao hang nao san sang" FontSize="16" 
+                               Foreground="#FF666666" HorizontalAlignment="Center"/>
+                    <TextBlock Text="Vui long lien he admin de them nguoi giao hang moi" FontSize="12" 
+                               Foreground="#FF999999" HorizontalAlignment="Center" Margin="0,5,0,0"/>
+                </StackPanel>
+            </StackPanel>
+        </Border>
+
+        <!-- Footer Buttons -->
+        <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,20,0,0">
+            <Button Content="Huy" Style="{StaticResource ModernButton}" 
+                    Background="#FF6C757D" Margin="0,0,10,0" Click="Cancel_Click"/>
+            <Button Content="Dong" Style="{StaticResource ModernButton}" 
+                    Background="#FF6C757D" Click="Close_Click"/>
+        </StackPanel>
+    </Grid>
+</Window>

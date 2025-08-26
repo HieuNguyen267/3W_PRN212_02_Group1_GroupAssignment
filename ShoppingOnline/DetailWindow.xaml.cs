@@ -16,6 +16,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using System.Globalization;
+using ShoppingOnline.Converters;
+
 
 namespace ShoppingOnline
 {
@@ -181,50 +183,5 @@ namespace ShoppingOnline
         }
     }
 
-    // Converters
-    public class FirstImageConverter : IValueConverter
-    {
-        public object? Convert(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            if (value is ICollection<ProductImage> images && images.Count > 0)
-            {
-                var firstImage = images.First();
-                if (!string.IsNullOrEmpty(firstImage.ImageUrl))
-                {
-                    try
-                    {
-                        return new BitmapImage(new Uri(firstImage.ImageUrl));
-                    }
-                    catch
-                    {
-                        // Return null if image loading fails
-                        return null;
-                    }
-                }
-            }
-            return null;
-        }
 
-        public object? ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            throw new NotImplementedException();
-        }
-    }
-
-    public class VisibilityConverter : IValueConverter
-    {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            if (value is int count)
-            {
-                return count == 0 ? Visibility.Visible : Visibility.Collapsed;
-            }
-            return Visibility.Visible;
-        }
-
-        public object? ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            throw new NotImplementedException();
-        }
-    }
 }

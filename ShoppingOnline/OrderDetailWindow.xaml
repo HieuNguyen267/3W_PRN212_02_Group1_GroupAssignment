@@ -1,0 +1,226 @@
+<Window x:Class="ShoppingOnline.OrderDetailWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Chi tiet don hang" 
+        Height="700" Width="900"
+        WindowStartupLocation="CenterOwner"
+        Background="#FFF8F9FA">
+    
+    <Window.Resources>
+        <!-- Red Theme Colors -->
+        <SolidColorBrush x:Key="PrimaryRed" Color="#E31837"/>
+        <SolidColorBrush x:Key="DarkRed" Color="#C41230"/>
+        <SolidColorBrush x:Key="LightRed" Color="#FFE8EB"/>
+        
+        <!-- Modern Button Style -->
+        <Style x:Key="ModernButton" TargetType="Button">
+            <Setter Property="Background" Value="{StaticResource PrimaryRed}"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Height" Value="35"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Padding" Value="15,0"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" 
+                                CornerRadius="5"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}">
+                            <ContentPresenter HorizontalAlignment="Center" 
+                                            VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="{StaticResource DarkRed}"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Header -->
+        <StackPanel Grid.Row="0" Margin="0,0,0,20">
+            <TextBlock x:Name="OrderTitleText" Text="Chi tiet don hang #0" FontSize="24" FontWeight="Bold" 
+                       Foreground="{StaticResource PrimaryRed}"/>
+            <TextBlock x:Name="OrderDateText" Text="Ngay dat: --/--/----" FontSize="14" Foreground="#FF666666" Margin="0,5,0,0"/>
+        </StackPanel>
+
+        <!-- Main Content -->
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+            <StackPanel>
+                <!-- Customer Info -->
+                <Border Background="White" CornerRadius="10" Padding="20" Margin="0,0,0,15" 
+                        BorderBrush="#FFE0E0E0" BorderThickness="1">
+                    <StackPanel>
+                        <TextBlock Text="Thong tin khach hang" FontSize="16" FontWeight="SemiBold" 
+                                   Foreground="{StaticResource PrimaryRed}" Margin="0,0,0,15"/>
+                        
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            
+                            <StackPanel Grid.Column="0">
+                                <TextBlock Text="Ten khach hang:" FontWeight="SemiBold" Margin="0,0,0,5"/>
+                                <TextBlock x:Name="CustomerNameText" Text="--" Margin="0,0,0,10"/>
+                                
+                                <TextBlock Text="So dien thoai:" FontWeight="SemiBold" Margin="0,0,0,5"/>
+                                <TextBlock x:Name="CustomerPhoneText" Text="--" Margin="0,0,0,10"/>
+                            </StackPanel>
+                            
+                            <StackPanel Grid.Column="1">
+                                <TextBlock Text="Email:" FontWeight="SemiBold" Margin="0,0,0,5"/>
+                                <TextBlock x:Name="CustomerEmailText" Text="--" Margin="0,0,0,10"/>
+                                
+                                <TextBlock Text="Dia chi giao hang:" FontWeight="SemiBold" Margin="0,0,0,5"/>
+                                <TextBlock x:Name="ShippingAddressText" Text="--" TextWrapping="Wrap"/>
+                            </StackPanel>
+                        </Grid>
+                    </StackPanel>
+                </Border>
+
+                <!-- Order Status -->
+                <Border Background="White" CornerRadius="10" Padding="20" Margin="0,0,0,15" 
+                        BorderBrush="#FFE0E0E0" BorderThickness="1">
+                    <StackPanel>
+                        <TextBlock Text="Trang thai don hang" FontSize="16" FontWeight="SemiBold" 
+                                   Foreground="{StaticResource PrimaryRed}" Margin="0,0,0,15"/>
+                        
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            
+                            <StackPanel Grid.Column="0">
+                                <TextBlock Text="Trang thai hien tai:" FontWeight="SemiBold" Margin="0,0,0,5"/>
+                                <Border x:Name="StatusBorder" CornerRadius="5" Padding="10,5" HorizontalAlignment="Left" Margin="0,0,0,15">
+                                    <TextBlock x:Name="CurrentStatusText" Text="--" Foreground="White" FontWeight="SemiBold"/>
+                                </Border>
+                                
+                                <TextBlock Text="Cap nhat trang thai:" FontWeight="SemiBold" Margin="0,0,0,5"/>
+                                <ComboBox x:Name="StatusComboBox" Width="200" HorizontalAlignment="Left" Height="35" FontSize="14">
+                                    <ComboBoxItem Content="Pending"/>
+                                    <ComboBoxItem Content="Confirmed"/>
+                                    <ComboBoxItem Content="Shipping"/>
+                                    <ComboBoxItem Content="Delivered"/>
+                                    <ComboBoxItem Content="Cancelled"/>
+                                </ComboBox>
+                            </StackPanel>
+                            
+                            <StackPanel Grid.Column="1" VerticalAlignment="Top">
+                                <Button x:Name="UpdateStatusButton" Content="Cap nhat trang thai" Style="{StaticResource ModernButton}" 
+                                        Margin="0,0,0,10" Click="UpdateStatus_Click"/>
+                                <Button x:Name="ConfirmOrderButton" Content="Xac nhan don hang" Style="{StaticResource ModernButton}" 
+                                        Background="#FF4CAF50" Margin="0,0,0,10" Click="ConfirmOrder_Click"/>
+                                <Button x:Name="CancelOrderButton" Content="Huy don hang" Style="{StaticResource ModernButton}" 
+                                        Background="#FFDC3545" Click="CancelOrder_Click"/>
+                            </StackPanel>
+                        </Grid>
+                    </StackPanel>
+                </Border>
+
+                <!-- Carrier Assignment -->
+                <Border Background="White" CornerRadius="10" Padding="20" Margin="0,0,0,15" 
+                        BorderBrush="#FFE0E0E0" BorderThickness="1">
+                    <StackPanel>
+                        <TextBlock Text="Nguoi giao hang" FontSize="16" FontWeight="SemiBold" 
+                                   Foreground="{StaticResource PrimaryRed}" Margin="0,0,0,15"/>
+                        
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            
+                            <StackPanel Grid.Column="0">
+                                <TextBlock Text="Nguoi giao hang hien tai:" FontWeight="SemiBold" Margin="0,0,0,5"/>
+                                <TextBlock x:Name="CurrentCarrierText" Text="Chua chon" Margin="0,0,0,15"/>
+                                
+                                <TextBlock Text="Chon nguoi giao hang:" FontWeight="SemiBold" Margin="0,0,0,5"/>
+                                <ComboBox x:Name="CarrierComboBox" Width="300" HorizontalAlignment="Left" Height="35" FontSize="14"
+                                          DisplayMemberPath="FullName" SelectedValuePath="CarrierId"/>
+                            </StackPanel>
+                            
+                            <StackPanel Grid.Column="1" VerticalAlignment="Top">
+                                <Button x:Name="AssignCarrierButton" Content="Gan nguoi giao hang" Style="{StaticResource ModernButton}" 
+                                        Background="#FFFF9800" Click="AssignCarrier_Click" Margin="0,20,0,10"/>
+                            </StackPanel>
+                        </Grid>
+                    </StackPanel>
+                </Border>
+
+                <!-- Order Items -->
+                <Border Background="White" CornerRadius="10" Padding="20" Margin="0,0,0,15" 
+                        BorderBrush="#FFE0E0E0" BorderThickness="1">
+                    <StackPanel>
+                        <TextBlock Text="San pham trong don hang" FontSize="16" FontWeight="SemiBold" 
+                                   Foreground="{StaticResource PrimaryRed}" Margin="0,0,0,15"/>
+                        
+                        <DataGrid x:Name="OrderItemsGrid" 
+                                AutoGenerateColumns="False"
+                                HeadersVisibility="Column"
+                                GridLinesVisibility="Horizontal"
+                                RowBackground="Transparent"
+                                AlternatingRowBackground="#FFF8F9FA"
+                                BorderThickness="0"
+                                CanUserAddRows="False"
+                                CanUserDeleteRows="False"
+                                IsReadOnly="True"
+                                SelectionMode="Single">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="San pham" Binding="{Binding Product.ProductName}" Width="250"/>
+                                <DataGridTextColumn Header="Danh muc" Binding="{Binding Product.Category.CategoryName}" Width="150"/>
+                                <DataGridTextColumn Header="Don gia" Binding="{Binding UnitPrice, StringFormat={}{0:N0} VND}" Width="120"/>
+                                <DataGridTextColumn Header="So luong" Binding="{Binding Quantity}" Width="100"/>
+                                <DataGridTextColumn Header="Thanh tien" Binding="{Binding SubTotal, StringFormat={}{0:N0} VND}" Width="120"/>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                        
+                        <!-- Total -->
+                        <Border Background="{StaticResource LightRed}" CornerRadius="5" Padding="15" Margin="0,15,0,0">
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                                <TextBlock Text="Tong cong: " FontSize="16" FontWeight="SemiBold"/>
+                                <TextBlock x:Name="TotalAmountText" Text="0 VND" FontSize="18" FontWeight="Bold" 
+                                           Foreground="{StaticResource PrimaryRed}"/>
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+                </Border>
+
+                <!-- Notes -->
+                <Border Background="White" CornerRadius="10" Padding="20" 
+                        BorderBrush="#FFE0E0E0" BorderThickness="1">
+                    <StackPanel>
+                        <TextBlock Text="Ghi chu" FontSize="16" FontWeight="SemiBold" 
+                                   Foreground="{StaticResource PrimaryRed}" Margin="0,0,0,15"/>
+                        
+                        <TextBox x:Name="NotesTextBox" Height="80" TextWrapping="Wrap" AcceptsReturn="True"
+                                 VerticalScrollBarVisibility="Auto" FontSize="14" Padding="10"/>
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+        </ScrollViewer>
+
+        <!-- Footer Buttons -->
+        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,20,0,0">
+            <Button Content="Luu thay doi" Style="{StaticResource ModernButton}" 
+                    Margin="0,0,10,0" Click="SaveChanges_Click"/>
+            <Button Content="Dong" Style="{StaticResource ModernButton}" 
+                    Background="#FF6C757D" Click="Close_Click"/>
+        </StackPanel>
+    </Grid>
+</Window>

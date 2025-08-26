@@ -4,6 +4,8 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ShoppingOnline"
+        xmlns:converters="clr-namespace:ShoppingOnline.Converters"
+
         mc:Ignorable="d"
         Title="HomeWindow" Height="1080" Width="1920" WindowStartupLocation="CenterScreen"
         WindowState="Maximized">
@@ -138,6 +140,8 @@
         
         <!-- Converters -->
         <local:PriceToMillionConverter x:Key="PriceToMillionConverter"/>
+        <converters:FirstImageConverter x:Key="FirstImageConverter"/>
+        <converters:VisibilityConverter x:Key="VisibilityConverter"/>
     </Window.Resources>
 
     <Grid>
@@ -205,6 +209,8 @@
                 <!-- Login/User Menu -->
                 <StackPanel x:Name="LoginPanel" Orientation="Horizontal" Margin="10,0,0,0">
                     <Button x:Name="LoginButton" Content="Đăng nhập" Background="Transparent" Foreground="White" BorderThickness="0" Click="Login_Click"/>
+
+
                 </StackPanel>
                 
                 <!-- User Menu Dropdown -->
@@ -286,7 +292,19 @@
                                             Foreground="{StaticResource PrimaryRed}" Click="MainBanner_Click"/>
                                 </StackPanel>
 
-                                <TextBlock Grid.Column="1" Text="📱" FontSize="80" VerticalAlignment="Center"/>
+                                <Grid Grid.Column="1" VerticalAlignment="Center">
+                                    <!-- Banner Product Image -->
+                                    <Image Stretch="Uniform" MaxWidth="120" MaxHeight="120" 
+                                           HorizontalAlignment="Center" VerticalAlignment="Center">
+                                        <Image.Source>
+                                            <Binding Path="MainBannerProduct.ProductImages" Converter="{StaticResource FirstImageConverter}"/>
+                                        </Image.Source>
+                                    </Image>
+                                    
+                                    <!-- Fallback icon if no image -->
+                                    <TextBlock Text="📱" FontSize="80" HorizontalAlignment="Center" VerticalAlignment="Center"
+                                               Visibility="{Binding MainBannerProduct.ProductImages.Count, Converter={StaticResource VisibilityConverter}}"/>
+                                </Grid>
                             </Grid>
                         </Border>
 
@@ -350,7 +368,18 @@
                                         <Border Style="{StaticResource ProductCardStyle}" MouseLeftButtonDown="ProductCard_Click">
                                     <StackPanel>
                                         <Border Style="{StaticResource ProductImageStyle}">
-                                            <TextBlock Text="📱" FontSize="60" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                            <Grid>
+
+                                                <Image Stretch="Uniform" MaxWidth="180" MaxHeight="140" 
+                                                       HorizontalAlignment="Center" VerticalAlignment="Center">
+                                                    <Image.Source>
+                                                        <Binding Path="ProductImages" Converter="{StaticResource FirstImageConverter}"/>
+                                                    </Image.Source>
+                                                </Image>
+                                                
+                                                <TextBlock Text="📱" FontSize="60" HorizontalAlignment="Center" VerticalAlignment="Center"
+                                                           Visibility="{Binding ProductImages.Count, Converter={StaticResource VisibilityConverter}}"/>
+                                            </Grid>
                                         </Border>
                                                 <TextBlock Text="{Binding ProductName}" Style="{StaticResource ProductTitleStyle}"/>
                                                 <TextBlock Text="{Binding Category.CategoryName}" Style="{StaticResource ProductSubtitleStyle}"/>
