@@ -75,15 +75,8 @@ namespace ShoppingOnline
 
         private void NavigateToCustomers()
         {
-            // Create a simple placeholder for now
-            var customersView = new TextBlock 
-            { 
-                Text = "Quan ly Khach hang - Dang phat trien", 
-                FontSize = 24,
-                HorizontalAlignment = HorizontalAlignment.Center,
-                VerticalAlignment = VerticalAlignment.Center,
-                Margin = new Thickness(50)
-            };
+            // Use the actual AdminCustomersView instead of placeholder
+            var customersView = new AdminCustomersView();
             
             MainContentControl.Content = customersView;
             UpdatePageTitle("Quan ly Khach hang", "Danh sach khach hang");
@@ -92,7 +85,7 @@ namespace ShoppingOnline
 
         private void NavigateToCategories()
         {
-            // Create a simple placeholder for now
+            // Use placeholder since AdminCategoriesView doesn't exist yet
             var categoriesView = new TextBlock 
             { 
                 Text = "Quan ly Danh muc - Dang phat trien", 
@@ -101,23 +94,16 @@ namespace ShoppingOnline
                 VerticalAlignment = VerticalAlignment.Center,
                 Margin = new Thickness(50)
             };
-            
             MainContentControl.Content = categoriesView;
+            
             UpdatePageTitle("Quan ly Danh muc", "Danh sach danh muc san pham");
             UpdateActiveButton("Categories");
         }
 
         private void NavigateToAdmins()
         {
-            // Create a simple placeholder for now
-            var adminsView = new TextBlock 
-            { 
-                Text = "Quan ly Admin - Dang phat trien", 
-                FontSize = 24,
-                HorizontalAlignment = HorizontalAlignment.Center,
-                VerticalAlignment = VerticalAlignment.Center,
-                Margin = new Thickness(50)
-            };
+            // Use the actual AdminAdminsView instead of placeholder
+            var adminsView = new AdminAdminsView();
             
             MainContentControl.Content = adminsView;
             UpdatePageTitle("Quan ly Admin", "Quan ly tai khoan admin");
@@ -126,7 +112,7 @@ namespace ShoppingOnline
 
         private void NavigateToReports()
         {
-            // Create a simple placeholder for now
+            // Use placeholder for reports
             var reportsView = new TextBlock 
             { 
                 Text = "Bao cao - Dang phat trien", 
@@ -135,10 +121,19 @@ namespace ShoppingOnline
                 VerticalAlignment = VerticalAlignment.Center,
                 Margin = new Thickness(50)
             };
-            
             MainContentControl.Content = reportsView;
             UpdatePageTitle("Bao cao", "Thong ke va bao cao");
             UpdateActiveButton("Reports");
+        }
+
+        private void NavigateToCarriers()
+        {
+            // Use the actual AdminCarriersView 
+            var carriersView = new AdminCarriersView();
+            
+            MainContentControl.Content = carriersView;
+            UpdatePageTitle("Quan ly Nha van chuyen", "Danh sach nha van chuyen");
+            UpdateActiveButton("Carriers");
         }
 
         private void UpdatePageTitle(string title, string subtitle)
@@ -157,6 +152,7 @@ namespace ShoppingOnline
             CategoriesBtn.Style = (Style)FindResource("SidebarButton");
             AdminsBtn.Style = (Style)FindResource("SidebarButton");
             ReportsBtn.Style = (Style)FindResource("SidebarButton");
+            CarriersBtn.Style = (Style)FindResource("SidebarButton");
 
             // Set active button style
             switch (activeButton)
@@ -181,6 +177,9 @@ namespace ShoppingOnline
                     break;
                 case "Reports":
                     ReportsBtn.Style = (Style)FindResource("ActiveSidebarButton");
+                    break;
+                case "Carriers":
+                    CarriersBtn.Style = (Style)FindResource("ActiveSidebarButton");
                     break;
             }
         }
@@ -219,6 +218,11 @@ namespace ShoppingOnline
         private void Reports_Click(object sender, RoutedEventArgs e)
         {
             NavigateToReports();
+        }
+
+        private void Carriers_Click(object sender, RoutedEventArgs e)
+        {
+            NavigateToCarriers();
         }
         #endregion
 

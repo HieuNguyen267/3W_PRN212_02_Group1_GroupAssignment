@@ -4,6 +4,246 @@
              xmlns:local="clr-namespace:ShoppingOnline"
              StartupUri="HomeWindow.xaml">
     <Application.Resources>
+        
+        <!-- ADMIN THEME COLORS -->
+        <SolidColorBrush x:Key="AdminPrimaryRed" Color="#E31837"/>
+        <SolidColorBrush x:Key="AdminDarkRed" Color="#C41230"/>
+        <SolidColorBrush x:Key="AdminLightRed" Color="#FFE8EB"/>
+        <SolidColorBrush x:Key="AdminAccentRed" Color="#FF6B7C"/>
+        <SolidColorBrush x:Key="AdminBackground" Color="#FFF8F9FA"/>
+        <SolidColorBrush x:Key="AdminCardBackground" Color="White"/>
+        <SolidColorBrush x:Key="AdminBorder" Color="#FFE0E0E0"/>
+        <SolidColorBrush x:Key="AdminTextPrimary" Color="#FF333333"/>
+        <SolidColorBrush x:Key="AdminTextSecondary" Color="#FF666666"/>
+        <SolidColorBrush x:Key="AdminTextMuted" Color="#FF999999"/>
+        
+        <!-- LEGACY THEME COLORS FOR BACKWARD COMPATIBILITY -->
+        <SolidColorBrush x:Key="PrimaryRed" Color="#E31837"/>
+        <SolidColorBrush x:Key="DarkRed" Color="#C41230"/>
+        <SolidColorBrush x:Key="LightRed" Color="#FFE8EB"/>
+        <SolidColorBrush x:Key="AccentRed" Color="#FF6B7C"/>
+        
+        <!-- ACTION BUTTON COLORS -->
+        <SolidColorBrush x:Key="AdminSuccessGreen" Color="#FF4CAF50"/>
+        <SolidColorBrush x:Key="AdminWarningOrange" Color="#FFFF9800"/>
+        <SolidColorBrush x:Key="AdminDangerRed" Color="#FFF44336"/>
+        <SolidColorBrush x:Key="AdminInfoBlue" Color="#FF2196F3"/>
+        <SolidColorBrush x:Key="AdminNeutralGray" Color="#FF9E9E9E"/>
+        
+        <!-- ADMIN MODERN BUTTON STYLE -->
+        <Style x:Key="AdminModernButton" TargetType="Button">
+            <Setter Property="Background" Value="{StaticResource AdminPrimaryRed}"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Height" Value="40"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Padding" Value="20,0"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" 
+                                CornerRadius="8"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}">
+                            <ContentPresenter HorizontalAlignment="Center" 
+                                            VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="{StaticResource AdminDarkRed}"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter Property="Background" Value="#B01029"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter Property="Background" Value="{StaticResource AdminNeutralGray}"/>
+                                <Setter Property="Opacity" Value="0.6"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        
+        <!-- LEGACY MODERN BUTTON STYLE FOR BACKWARD COMPATIBILITY -->
+        <Style x:Key="ModernButton" TargetType="Button" BasedOn="{StaticResource AdminModernButton}">
+            <Setter Property="Background" Value="{StaticResource PrimaryRed}"/>
+        </Style>
+        
+        <!-- ADMIN SIDEBAR BUTTON STYLE -->
+        <Style x:Key="AdminSidebarButton" TargetType="Button">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="FontWeight" Value="Medium"/>
+            <Setter Property="Height" Value="50"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="HorizontalContentAlignment" Value="Left"/>
+            <Setter Property="Padding" Value="20,0"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}">
+                            <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" 
+                                            VerticalAlignment="Center"
+                                            Margin="{TemplateBinding Padding}"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="{StaticResource AdminDarkRed}"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter Property="Background" Value="{StaticResource AdminLightRed}"/>
+                                <Setter Property="Foreground" Value="{StaticResource AdminDarkRed}"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        
+        <!-- LEGACY SIDEBAR BUTTON STYLE FOR BACKWARD COMPATIBILITY -->
+        <Style x:Key="SidebarButton" TargetType="Button" BasedOn="{StaticResource AdminSidebarButton}"/>
+        
+        <!-- ADMIN ACTIVE SIDEBAR BUTTON STYLE -->
+        <Style x:Key="AdminActiveSidebarButton" TargetType="Button" BasedOn="{StaticResource AdminSidebarButton}">
+            <Setter Property="Background" Value="{StaticResource AdminDarkRed}"/>
+        </Style>
+        
+        <!-- LEGACY ACTIVE SIDEBAR BUTTON STYLE -->
+        <Style x:Key="ActiveSidebarButton" TargetType="Button" BasedOn="{StaticResource AdminActiveSidebarButton}"/>
+        
+        <!-- ADMIN ACTION BUTTON STYLES -->
+        <Style x:Key="AdminSuccessButton" TargetType="Button" BasedOn="{StaticResource AdminModernButton}">
+            <Setter Property="Background" Value="{StaticResource AdminSuccessGreen}"/>
+        </Style>
+        
+        <Style x:Key="AdminWarningButton" TargetType="Button" BasedOn="{StaticResource AdminModernButton}">
+            <Setter Property="Background" Value="{StaticResource AdminWarningOrange}"/>
+        </Style>
+        
+        <Style x:Key="AdminDangerButton" TargetType="Button" BasedOn="{StaticResource AdminModernButton}">
+            <Setter Property="Background" Value="{StaticResource AdminDangerRed}"/>
+        </Style>
+        
+        <Style x:Key="AdminInfoButton" TargetType="Button" BasedOn="{StaticResource AdminModernButton}">
+            <Setter Property="Background" Value="{StaticResource AdminInfoBlue}"/>
+        </Style>
+        
+        <Style x:Key="AdminNeutralButton" TargetType="Button" BasedOn="{StaticResource AdminModernButton}">
+            <Setter Property="Background" Value="{StaticResource AdminNeutralGray}"/>
+        </Style>
+        
+        <!-- ADMIN SMALL BUTTON STYLE -->
+        <Style x:Key="AdminSmallButton" TargetType="Button" BasedOn="{StaticResource AdminModernButton}">
+            <Setter Property="Height" Value="30"/>
+            <Setter Property="FontSize" Value="11"/>
+            <Setter Property="Padding" Value="10,0"/>
+        </Style>
+        
+        <!-- ADMIN CARD STYLE -->
+        <Style x:Key="AdminCard" TargetType="Border">
+            <Setter Property="Background" Value="{StaticResource AdminCardBackground}"/>
+            <Setter Property="CornerRadius" Value="10"/>
+            <Setter Property="BorderBrush" Value="{StaticResource AdminBorder}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="20"/>
+            <Setter Property="Effect">
+                <Setter.Value>
+                    <DropShadowEffect BlurRadius="5" ShadowDepth="2" Opacity="0.1"/>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        
+        <!-- ADMIN TEXTBOX STYLE -->
+        <Style x:Key="AdminTextBox" TargetType="TextBox">
+            <Setter Property="Height" Value="35"/>
+            <Setter Property="Padding" Value="10"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="BorderBrush" Value="{StaticResource AdminBorder}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Background" Value="White"/>
+        </Style>
+        
+        <!-- ADMIN PASSWORDBOX STYLE -->
+        <Style x:Key="AdminPasswordBox" TargetType="PasswordBox">
+            <Setter Property="Height" Value="35"/>
+            <Setter Property="Padding" Value="10"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="BorderBrush" Value="{StaticResource AdminBorder}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Background" Value="White"/>
+        </Style>
+        
+        <!-- ADMIN COMBOBOX STYLE -->
+        <Style x:Key="AdminComboBox" TargetType="ComboBox">
+            <Setter Property="Height" Value="35"/>
+            <Setter Property="Padding" Value="10"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="BorderBrush" Value="{StaticResource AdminBorder}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Background" Value="White"/>
+        </Style>
+        
+        <!-- ADMIN DATAGRID STYLE -->
+        <Style x:Key="AdminDataGrid" TargetType="DataGrid">
+            <Setter Property="AutoGenerateColumns" Value="False"/>
+            <Setter Property="HeadersVisibility" Value="Column"/>
+            <Setter Property="GridLinesVisibility" Value="Horizontal"/>
+            <Setter Property="RowBackground" Value="Transparent"/>
+            <Setter Property="AlternatingRowBackground" Value="{StaticResource AdminBackground}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource AdminBorder}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="CanUserAddRows" Value="False"/>
+            <Setter Property="CanUserDeleteRows" Value="False"/>
+            <Setter Property="CanUserReorderColumns" Value="False"/>
+            <Setter Property="CanUserResizeRows" Value="False"/>
+            <Setter Property="SelectionMode" Value="Single"/>
+            <Setter Property="RowHeight" Value="50"/>
+            <Setter Property="FontSize" Value="13"/>
+        </Style>
+        
+        <!-- ADMIN HEADER TEXT STYLE -->
+        <Style x:Key="AdminHeaderText" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="24"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Foreground" Value="{StaticResource AdminPrimaryRed}"/>
+        </Style>
+        
+        <!-- ADMIN SUBHEADER TEXT STYLE -->
+        <Style x:Key="AdminSubHeaderText" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="16"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Foreground" Value="{StaticResource AdminTextPrimary}"/>
+        </Style>
+        
+        <!-- ADMIN BODY TEXT STYLE -->
+        <Style x:Key="AdminBodyText" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Foreground" Value="{StaticResource AdminTextSecondary}"/>
+        </Style>
+        
+        <!-- ADMIN MUTED TEXT STYLE -->
+        <Style x:Key="AdminMutedText" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="Foreground" Value="{StaticResource AdminTextMuted}"/>
+        </Style>
+        
+        <!-- ADMIN WINDOW BACKGROUND STYLE -->
+        <Style x:Key="AdminWindow" TargetType="Window">
+            <Setter Property="Background" Value="{StaticResource AdminBackground}"/>
+        </Style>
+        
+        <!-- ADMIN FORM CONTAINER STYLE -->
+        <Style x:Key="AdminFormContainer" TargetType="Border" BasedOn="{StaticResource AdminCard}">
+            <Setter Property="Margin" Value="20"/>
+        </Style>
          
     </Application.Resources>
 </Application>

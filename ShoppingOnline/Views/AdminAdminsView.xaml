@@ -1,7 +1,124 @@
 <UserControl x:Class="ShoppingOnline.Views.AdminAdminsView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
-    <Grid>
-        <TextBlock Text="Admin Management View" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:ShoppingOnline.Views">
+    
+    <UserControl.Resources>
+        <!-- Converters for status display -->
+        <BooleanToVisibilityConverter x:Key="BoolToVisConverter"/>
+        
+        <!-- Custom converters for better display -->
+        <local:BoolToStatusConverter x:Key="BoolToStatusConverter"/>
+        <local:BoolToToggleButtonConverter x:Key="BoolToToggleButtonConverter"/>
+        <local:BoolToToggleButtonBackgroundConverter x:Key="BoolToToggleButtonBackgroundConverter"/>
+    </UserControl.Resources>
+    
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Search and Filter Bar -->
+        <Grid Grid.Row="0" Margin="0,0,0,20">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- Search Box -->
+            <Grid Grid.Column="0" Margin="0,0,10,0">
+                <TextBox x:Name="AdminSearchBox" Style="{StaticResource AdminTextBox}"
+                         TextChanged="AdminSearch_TextChanged"/>
+                <TextBlock x:Name="AdminSearchPlaceholder" Text="Search by admin name, email, phone..." 
+                           Style="{StaticResource AdminMutedText}" Margin="15,0,0,0"
+                           VerticalAlignment="Center" HorizontalAlignment="Left"
+                           IsHitTestVisible="False"/>
+            </Grid>
+
+            <!-- Status Filter -->
+            <ComboBox x:Name="StatusFilterComboBox" Grid.Column="1" Width="150" 
+                      Style="{StaticResource AdminComboBox}" Margin="0,0,10,0"
+                      SelectionChanged="StatusFilter_Changed">
+                <ComboBoxItem Content="All Status" IsSelected="True"/>
+                <ComboBoxItem Content="Active"/>
+                <ComboBoxItem Content="Locked"/>
+            </ComboBox>
+
+            <!-- Add Admin Button -->
+            <Button Grid.Column="2" Content="Add Admin" Width="100" Margin="0,0,10,0"
+                    Click="AddAdmin_Click" Style="{StaticResource AdminSuccessButton}"/>
+
+            <!-- Refresh Button -->
+            <Button Grid.Column="3" Content="Refresh" Width="80"
+                    Click="RefreshAdmins_Click" Style="{StaticResource AdminModernButton}"/>
+        </Grid>
+
+        <!-- Admins DataGrid -->
+        <Border Grid.Row="1" Style="{StaticResource AdminCard}">
+            <DataGrid x:Name="AdminsDataGrid" Style="{StaticResource AdminDataGrid}">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="ID" Binding="{Binding AdminId}" Width="80"/>
+                    <DataGridTextColumn Header="Admin Name" Binding="{Binding FullName}" Width="180"/>
+                    <DataGridTextColumn Header="Email" Binding="{Binding Account.Email}" Width="200"/>
+                    <DataGridTextColumn Header="Phone" Binding="{Binding Phone}" Width="120"/>
+                    <DataGridTextColumn Header="Created Date" Binding="{Binding CreatedDate, StringFormat=dd/MM/yyyy}" Width="100"/>
+                    
+                    <!-- Status Column -->
+                    <DataGridTemplateColumn Header="Status" Width="100">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center">
+                                    <TextBlock.Text>
+                                        <Binding Path="Account.IsActive" Converter="{StaticResource BoolToStatusConverter}"/>
+                                    </TextBlock.Text>
+                                </TextBlock>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    
+                    <!-- Actions Column -->
+                    <DataGridTemplateColumn Header="Actions" Width="280">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                    <Button Content="View" Width="50" Margin="2"
+                                            Click="ViewAdmin_Click" Tag="{Binding AdminId}" 
+                                            Style="{StaticResource AdminSmallButton}"
+                                            Background="{StaticResource AdminInfoBlue}"/>
+                                    <Button Content="Edit" Width="50" Margin="2"
+                                            Click="EditAdmin_Click" Tag="{Binding AdminId}"
+                                            Style="{StaticResource AdminSmallButton}"
+                                            Background="{StaticResource AdminWarningOrange}"/>
+                                    <Button Content="Delete" Width="50" Margin="2"
+                                            Click="DeleteAdmin_Click" Tag="{Binding AdminId}"
+                                            Style="{StaticResource AdminSmallButton}"
+                                            Background="{StaticResource AdminDangerRed}"/>
+                                    <Button Width="70" Margin="2"
+                                            Click="ToggleAdminStatus_Click" Tag="{Binding AdminId}"
+                                            Style="{StaticResource AdminSmallButton}">
+                                        <Button.Content>
+                                            <Binding Path="Account.IsActive" Converter="{StaticResource BoolToToggleButtonConverter}"/>
+                                        </Button.Content>
+                                        <Button.Background>
+                                            <Binding Path="Account.IsActive" Converter="{StaticResource BoolToToggleButtonBackgroundConverter}"/>
+                                        </Button.Background>
+                                    </Button>
+                                </StackPanel>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                </DataGrid.Columns>
+            </DataGrid>
+        </Border>
+
+        <!-- Footer -->
+        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,20,0,0">
+            <TextBlock x:Name="AdminCountText" Text="Total: 0 admins" Style="{StaticResource AdminBodyText}" 
+                       VerticalAlignment="Center" Margin="0,0,20,0"/>
+        </StackPanel>
     </Grid>
 </UserControl>
