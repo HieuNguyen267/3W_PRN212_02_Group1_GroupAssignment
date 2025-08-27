@@ -1,4 +1,4 @@
-using DAL.Entities;
+﻿using DAL.Entities;
 using DAL.Repositories;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -77,6 +77,7 @@ namespace BLL.Services
         bool IsUsernameOrEmailExists(string username, string email, int? excludeAccountId = null);
         bool CustomerHasOrders(int customerId);
     }
+
 
     public class AdminService : IAdminService
     {
@@ -269,57 +270,48 @@ namespace BLL.Services
             try
             {
                 using var context = new ShoppingOnlineContext();
-                
-                // Check if username or email already exists
+
+                // Normalize input
+                string newUsername = (account.Username ?? "").Trim();
+                string newEmail = (account.Email ?? "").Trim();
+
+                // Check for existing username/email
                 var existingAccount = context.Accounts
-                    .FirstOrDefault(a => a.Username == account.Username || a.Email == account.Email);
-                
+                    .FirstOrDefault(a => a.Username == newUsername || a.Email == newEmail);
+
                 if (existingAccount != null)
                 {
-                    System.Diagnostics.Debug.WriteLine($"AddCustomer: Username '{account.Username}' or Email '{account.Email}' already exists");
-                    return false; // Username or email already exists
+                    System.Diagnostics.Debug.WriteLine(
+                        $"AddCustomer: Duplicate detected! DB Username='{existingAccount.Username}', Email='{existingAccount.Email}'");
+                    return false;
                 }
-                
-                using var transaction = context.Database.BeginTransaction();
-                
-                try
-                {
-                    // Add account first
-                    account.AccountType = "Customer";
-                    account.CreatedDate = DateTime.Now;
-                    account.IsActive = true;
-                    context.Accounts.Add(account);
-                    context.SaveChanges();
-                    
-                    System.Diagnostics.Debug.WriteLine($"AddCustomer: Account created with ID {account.AccountId}");
-                    
-                    // Add customer with account reference
-                    customer.AccountId = account.AccountId;
-                    customer.CreatedDate = DateTime.Now;
-                    customer.UpdatedDate = DateTime.Now;
-                    context.Customers.Add(customer);
-                    context.SaveChanges();
-                    
-                    System.Diagnostics.Debug.WriteLine($"AddCustomer: Customer created with ID {customer.CustomerId}");
-                    
-                    transaction.Commit();
-                    System.Diagnostics.Debug.WriteLine($"AddCustomer: Successfully added customer '{customer.FullName}' with email '{account.Email}'");
-                    return true;
-                }
-                catch (Exception innerEx)
-                {
-                    transaction.Rollback();
-                    System.Diagnostics.Debug.WriteLine($"AddCustomer: Transaction rolled back due to error: {innerEx.Message}");
-                    throw;
-                }
+
+                // Add account first
+                account.Username = newUsername;
+                account.Email = newEmail;
+                account.AccountType = "Customer";
+                account.CreatedDate = DateTime.Now;
+                account.IsActive = true;
+
+                context.Accounts.Add(account);
+                context.SaveChanges(); // generates AccountId
+
+                System.Diagnostics.Debug.WriteLine($"AddCustomer: Account created with ID {account.AccountId}");
+
+                // Add customer
+                customer.AccountId = account.AccountId; // set foreign key explicitly
+                customer.CreatedDate = DateTime.Now;
+                customer.UpdatedDate = DateTime.Now;
+
+                context.Customers.Add(customer);
+                context.SaveChanges();
+
+                System.Diagnostics.Debug.WriteLine($"AddCustomer: Customer created with ID {customer.CustomerId}");
+                return true;
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"AddCustomer: Error - {ex.Message}");
-                if (ex.InnerException != null)
-                {
-                    System.Diagnostics.Debug.WriteLine($"AddCustomer: Inner Exception - {ex.InnerException.Message}");
-                }
+                System.Diagnostics.Debug.WriteLine($"AddCustomer: Error - {ex}");
                 return false;
             }
         }
@@ -332,7 +324,7 @@ namespace BLL.Services
                 var existingCustomer = context.Customers
                     .Include(c => c.Account)
                     .FirstOrDefault(c => c.CustomerId == customer.CustomerId);
-                
+
                 if (existingCustomer == null)
                 {
                     System.Diagnostics.Debug.WriteLine($"UpdateCustomer: Customer with ID {customer.CustomerId} not found");
@@ -345,141 +337,68 @@ namespace BLL.Services
                     var duplicateAccount = context.Accounts
                         .FirstOrDefault(a => a.AccountId != existingCustomer.Account.AccountId &&
                                            (a.Username == customer.Account.Username || a.Email == customer.Account.Email));
-                    
+
                     if (duplicateAccount != null)
                     {
                         System.Diagnostics.Debug.WriteLine($"UpdateCustomer: Username '{customer.Account.Username}' or Email '{customer.Account.Email}' already exists");
                         return false;
                     }
                 }
-                
-                using var transaction = context.Database.BeginTransaction();
-                
-                try
+
+                // ✅ Copy updated values
+                existingCustomer.FullName = customer.FullName;
+                existingCustomer.Phone = customer.Phone;
+                existingCustomer.Address = customer.Address;
+                existingCustomer.UpdatedDate = DateTime.Now;
+
+                if (existingCustomer.Account != null && customer.Account != null)
                 {
-                    // Update customer info
-                    existingCustomer.FullName = customer.FullName;
-                    existingCustomer.Phone = customer.Phone;
-                    existingCustomer.Address = customer.Address;
-                    existingCustomer.UpdatedDate = DateTime.Now;
-                    
-                    // Update account info if provided
-                    if (customer.Account != null && existingCustomer.Account != null)
+                    existingCustomer.Account.Username = customer.Account.Username;
+                    existingCustomer.Account.Email = customer.Account.Email;
+                    existingCustomer.Account.IsActive = customer.Account.IsActive;
+
+                    // Only update password if provided
+                    if (!string.IsNullOrWhiteSpace(customer.Account.Password))
                     {
-                        existingCustomer.Account.Username = customer.Account.Username;
-                        existingCustomer.Account.Email = customer.Account.Email;
-                        existingCustomer.Account.IsActive = customer.Account.IsActive;
-                        
-                        // Only update password if provided
-                        if (!string.IsNullOrEmpty(customer.Account.Password))
-                        {
-                            existingCustomer.Account.Password = customer.Account.Password;
-                        }
+                        existingCustomer.Account.Password = customer.Account.Password;
                     }
-                    
-                    context.SaveChanges();
-                    transaction.Commit();
-                    
-                    System.Diagnostics.Debug.WriteLine($"UpdateCustomer: Successfully updated customer '{existingCustomer.FullName}'");
-                    return true;
                 }
-                catch (Exception innerEx)
-                {
-                    transaction.Rollback();
-                    System.Diagnostics.Debug.WriteLine($"UpdateCustomer: Transaction rolled back due to error: {innerEx.Message}");
-                    throw;
-                }
+
+                context.SaveChanges();
+                return true;
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"UpdateCustomer: Error - {ex.Message}");
-                if (ex.InnerException != null)
-                {
-                    System.Diagnostics.Debug.WriteLine($"UpdateCustomer: Inner Exception - {ex.InnerException.Message}");
-                }
+                System.Diagnostics.Debug.WriteLine($"UpdateCustomer Exception: {ex}");
                 return false;
             }
         }
 
+        // Fix for DeleteCustomer: Ensure IsActive is not null and handle FK constraints more robustly
         public bool DeleteCustomer(int customerId)
         {
             try
             {
                 using var context = new ShoppingOnlineContext();
-                var customer = context.Customers
-                    .Include(c => c.Account)
-                    .Include(c => c.Orders)
-                    .Include(c => c.ShoppingCarts)
-                    .FirstOrDefault(c => c.CustomerId == customerId);
-                
-                if (customer == null)
-                {
-                    System.Diagnostics.Debug.WriteLine($"DeleteCustomer: Customer {customerId} not found");
-                    return false;
-                }
 
-                if (customer.Account == null)
-                {
-                    System.Diagnostics.Debug.WriteLine($"DeleteCustomer: Customer {customerId} has no associated account");
+                var existingCustomer = context.Customers.FirstOrDefault(c => c.CustomerId == customerId);
+                if (existingCustomer == null)
                     return false;
-                }
 
-                using var transaction = context.Database.BeginTransaction();
-                
-                try
-                {
-                    // Check if customer has orders - if yes, only soft delete
-                    if (customer.Orders.Any())
-                    {
-                        System.Diagnostics.Debug.WriteLine($"DeleteCustomer: Customer {customerId} has {customer.Orders.Count} orders, performing soft delete");
-                        // Soft delete - deactivate account instead of hard delete
-                        customer.Account.IsActive = false;
-                        context.SaveChanges();
-                    }
-                    else
-                    {
-                        System.Diagnostics.Debug.WriteLine($"DeleteCustomer: Customer {customerId} has no orders, performing hard delete");
-                        // Hard delete - completely remove customer and account
-                        
-                        // Remove shopping cart items first
-                        if (customer.ShoppingCarts.Any())
-                        {
-                            System.Diagnostics.Debug.WriteLine($"DeleteCustomer: Removing {customer.ShoppingCarts.Count} shopping cart items");
-                            context.ShoppingCarts.RemoveRange(customer.ShoppingCarts);
-                        }
-                        
-                        // Remove customer
-                        context.Customers.Remove(customer);
-                        System.Diagnostics.Debug.WriteLine($"DeleteCustomer: Customer {customerId} removed");
-                        
-                        // Remove account
-                        context.Accounts.Remove(customer.Account);
-                        System.Diagnostics.Debug.WriteLine($"DeleteCustomer: Account {customer.Account.AccountId} removed");
-                        
-                        context.SaveChanges();
-                    }
-                    
-                    transaction.Commit();
-                    System.Diagnostics.Debug.WriteLine($"DeleteCustomer: Successfully processed deletion for customer {customerId}");
-                    return true;
-                }
-                catch (Exception innerEx)
-                {
-                    transaction.Rollback();
-                    System.Diagnostics.Debug.WriteLine($"DeleteCustomer: Transaction rolled back due to error: {innerEx.Message}");
-                    throw;
-                }
+                context.Customers.Remove(existingCustomer);
+                int ret = context.SaveChanges();
+                return ret > 0;
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"DeleteCustomer: Error - {ex.Message}");
-                if (ex.InnerException != null)
-                {
-                    System.Diagnostics.Debug.WriteLine($"DeleteCustomer: Inner Exception - {ex.InnerException.Message}");
-                }
+                // Log full details to Output window for diagnosis
+                System.Diagnostics.Debug.WriteLine($"DeleteCustomer: Exception - {ex}");
+                System.Diagnostics.Debug.WriteLine(ex.ToString());
+                if (ex.InnerException != null) System.Diagnostics.Debug.WriteLine($"DeleteCustomer: Inner - {ex.InnerException}");
                 return false;
             }
         }
+
 
         // Account Management
         public List<Account> GetAllAccounts()
@@ -887,40 +806,41 @@ namespace BLL.Services
         {
             try
             {
+                if (admin == null || account == null)
+                    return false;
+
                 using var context = new ShoppingOnlineContext();
-                
-                // Check if username or email already exists
-                var existingAccount = context.Accounts
-                    .FirstOrDefault(a => a.Username == account.Username || a.Email == account.Email);
-                
-                if (existingAccount != null)
-                {
-                    System.Diagnostics.Debug.WriteLine($"AddAdmin: Username '{account.Username}' or Email '{account.Email}' already exists");
-                    return false; // Username or email already exists
-                }
-                
-                using var transaction = context.Database.BeginTransaction();
-                
-                // Add account first
+
+                // normalize inputs
+                string username = (account.Username ?? "").Trim();
+                string email = (account.Email ?? "").Trim();
+
+                // check duplicates
+                bool exists = context.Accounts.Any(a => a.Username == username || a.Email == email);
+                if (exists)
+                    return false;
+
+                // prepare account
+                account.Username = username;
+                account.Email = email;
                 account.AccountType = "Admin";
-                account.CreatedDate = DateTime.Now;
                 account.IsActive = true;
-                context.Accounts.Add(account);
-                context.SaveChanges();
-                
-                // Add admin with account reference
-                admin.AccountId = account.AccountId;
+                account.CreatedDate = DateTime.Now;
+
+                // link and prepare admin
+                admin.Account = account;
                 admin.CreatedDate = DateTime.Now;
+
+                // add both and save once
+                context.Accounts.Add(account);
                 context.Admins.Add(admin);
-                context.SaveChanges();
-                
-                transaction.Commit();
-                System.Diagnostics.Debug.WriteLine($"AddAdmin: Successfully added admin '{admin.FullName}' with email '{account.Email}'");
-                return true;
+                int saved = context.SaveChanges();
+
+                return saved > 0;
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"AddAdmin: Error - {ex.Message}");
+                System.Diagnostics.Debug.WriteLine($"AddAdmin: Error - {ex}");
                 return false;
             }
         }
@@ -966,21 +886,31 @@ namespace BLL.Services
             try
             {
                 using var context = new ShoppingOnlineContext();
-                var admin = context.Admins
-                    .Include(a => a.Account)
+
+                var existingAdmin = context.Admins
+                    .Include(a => a.Account)   // ensure account is loaded so we can remove it too
                     .FirstOrDefault(a => a.AdminId == adminId);
-                
-                if (admin?.Account != null)
+
+                if (existingAdmin == null)
+                    return false;
+
+                // If there's an associated account, remove it as well (optional but usually desired)
+                if (existingAdmin.Account != null)
                 {
-                    // Soft delete - deactivate account instead of hard delete
-                    admin.Account.IsActive = false;
-                    context.SaveChanges();
-                    return true;
+                    context.Accounts.Remove(existingAdmin.Account);
                 }
-                return false;
+
+                // Remove admin
+                context.Admins.Remove(existingAdmin);
+
+                int ret = context.SaveChanges();
+                return ret > 0;
             }
-            catch
+            catch (Exception ex)
             {
+                // log full exception for debugging
+                System.Diagnostics.Debug.WriteLine($"DeleteAdmin: Error - {ex}");
+                System.Diagnostics.Debug.WriteLine(ex.ToString());
                 return false;
             }
         }
@@ -1163,5 +1093,7 @@ namespace BLL.Services
                 return true; // Return true to be safe - assume has orders if error
             }
         }
+        
+
     }
 }

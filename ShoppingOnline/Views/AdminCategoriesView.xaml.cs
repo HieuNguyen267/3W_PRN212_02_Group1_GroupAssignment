@@ -8,12 +8,12 @@ namespace ShoppingOnline.Views
 {
     public partial class AdminCategoriesView : UserControl
     {
-        private readonly ICategoryRepository _categoryRepository;
+        private readonly ICategoryRepo _categoryRepository;
 
         public AdminCategoriesView()
         {
             InitializeComponent();
-            _categoryRepository = new CategoryRepository();
+            _categoryRepository = new CategoryRepo();
             LoadCategories();
         }
 

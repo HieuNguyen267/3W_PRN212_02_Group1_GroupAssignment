@@ -89,6 +89,9 @@
                 </DataTrigger>
             </Style.Triggers>
         </Style>
+
+        <!-- Boolean to Visibility Converter -->
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
     </UserControl.Resources>
 
     <Grid Margin="20">
@@ -204,7 +207,8 @@
 
         <!-- Orders DataGrid -->
         <Border Grid.Row="2" Style="{StaticResource AdminCard}">
-            <DataGrid x:Name="OrdersDataGrid" Style="{StaticResource AdminDataGrid}" RowHeight="55">
+            <DataGrid x:Name="OrdersDataGrid" Style="{StaticResource AdminDataGrid}" RowHeight="55"
+                      ItemsSource="{Binding Orders}">
                 <DataGrid.Columns>
                     <DataGridTextColumn Header="ID" Binding="{Binding OrderId}" Width="60"/>
                     <DataGridTextColumn Header="Khach hang" Binding="{Binding Customer.FullName}" Width="150"/>
@@ -264,14 +268,17 @@
                                             Click="ViewOrderDetail_Click" Tag="{Binding OrderId}"/>
                                     <Button Content="Xac nhan"
                                             Style="{StaticResource ConfirmButtonStyle}"
-                                            Click="ConfirmOrder_Click" Tag="{Binding OrderId}"/>
+                                            Click="ConfirmOrder_Click" Tag="{Binding OrderId}"
+                                            Visibility="{Binding CanConfirm, Converter={StaticResource BooleanToVisibilityConverter}}"/>
                                     <Button Content="Chon NVC"
                                             Style="{StaticResource AssignCarrierButtonStyle}"
                                             Click="AssignCarrierToOrder_Click" Tag="{Binding OrderId}"
-                                            ToolTip="Chon nguoi van chuyen"/>
+                                            ToolTip="Chon nguoi van chuyen"
+                                            Visibility="{Binding CanAssignCarrier, Converter={StaticResource BooleanToVisibilityConverter}}"/>
                                     <Button Content="Huy"
                                             Style="{StaticResource CancelButtonStyle}"
-                                            Click="CancelOrder_Click" Tag="{Binding OrderId}"/>
+                                            Click="CancelOrder_Click" Tag="{Binding OrderId}"
+                                            Visibility="{Binding CanCancel, Converter={StaticResource BooleanToVisibilityConverter}}"/>
                                 </StackPanel>
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>

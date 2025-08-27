@@ -3,12 +3,12 @@ using DAL.Entities;
 
 namespace DAL.Repositories
 {
-    public interface ICategoryRepository
+    public interface ICategoryRepo
     {
-        IEnumerable<Category> GetAll();
-        Category? GetById(string id);
         void Add(Category category);
         void Update(Category category);
         void Delete(string id);
+        Category GetById(string id);
+        List<Category> GetAll();
     }
 }

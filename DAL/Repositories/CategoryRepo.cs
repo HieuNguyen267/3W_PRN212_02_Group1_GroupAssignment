@@ -4,16 +4,16 @@ using DAL.Entities;
 
 namespace DAL.Repositories
 {
-    public class CategoryRepository : ICategoryRepository
+    public class CategoryRepo : ICategoryRepo
     {
         private readonly ShoppingOnlineContext _context;
 
-        public CategoryRepository()
+        public CategoryRepo()
         {
             _context = new ShoppingOnlineContext();
         }
 
-        public IEnumerable<Category> GetAll()
+        public List<Category> GetAll()
         {
             return _context.Categories.ToList();
         }
@@ -44,5 +44,25 @@ namespace DAL.Repositories
                 _context.SaveChanges();
             }
         }
+
+        public string GenerateNewCategoryId()
+        {
+            var lastCategory = _context.Categories
+                .OrderByDescending(c => c.CategoryId)
+                .FirstOrDefault();
+
+            if (lastCategory == null)
+                return "CAT000";
+
+            // Lấy phần số, giả sử ID là CAT001 -> lấy "001"
+            string numberPart = lastCategory.CategoryId.Substring(3);
+            if (int.TryParse(numberPart, out int num))
+            {
+                return "CAT" + (num + 1).ToString("D3"); // luôn có 3 chữ số
+            }
+
+            return "CAT000"; // fallback
+        }
+
     }
 }
