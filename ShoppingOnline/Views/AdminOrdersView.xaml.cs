@@ -13,7 +13,7 @@ namespace ShoppingOnline.Views
     public partial class AdminOrdersView : UserControl, INotifyPropertyChanged
     {
         private readonly IAdminService _adminService;
-        private ObservableCollection<Order> _orders = new();
+        private ObservableCollection<OrderViewModel> _orders = new();
         private List<Order> _allOrders = new();
 
         public AdminOrdersView()
@@ -31,7 +31,7 @@ namespace ShoppingOnline.Views
             UpdateStatistics();
         }
 
-        public ObservableCollection<Order> Orders
+        public ObservableCollection<OrderViewModel> Orders
         {
             get => _orders;
             set
@@ -102,79 +102,41 @@ namespace ShoppingOnline.Views
                 var selectedDateFilter = (DateFilterComboBox?.SelectedItem as ComboBoxItem)?.Content?.ToString();
                 if (!string.IsNullOrEmpty(selectedDateFilter) && selectedDateFilter != "Tat ca")
                 {
-                    var now = DateTime.Now;
-                    filteredOrders = selectedDateFilter switch
+                    var today = DateTime.Today;
+                    switch (selectedDateFilter)
                     {
-                        "Hom nay" => filteredOrders.Where(o => o.OrderDate?.Date == now.Date),
-                        "7 ngay qua" => filteredOrders.Where(o => o.OrderDate >= now.AddDays(-7)),
-                        "30 ngay qua" => filteredOrders.Where(o => o.OrderDate >= now.AddDays(-30)),
-                        "Thang nay" => filteredOrders.Where(o => o.OrderDate?.Month == now.Month && o.OrderDate?.Year == now.Year),
-                        _ => filteredOrders
-                    };
+                        case "Hom nay":
+                            filteredOrders = filteredOrders.Where(o => (o.OrderDate ?? DateTime.Now).Date == today);
+                            break;
+                        case "7 ngay qua":
+                            filteredOrders = filteredOrders.Where(o => (o.OrderDate ?? DateTime.Now).Date >= today.AddDays(-7));
+                            break;
+                        case "30 ngay qua":
+                            filteredOrders = filteredOrders.Where(o => (o.OrderDate ?? DateTime.Now).Date >= today.AddDays(-30));
+                            break;
+                        case "Thang nay":
+                            filteredOrders = filteredOrders.Where(o => (o.OrderDate ?? DateTime.Now).Year == today.Year && (o.OrderDate ?? DateTime.Now).Month == today.Month);
+                            break;
+                    }
                 }
 
-                // Convert to display models with product information and carrier information, then sort
-                var displayOrders = filteredOrders.Select(o => 
+                // Convert to OrderViewModel and update UI
+                Orders.Clear();
+                foreach (var order in filteredOrders)
                 {
-                    // Get order details to show product information
-                    var orderDetails = _adminService.GetOrderDetailsByOrderId(o.OrderId);
-                    var productNames = orderDetails.Any() 
-                        ? string.Join(", ", orderDetails.Take(2).Select(od => od.Product?.ProductName).Where(name => !string.IsNullOrEmpty(name)))
-                        : "Khong co san pham";
-                    
-                    // Add "..." if there are more than 2 products
-                    if (orderDetails.Count > 2)
-                    {
-                        productNames += "...";
-                    }
-                    
-                    var totalQuantity = orderDetails.Sum(od => od.Quantity);
-                    
-                    // Get carrier information
-                    string carrierName = "Chua chon";
-                    string carrierInfo = "Chua gan nguoi giao hang";
-                    
-                    if (o.CarrierId.HasValue && o.Carrier != null)
-                    {
-                        carrierName = o.Carrier.FullName ?? "Khong ro ten";
-                        carrierInfo = $"Ten: {o.Carrier.FullName ?? "Khong ro"}\nSo dien thoai: {o.Carrier.Phone ?? "Khong co"}\nXe: {o.Carrier.VehicleNumber ?? "Khong co"}";
-                    }
-                    
-                    return new OrderDisplayModel
-                    {
-                        OrderId = o.OrderId,
-                        Customer = o.Customer,
-                        Phone = o.Phone,
-                        OrderDate = o.OrderDate,
-                        TotalAmount = o.TotalAmount,
-                        Status = o.Notes?.Contains("[CANCELLED]") == true ? "Cancelled" : o.Status, // Show as Cancelled if cancelled via Notes
-                        ShippingAddress = o.ShippingAddress,
-                        ActualStatus = o.Status, // Keep actual status for internal use
-                        Notes = o.Notes,
-                        ProductNames = productNames,
-                        TotalQuantity = totalQuantity,
-                        CarrierName = carrierName,
-                        CarrierInfo = carrierInfo,
-                        CarrierId = o.CarrierId
-                    };
-                }).OrderByDescending(o => o.OrderDate).ToList();
-
-                // Update DataGrid
-                if (OrdersDataGrid != null)
-                {
-                    OrdersDataGrid.ItemsSource = displayOrders;
+                    Orders.Add(new OrderViewModel(order));
                 }
 
                 // Update count display
                 if (OrderCountText != null)
                 {
-                    OrderCountText.Text = $"Hien thi: {displayOrders.Count} don hang";
+                    OrderCountText.Text = $"Hien thi: {Orders.Count} don hang";
                 }
 
                 // Update filtered revenue - only count non-cancelled orders (by Status and Notes)
                 if (FilteredRevenueText != null)
                 {
-                    var totalRevenue = displayOrders
+                    var totalRevenue = Orders
                         .Where(o => o.Status != "Cancelled" && (o.Notes == null || !o.Notes.Contains("[CANCELLED]")))
                         .Sum(o => o.TotalAmount);
                     FilteredRevenueText.Text = $"Tong gia tri don hang: {totalRevenue:N0} VND";
@@ -499,26 +461,109 @@ namespace ShoppingOnline.Views
         }
         #endregion
 
-        // Add display model to handle cancelled orders properly and include product information
-        public class OrderDisplayModel
+        // ViewModel to handle order display and action button visibility
+        public class OrderViewModel : INotifyPropertyChanged
         {
-            public int OrderId { get; set; }
-            public Customer? Customer { get; set; }
-            public string? Phone { get; set; }
-            public DateTime? OrderDate { get; set; }
-            public decimal TotalAmount { get; set; }
-            public string? Status { get; set; } // This will show "Cancelled" for cancelled orders
-            public string? ShippingAddress { get; set; }
-            public string? ActualStatus { get; set; } // Original database status
-            public string? Notes { get; set; }
-            public string ProductNames { get; set; } = ""; // Product names in order
-            public int TotalQuantity { get; set; } // Total quantity of all products
-            public string CarrierName { get; set; } = "Chua chon"; // Carrier name
-            public string CarrierInfo { get; set; } = "Chua gan nguoi giao hang"; // Carrier details for tooltip
-            public int? CarrierId { get; set; } // Carrier ID
-            
-            // Property to check if carrier is assigned
-            public bool HasCarrierAssigned => !string.IsNullOrEmpty(CarrierName) && CarrierName != "Chua chon";
+            private readonly Order _order;
+
+            public OrderViewModel(Order order)
+            {
+                _order = order;
+            }
+
+            // Delegate all properties to the underlying Order
+            public int OrderId => _order.OrderId;
+            public Customer? Customer => _order.Customer;
+            public string? Phone => _order.Phone;
+            public DateTime OrderDate => _order.OrderDate ?? DateTime.Now;
+            public decimal TotalAmount => _order.TotalAmount;
+            public string? Status => _order.Status;
+            public string? ShippingAddress => _order.ShippingAddress;
+            public string? Notes => _order.Notes;
+            public int? CarrierId => _order.CarrierId;
+            public Carrier? Carrier => _order.Carrier;
+
+            // Computed properties for display
+            public string ProductNames
+            {
+                get
+                {
+                    if (_order.OrderDetails != null && _order.OrderDetails.Any())
+                    {
+                        var productNames = _order.OrderDetails
+                            .Where(od => od.Product != null)
+                            .Select(od => od.Product!.ProductName)
+                            .Distinct()
+                            .ToList();
+                        
+                        return productNames.Any() ? string.Join(", ", productNames) : "Khong co san pham";
+                    }
+                    return "Khong co san pham";
+                }
+            }
+
+            public int TotalQuantity
+            {
+                get
+                {
+                    return _order.OrderDetails?.Sum(od => od.Quantity) ?? 0;
+                }
+            }
+
+            public string CarrierName
+            {
+                get
+                {
+                    return _order.Carrier?.FullName ?? "Chua chon";
+                }
+            }
+
+            public string CarrierInfo
+            {
+                get
+                {
+                    if (_order.Carrier != null)
+                    {
+                        return $"Tên: {_order.Carrier.FullName}\nSĐT: {_order.Carrier.Phone}";
+                    }
+                    return "Chưa chọn người vận chuyển";
+                }
+            }
+
+            // Action button visibility properties
+            public bool CanConfirm
+            {
+                get
+                {
+                    // Only show confirm button for Pending orders
+                    return _order.Status == "Pending";
+                }
+            }
+
+            public bool CanCancel
+            {
+                get
+                {
+                    // Only show cancel button for Pending and Confirmed orders
+                    return _order.Status == "Pending" || _order.Status == "Confirmed";
+                }
+            }
+
+            public bool CanAssignCarrier
+            {
+                get
+                {
+                    // Show assign carrier button for Confirmed and Preparing orders
+                    return _order.Status == "Confirmed" || _order.Status == "Preparing";
+                }
+            }
+
+            public event PropertyChangedEventHandler? PropertyChanged;
+
+            protected virtual void OnPropertyChanged(string propertyName)
+            {
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            }
         }
     }
 }

@@ -407,7 +407,7 @@
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
                                     <Border Style="{StaticResource SmallPromoBorderStyle}" MouseLeftButtonDown="SmallBanner_Click">
-                                        <StackPanel>
+                                <StackPanel>
                                             <TextBlock Text="{Binding ProductName, FallbackValue='🔥 Sản phẩm hot'}" 
                                                        Foreground="White" FontWeight="Bold" FontSize="13"/>
                                             <TextBlock Text="{Binding Price, Converter={StaticResource PriceToMillionConverter}, FallbackValue='💰 Giá liên hệ'}" 
@@ -416,8 +416,8 @@
                                                        Foreground="White" FontSize="10" Margin="0,2"/>
                                             <Button Content="🛒 MUA NGAY" Style="{StaticResource SmallPromoButtonStyle}" 
                                                     Foreground="#4A90E2" Click="SmallBannerButton_Click"/>
-                                        </StackPanel>
-                                    </Border>
+                                </StackPanel>
+                            </Border>
                                 </DataTemplate>
                             </ItemsControl.ItemTemplate>
                         </ItemsControl>
@@ -450,7 +450,7 @@
                                         <ComboBoxItem Content="Giá: Thấp → Cao"/>
                                         <ComboBoxItem Content="Giá: Cao → Thấp"/>
                                     </ComboBox>
-                                </StackPanel>
+                                    </StackPanel>
                             </Grid>
                            
                             <!-- Enhanced Product Grid -->
@@ -463,8 +463,8 @@
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate>
                                         <Border Style="{StaticResource ProductCardStyle}" MouseLeftButtonDown="ProductCard_Click">
-                                            <StackPanel>
-                                                <Border Style="{StaticResource ProductImageStyle}">
+                                    <StackPanel>
+                                        <Border Style="{StaticResource ProductImageStyle}">
                                                     <Grid>
                                                         <Image Stretch="Uniform" MaxWidth="190" MaxHeight="150" 
                                                                HorizontalAlignment="Center" VerticalAlignment="Center">
@@ -476,13 +476,13 @@
                                                         <TextBlock Text="📱" FontSize="70" HorizontalAlignment="Center" VerticalAlignment="Center"
                                                                    Visibility="{Binding ProductImages.Count, Converter={StaticResource VisibilityConverter}}"/>
                                                     </Grid>
-                                                </Border>
+                                        </Border>
                                                 <TextBlock Text="{Binding ProductName}" Style="{StaticResource ProductTitleStyle}"/>
                                                 <TextBlock Text="{Binding Category.CategoryName}" Style="{StaticResource ProductSubtitleStyle}"/>
                                                 <TextBlock Text="{Binding Price, StringFormat='{}{0:N0}₫'}" Style="{StaticResource ProductPriceStyle}"/>
                                                 <TextBlock Text="⭐ 4.9 (128 đánh giá)" Style="{StaticResource ProductRatingStyle}"/>
-                                            </StackPanel>
-                                        </Border>
+                                    </StackPanel>
+                                </Border>
                                     </DataTemplate>
                                 </ItemsControl.ItemTemplate>
                             </ItemsControl>
