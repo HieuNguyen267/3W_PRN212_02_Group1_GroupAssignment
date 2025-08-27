@@ -1,65 +1,84 @@
 ﻿using System.Windows;
+using BLL.Services;
 using DAL.Entities;
+using DAL.Repositories;
 
 namespace ShoppingOnline
 {
     public partial class AdminCategoriesEditWindow : Window
     {
-        public Category Category { get; private set; }
-        private bool _isEditMode;
+        private readonly CategoryService _service;
+        private readonly Category _editingCategory;
+        private readonly bool _isEditMode;
 
-        // Add mode
+        // constructor thêm mới
         public AdminCategoriesEditWindow()
         {
             InitializeComponent();
+            _service = new CategoryService(new CategoryRepo());
             _isEditMode = false;
-            Category = new Category();
-            HeaderTitle.Text = "Them danh muc moi";
-            StatusGrid.Visibility = Visibility.Collapsed;
+            HeaderTitle.Text = "Thêm danh mục mới";
         }
 
-        // Edit mode
-        public AdminCategoriesEditWindow(Category category) : this()
+        // constructor sửa
+        public AdminCategoriesEditWindow(Category category)
         {
-            if (category != null)
-            {
-                _isEditMode = true;
-                Category = new Category
-                {
-                    CategoryId = category.CategoryId,
-                    CategoryName = category.CategoryName,
-                    Description = category.Description,
-                    IsActive = category.IsActive
-                };
+            InitializeComponent();
+            _service = new CategoryService(new CategoryRepo());
+            _editingCategory = category;
+            _isEditMode = true;
+            HeaderTitle.Text = "Cập nhật danh mục";
 
-                HeaderTitle.Text = "Cap nhat danh muc";
-                CategoryNameTextBox.Text = Category.CategoryName;
-                DescriptionTextBox.Text = Category.Description;
-                IsActiveCheckBox.IsChecked = Category.IsActive;
-                StatusGrid.Visibility = Visibility.Visible;
-            }
+            // fill dữ liệu lên form
+            CategoryNameTextBox.Text = category.CategoryName;
+            DescriptionTextBox.Text = category.Description;
+            StatusGrid.Visibility = Visibility.Visible;
+            IsActiveCheckBox.IsChecked = category.IsActive;
         }
 
         private void Save_Click(object sender, RoutedEventArgs e)
         {
             if (string.IsNullOrWhiteSpace(CategoryNameTextBox.Text))
             {
-                MessageBox.Show("Ten danh muc khong duoc de trong!", "Loi", MessageBoxButton.OK, MessageBoxImage.Error);
+
+
+                MessageBox.Show("Tên danh mục không được để trống!", "Lỗi", MessageBoxButton.OK, MessageBoxImage.Error);
+
                 return;
             }
 
-            Category.CategoryName = CategoryNameTextBox.Text.Trim();
-            Category.Description = DescriptionTextBox.Text.Trim();
-            Category.IsActive = IsActiveCheckBox.IsChecked ?? false;
+            if (_isEditMode)
+            {
+                // update
+                _editingCategory.CategoryName = CategoryNameTextBox.Text;
+                _editingCategory.Description = DescriptionTextBox.Text;
+                _editingCategory.IsActive = IsActiveCheckBox.IsChecked ?? false;
 
-            this.DialogResult = true;
-            this.Close();
+                _service.UpdateCategory(_editingCategory);
+                MessageBox.Show("Cập nhật danh mục thành công!");
+            }
+            else
+            {
+                var newCategory = new Category
+                {
+                    CategoryId = _service.GenerateNewCategoryId(),
+                    CategoryName = CategoryNameTextBox.Text,
+                    Description = DescriptionTextBox.Text,
+                    IsActive = true
+                };
+
+                _service.AddCategory(newCategory);
+                MessageBox.Show("Thêm danh mục thành công!");
+            }
+
+
+            DialogResult = true;
+            Close();
         }
 
         private void Cancel_Click(object sender, RoutedEventArgs e)
         {
-            this.DialogResult = false;
-            this.Close();
+            Close();
         }
     }
 }

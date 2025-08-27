@@ -249,13 +249,13 @@ namespace ShoppingOnline
         #region Event Handlers
         private void Logout_Click(object sender, RoutedEventArgs e)
         {
-            var result = MessageBox.Show("B?n có mu?n ??ng xu?t kh?i Admin Panel?", 
-                "Xác nh?n ??ng xu?t", MessageBoxButton.YesNo, MessageBoxImage.Question);
+            var result = MessageBox.Show("Báº¡n cÃ³ muá»‘n Ä‘Äƒng xuáº¥t khá»i Admin Panel?", 
+                "XÃ¡c nháº­n Ä‘Äƒng xuáº¥t", MessageBoxButton.YesNo, MessageBoxImage.Question);
             
             if (result == MessageBoxResult.Yes)
             {
                 AdminSession.Logout();
-                MessageBox.Show("?ã ??ng xu?t thành công!", "Thông báo", 
+                MessageBox.Show("ÄÃ£ Ä‘Äƒng xuáº¥t thÃ nh cÃ´ng!", "ThÃ´ng bÃ¡o", 
                     MessageBoxButton.OK, MessageBoxImage.Information);
                 
                 this.Close();
@@ -264,8 +264,8 @@ namespace ShoppingOnline
 
         protected override void OnClosing(CancelEventArgs e)
         {
-            var result = MessageBox.Show("B?n có mu?n thoát Admin Dashboard?", 
-                "Xác nh?n thoát", MessageBoxButton.YesNo, MessageBoxImage.Question);
+            var result = MessageBox.Show("B?n cï¿½ mu?n thoï¿½t Admin Dashboard?", 
+                "Xï¿½c nh?n thoï¿½t", MessageBoxButton.YesNo, MessageBoxImage.Question);
             
             if (result == MessageBoxResult.No)
             {

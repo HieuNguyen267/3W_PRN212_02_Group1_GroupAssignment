@@ -42,7 +42,7 @@
                     </Grid.RowDefinitions>
                     
                     <!-- Username -->
-                    <TextBlock Grid.Row="0" Grid.Column="0" Text="Ten dang nhap:" 
+                    <TextBlock Grid.Row="0" Grid.Column="0" Text="Tên đăng nhập:" 
                               VerticalAlignment="Center" Margin="0,0,10,15"/>
                     <TextBox x:Name="UsernameTextBox" Grid.Row="0" Grid.Column="1" 
                             Height="35" Padding="10" VerticalContentAlignment="Center"
@@ -66,7 +66,7 @@
                     </ComboBox>
                     
                     <!-- Password -->
-                    <TextBlock Grid.Row="3" Grid.Column="0" Text="Mat khau moi:" 
+                    <TextBlock Grid.Row="3" Grid.Column="0" Text="Mật khẩu mới:" 
                               VerticalAlignment="Center" Margin="0,0,10,15"/>
                     <PasswordBox x:Name="PasswordBox" Grid.Row="3" Grid.Column="1" 
                                 Height="35" Padding="10" VerticalContentAlignment="Center"
@@ -80,7 +80,7 @@
                 </Grid>
 
                 <!-- Note -->
-                <TextBlock Text="Luu y: De trong mat khau neu khong muon thay doi" 
+                <TextBlock Text="Lưu ý: Để trống mật khẩu nếu không muốn thay đổi" 
                           FontStyle="Italic" Foreground="Gray" FontSize="12" Margin="0,10,0,0"/>
             </StackPanel>
         </ScrollViewer>

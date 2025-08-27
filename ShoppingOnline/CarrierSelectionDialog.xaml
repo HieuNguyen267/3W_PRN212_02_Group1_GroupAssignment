@@ -151,9 +151,9 @@
                 <!-- Empty state -->
                 <StackPanel x:Name="EmptyStatePanel" Visibility="Collapsed" 
                            HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,50,0,0">
-                    <TextBlock Text="Khong co nguoi giao hang nao san sang" FontSize="16" 
+                    <TextBlock Text="Không có người giao hàng nào sẵn sàng" FontSize="16" 
                                Foreground="#FF666666" HorizontalAlignment="Center"/>
-                    <TextBlock Text="Vui long lien he admin de them nguoi giao hang moi" FontSize="12" 
+                    <TextBlock Text="Vui lòng liên hệ admin để thêm người giao hàng mới" FontSize="12" 
                                Foreground="#FF999999" HorizontalAlignment="Center" Margin="0,5,0,0"/>
                 </StackPanel>
             </StackPanel>

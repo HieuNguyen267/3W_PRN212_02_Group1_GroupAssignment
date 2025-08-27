@@ -40,7 +40,7 @@
                     </Grid.RowDefinitions>
                     
                     <!-- Username -->
-                    <TextBlock Grid.Row="0" Grid.Column="0" Text="Ten dang nhap:" 
+                    <TextBlock Grid.Row="0" Grid.Column="0" Text="Tên đăng nhập:" 
                               VerticalAlignment="Center" Margin="0,0,10,15" Style="{StaticResource AdminBodyText}"/>
                     <TextBox x:Name="UsernameTextBox" Grid.Row="0" Grid.Column="1" 
                             Style="{StaticResource AdminTextBox}" Margin="0,0,0,15"/>
@@ -52,7 +52,7 @@
                             Style="{StaticResource AdminTextBox}" Margin="0,0,0,15"/>
                     
                     <!-- Password -->
-                    <TextBlock Grid.Row="2" Grid.Column="0" Text="Mat khau:" 
+                    <TextBlock Grid.Row="2" Grid.Column="0" Text="Mật khẩu:" 
                               VerticalAlignment="Center" Margin="0,0,10,15" Style="{StaticResource AdminBodyText}"/>
                     <PasswordBox x:Name="PasswordBox" Grid.Row="2" Grid.Column="1" 
                                 Style="{StaticResource AdminPasswordBox}" Margin="0,0,0,15"/>
@@ -75,13 +75,13 @@
                     </Grid.RowDefinitions>
                     
                     <!-- Full Name -->
-                    <TextBlock Grid.Row="0" Grid.Column="0" Text="Ho va ten:" 
+                    <TextBlock Grid.Row="0" Grid.Column="0" Text="Họ và tên:" 
                               VerticalAlignment="Center" Margin="0,0,10,15" Style="{StaticResource AdminBodyText}"/>
                     <TextBox x:Name="FullNameTextBox" Grid.Row="0" Grid.Column="1" 
                             Style="{StaticResource AdminTextBox}" Margin="0,0,0,15"/>
                     
                     <!-- Phone -->
-                    <TextBlock Grid.Row="1" Grid.Column="0" Text="So dien thoai:" 
+                    <TextBlock Grid.Row="1" Grid.Column="0" Text="Số điện thoại:" 
                               VerticalAlignment="Center" Margin="0,0,10,15" Style="{StaticResource AdminBodyText}"/>
                     <TextBox x:Name="PhoneTextBox" Grid.Row="1" Grid.Column="1" 
                             Style="{StaticResource AdminTextBox}" Margin="0,0,0,15"/>

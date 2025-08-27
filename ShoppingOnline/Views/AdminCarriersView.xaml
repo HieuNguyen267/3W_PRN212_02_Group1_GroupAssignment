@@ -43,9 +43,10 @@
             <ComboBox x:Name="StatusFilterComboBox" Grid.Column="1" Width="150" 
                       Style="{StaticResource AdminComboBox}" Margin="0,0,10,0"
                       SelectionChanged="StatusFilter_Changed">
-                <ComboBoxItem Content="All Status" IsSelected="True"/>
-                <ComboBoxItem Content="Active"/>
-                <ComboBoxItem Content="Locked"/>
+                <!-- Use Tag as the stable value to avoid localization issues -->
+                <ComboBoxItem Content="All Status" Tag="All" IsSelected="True"/>
+                <ComboBoxItem Content="Active" Tag="Active"/>
+                <ComboBoxItem Content="Locked" Tag="Locked"/>
             </ComboBox>
 
             <!-- Add Carrier Button -->

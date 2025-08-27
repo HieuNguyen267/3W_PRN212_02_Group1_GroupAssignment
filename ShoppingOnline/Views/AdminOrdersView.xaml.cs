@@ -153,30 +153,18 @@ namespace ShoppingOnline.Views
         {
             try
             {
-                // Use _allOrders (all loaded orders) for statistics
-                var allOrders = _allOrders ?? new List<Order>();
+                // Use filtered Orders for statistics (instead of all loaded orders)
+                var statsOrders = Orders.ToList();
 
-                // Update statistics cards - exclude cancelled orders from counts
-                if (TotalOrdersText != null)
-                    TotalOrdersText.Text = allOrders.Count(o => o.Notes?.Contains("[CANCELLED]") != true).ToString();
+                // Update statistics cards based on filtered Orders
+                TotalOrdersText.Text = statsOrders.Count(o => o.Status != "Cancelled").ToString();
+                PendingOrdersText.Text = statsOrders.Count(o => o.Status == "Pending").ToString();
+                ConfirmedOrdersText.Text = statsOrders.Count(o => o.Status == "Confirmed").ToString();
+                ShippingOrdersText.Text = statsOrders.Count(o => o.Status == "Shipping").ToString();
 
-                if (PendingOrdersText != null)
-                    PendingOrdersText.Text = allOrders.Count(o => o.Status == "Pending" && (o.Notes?.Contains("[CANCELLED]") != true)).ToString();
-
-                if (ConfirmedOrdersText != null)
-                    ConfirmedOrdersText.Text = allOrders.Count(o => o.Status == "Confirmed" && (o.Notes?.Contains("[CANCELLED]") != true)).ToString();
-
-                if (ShippingOrdersText != null)
-                    ShippingOrdersText.Text = allOrders.Count(o => o.Status == "Shipping" && (o.Notes?.Contains("[CANCELLED]") != true)).ToString();
-
-                if (TotalRevenueText != null)
-                {
-                    // Calculate total order value (all non-cancelled orders) - respect both Status and Notes flags
-                    var totalOrderValue = allOrders
-                        .Where(o => o.Status != "Cancelled" && (o.Notes?.Contains("[CANCELLED]") != true))
-                        .Sum(o => o.TotalAmount);
-                    TotalRevenueText.Text = $"{totalOrderValue:N0} VND";
-                }
+                // Calculate and display total revenue for filtered orders
+                var totalValue = statsOrders.Where(o => o.Status != "Cancelled").Sum(o => o.TotalAmount);
+                TotalRevenueText.Text = $"{totalValue:N0} VND";
             }
             catch (Exception ex)
             {
@@ -194,17 +182,23 @@ namespace ShoppingOnline.Views
                     ? Visibility.Visible : Visibility.Hidden;
                 
                 ApplyOrderFilters();
+                // Refresh top statistics after search filter changes
+                UpdateStatistics();
             }
         }
 
         private void StatusFilter_Changed(object sender, SelectionChangedEventArgs e)
         {
             ApplyOrderFilters();
+            // Refresh top statistics after status filter changes
+            UpdateStatistics();
         }
 
         private void DateFilter_Changed(object sender, SelectionChangedEventArgs e)
         {
             ApplyOrderFilters();
+            // Refresh top statistics after date filter changes
+            UpdateStatistics();
         }
 
         private void RefreshOrders_Click(object sender, RoutedEventArgs e)
@@ -275,8 +269,8 @@ namespace ShoppingOnline.Views
         {
             if (sender is Button button && button.Tag is int orderId)
             {
-                var result = MessageBox.Show("Ban co chac muon xac nhan don hang nay?", 
-                    "Xac nhan don hang", MessageBoxButton.YesNo, MessageBoxImage.Question);
+                var result = MessageBox.Show("Bạn có chắc muốn xác nhận đơn hàng này?", 
+                    "Xác nhận đơn hàng", MessageBoxButton.YesNo, MessageBoxImage.Question);
                 
                 if (result == MessageBoxResult.Yes)
                 {
@@ -310,7 +304,7 @@ namespace ShoppingOnline.Views
 
                         if (_adminService.UpdateOrderStatus(orderId, "Confirmed"))
                         {
-                            MessageBox.Show("Da xac nhan don hang thanh cong!", "Thanh cong", 
+                            MessageBox.Show("Đã xác nhận đơn hàng thành công!", "Thành công", 
                                 MessageBoxButton.OK, MessageBoxImage.Information);
                             LoadOrders(); // Refresh
                         }
@@ -360,7 +354,7 @@ namespace ShoppingOnline.Views
                     {
                         // Refresh the orders list to show updated carrier information
                         LoadOrders();
-                        MessageBox.Show("Da gan nguoi giao hang thanh cong!", "Thanh cong", 
+                        MessageBox.Show("Đã gán người giao hàng thành công!", "Thành công", 
                                       MessageBoxButton.OK, MessageBoxImage.Information);
                     }
                 }
@@ -376,9 +370,9 @@ namespace ShoppingOnline.Views
         {
             if (sender is Button button && button.Tag is int orderId)
             {
-                var result = MessageBox.Show("Ban co chac muon huy don hang nay?\n\n" +
-                                           "LUU Y: Don hang bi huy se KHONG duoc tinh vao tong gia tri don hang va thong ke.", 
-                    "Huy don hang", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+                var result = MessageBox.Show("Bạn có chắc muốn hủy đơn hàng này?\n\n" +
+                                           "LƯU Ý: Đơn hàng bị hủy sẽ KHÔNG được tính vào tổng giá trị đơn hàng và thống kê.", 
+                    "Hủy đơn hàng", MessageBoxButton.YesNo, MessageBoxImage.Warning);
                 
                 if (result == MessageBoxResult.Yes)
                 {
@@ -425,9 +419,9 @@ namespace ShoppingOnline.Views
                             
                             if (changes > 0)
                             {
-                                MessageBox.Show($"Da huy don hang thanh cong!\n\n" +
-                                              $"Don hang #{orderId} gia tri {order.TotalAmount:N0} VND da bi loai khoi tong gia tri don hang.", 
-                                              "Thanh cong", MessageBoxButton.OK, MessageBoxImage.Information);
+                                MessageBox.Show($"Đã hủy đơn hàng thành công!\n\n" +
+                                              $"Đơn hàng #{orderId} giá trị {order.TotalAmount:N0} VND đã bị loại khỏi tổng giá trị đơn hàng.", 
+                                              "Thành công", MessageBoxButton.OK, MessageBoxImage.Information);
                                 LoadOrders(); // Refresh orders and statistics
                             }
                             else
