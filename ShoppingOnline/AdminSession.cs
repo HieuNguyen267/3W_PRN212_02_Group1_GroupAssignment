@@ -13,6 +13,9 @@ namespace ShoppingOnline
         public static string? Phone { get; private set; } = null;
         public static bool IsNavigating { get; set; } = false; // Track navigation state
 
+        // Event to notify when admin operations are completed
+        public static event EventHandler? AdminOperationsCompleted;
+
         public static void Login(Admin admin)
         {
             IsLoggedIn = true;
@@ -41,6 +44,12 @@ namespace ShoppingOnline
         public static void EndNavigation()
         {
             IsNavigating = false;
+        }
+
+        // Method to notify that admin operations are completed
+        public static void NotifyOperationsCompleted()
+        {
+            AdminOperationsCompleted?.Invoke(null, EventArgs.Empty);
         }
     }
 }

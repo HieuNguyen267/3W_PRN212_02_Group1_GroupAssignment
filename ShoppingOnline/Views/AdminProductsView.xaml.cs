@@ -68,6 +68,7 @@ namespace ShoppingOnline.Views
         {
             try
             {
+                // Load all products including inactive ones for editing purposes
                 _allProducts = _adminService.GetAllProducts();
                 ApplyProductFilter();
             }
@@ -102,6 +103,13 @@ namespace ShoppingOnline.Views
                     filteredProducts = filteredProducts.Where(p => p.Category?.CategoryName == categoryText);
                 }
 
+                // Apply active/inactive filter
+                if (ShowInactiveCheckBox?.IsChecked != true)
+                {
+                    // Only show active products by default
+                    filteredProducts = filteredProducts.Where(p => p.IsActive == true);
+                }
+
                 // Update products collection
                 Products.Clear();
                 foreach (var product in filteredProducts.OrderBy(p => p.ProductName))
@@ -109,11 +117,8 @@ namespace ShoppingOnline.Views
                     Products.Add(product);
                 }
 
-                // Update DataGrid
-                if (ProductsDataGrid != null)
-                {
-                    ProductsDataGrid.ItemsSource = Products;
-                }
+                // Trigger property change notification to update DataGrid
+                OnPropertyChanged(nameof(Products));
                 
                 // Update count
                 if (ProductCountText != null)
@@ -145,6 +150,11 @@ namespace ShoppingOnline.Views
             ApplyProductFilter();
         }
 
+        private void ShowInactiveCheckBox_Changed(object sender, RoutedEventArgs e)
+        {
+            ApplyProductFilter();
+        }
+
         private void RefreshProducts_Click(object sender, RoutedEventArgs e)
         {
             LoadProducts();
@@ -154,8 +164,25 @@ namespace ShoppingOnline.Views
 
         private void AddProduct_Click(object sender, RoutedEventArgs e)
         {
-            MessageBox.Show("Tính năng thêm sản phẩm sẽ được phát triển sau!", "Thông báo", 
-                MessageBoxButton.OK, MessageBoxImage.Information);
+            try
+            {
+                var win = new AdminProductEditWindow();
+                win.Owner = Window.GetWindow(this);
+                var result = win.ShowDialog();
+                if (result == true)
+                {
+                    LoadProducts();
+                    ProductsDataGrid?.Items.Refresh();
+                    MessageBox.Show("Đã thêm sản phẩm thành công!", "Thành công", MessageBoxButton.OK, MessageBoxImage.Information);
+                    
+                    // Notify that admin operations are completed
+                    AdminSession.NotifyOperationsCompleted();
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Lỗi khi thêm sản phẩm: {ex.Message}", "Lỗi", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
         private void ViewProduct_Click(object sender, RoutedEventArgs e)
@@ -179,8 +206,32 @@ namespace ShoppingOnline.Views
         {
             if (sender is Button button && button.Tag is string productId)
             {
-                MessageBox.Show($"Tính năng sửa sản phẩm {productId} sẽ được phát triển sau!", "Thông báo", 
-                    MessageBoxButton.OK, MessageBoxImage.Information);
+                try
+                {
+                    var product = _allProducts.FirstOrDefault(p => p.ProductId == productId);
+                    if (product == null)
+                    {
+                        MessageBox.Show("Không tìm thấy sản phẩm!", "Lỗi", MessageBoxButton.OK, MessageBoxImage.Error);
+                        return;
+                    }
+
+                    var win = new AdminProductEditWindow(product);
+                    win.Owner = Window.GetWindow(this);
+                    var result = win.ShowDialog();
+                    if (result == true)
+                    {
+                        LoadProducts();
+                        ProductsDataGrid?.Items.Refresh();
+                        MessageBox.Show("Đã cập nhật sản phẩm!", "Thành công", MessageBoxButton.OK, MessageBoxImage.Information);
+                        
+                        // Notify that admin operations are completed
+                        AdminSession.NotifyOperationsCompleted();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Lỗi khi sửa sản phẩm: {ex.Message}", "Lỗi", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
             }
         }
 
@@ -188,13 +239,32 @@ namespace ShoppingOnline.Views
         {
             if (sender is Button button && button.Tag is string productId)
             {
-                var result = MessageBox.Show($"Bạn có chắc muốn xóa sản phẩm {productId}?", 
+                var result = MessageBox.Show($"Bạn có chắc muốn xóa (vô hiệu hóa) sản phẩm {productId}?", 
                     "Xác nhận xóa", MessageBoxButton.YesNo, MessageBoxImage.Warning);
                 
                 if (result == MessageBoxResult.Yes)
                 {
-                    MessageBox.Show("Tính năng xóa sản phẩm sẽ được phát triển sau!", "Thông báo", 
-                        MessageBoxButton.OK, MessageBoxImage.Information);
+                    try
+                    {
+                        var ok = _adminService.DeleteProduct(productId);
+                        if (ok)
+                        {
+                            LoadProducts();
+                            ProductsDataGrid?.Items.Refresh();
+                            MessageBox.Show("Đã vô hiệu hóa sản phẩm!", "Thành công", MessageBoxButton.OK, MessageBoxImage.Information);
+                            
+                            // Notify that admin operations are completed
+                            AdminSession.NotifyOperationsCompleted();
+                        }
+                        else
+                        {
+                            MessageBox.Show("Không thể xóa sản phẩm!", "Lỗi", MessageBoxButton.OK, MessageBoxImage.Error);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"Lỗi khi xóa sản phẩm: {ex.Message}", "Lỗi", MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
                 }
             }
         }

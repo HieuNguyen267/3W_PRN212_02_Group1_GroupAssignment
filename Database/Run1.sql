@@ -1,4 +1,4 @@
-﻿INSERT INTO Account (Username, Password, Email, AccountType, CreatedDate, IsActive)
+INSERT INTO Account (Username, Password, Email, AccountType, CreatedDate, IsActive)
 VALUES 
 ('admin', '123456', 'admin@cellphones.com', 'Admin', GETDATE(), 1),
 ('customer1', '123456', 'customer1@cellphones.com', 'Customer', GETDATE(), 1),

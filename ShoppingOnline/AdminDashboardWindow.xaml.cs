@@ -274,6 +274,8 @@ namespace ShoppingOnline
             else
             {
                 AdminSession.Logout();
+                // Notify that admin operations are completed so HomeWindow can refresh
+                AdminSession.NotifyOperationsCompleted();
             }
         }
         #endregion

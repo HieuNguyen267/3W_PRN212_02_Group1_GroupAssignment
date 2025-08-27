@@ -40,7 +40,8 @@ namespace DAL.Repositories
             var entity = _context.Categories.Find(id);
             if (entity != null)
             {
-                _context.Categories.Remove(entity);
+                // Soft delete - just set IsActive to false
+                entity.IsActive = false;
                 _context.SaveChanges();
             }
         }

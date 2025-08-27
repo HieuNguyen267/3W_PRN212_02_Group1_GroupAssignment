@@ -46,6 +46,7 @@ namespace BLL.Services
         List<Order> GetAllOrders();
         Order? GetOrderById(int orderId);
         bool UpdateOrderStatus(int orderId, string status);
+        bool UpdateOrderNotes(int orderId, string notes);
         bool AssignCarrierToOrder(int orderId, int carrierId);
         List<OrderDetail> GetOrderDetails(int orderId);
         List<OrderDetail> GetOrderDetailsByOrderId(int orderId);
@@ -53,9 +54,12 @@ namespace BLL.Services
         
         // Category Management
         List<Category> GetAllCategories();
+        List<Category> GetAllCategoriesForAdmin();
+        Category? GetCategoryById(string categoryId);
         bool AddCategory(Category category);
         bool UpdateCategory(Category category);
         bool DeleteCategory(string categoryId);
+        string GenerateNewCategoryId();
         
         // Admin Management
         Admin? ValidateAdminLogin(string emailOrPhone, string password);
@@ -511,52 +515,17 @@ namespace BLL.Services
 
         public bool AddProduct(Product product)
         {
-            try
-            {
-                using var context = new ShoppingOnlineContext();
-                context.Products.Add(product);
-                context.SaveChanges();
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
+            return _productRepo.AddProduct(product);
         }
 
         public bool UpdateProduct(Product product)
         {
-            try
-            {
-                using var context = new ShoppingOnlineContext();
-                context.Products.Update(product);
-                context.SaveChanges();
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
+            return _productRepo.UpdateProduct(product);
         }
 
         public bool DeleteProduct(string productId)
         {
-            try
-            {
-                using var context = new ShoppingOnlineContext();
-                var product = context.Products.Find(productId);
-                if (product != null)
-                {
-                    product.IsActive = false; // Soft delete
-                    context.SaveChanges();
-                    return true;
-                }
-                return false;
-            }
-            catch
-            {
-                return false;
-            }
+            return _productRepo.DeleteProduct(productId);
         }
 
         // Order Management
@@ -611,6 +580,34 @@ namespace BLL.Services
                     System.Diagnostics.Debug.WriteLine($"UpdateOrderStatus Inner Exception: {ex.InnerException.Message}");
                 }
                 
+                return false;
+            }
+        }
+
+        public bool UpdateOrderNotes(int orderId, string notes)
+        {
+            try
+            {
+                using var context = new ShoppingOnlineContext();
+                
+                var order = context.Orders.Find(orderId);
+                if (order == null)
+                {
+                    System.Diagnostics.Debug.WriteLine($"UpdateOrderNotes: Order {orderId} not found");
+                    return false;
+                }
+
+                System.Diagnostics.Debug.WriteLine($"UpdateOrderNotes: Updating order {orderId} notes");
+                
+                order.Notes = notes;
+                var rowsAffected = context.SaveChanges();
+                
+                System.Diagnostics.Debug.WriteLine($"UpdateOrderNotes: {rowsAffected} rows affected");
+                return rowsAffected > 0;
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"UpdateOrderNotes Error: {ex.Message}");
                 return false;
             }
         }
@@ -720,6 +717,18 @@ namespace BLL.Services
             return context.Categories.Where(c => c.IsActive == true).ToList();
         }
 
+        public List<Category> GetAllCategoriesForAdmin()
+        {
+            using var context = new ShoppingOnlineContext();
+            return context.Categories.ToList(); // Include both active and inactive for admin view
+        }
+
+        public Category? GetCategoryById(string categoryId)
+        {
+            using var context = new ShoppingOnlineContext();
+            return context.Categories.FirstOrDefault(c => c.CategoryId == categoryId);
+        }
+
         public bool AddCategory(Category category)
         {
             try
@@ -767,6 +776,33 @@ namespace BLL.Services
             catch
             {
                 return false;
+            }
+        }
+
+        public string GenerateNewCategoryId()
+        {
+            try
+            {
+                using var context = new ShoppingOnlineContext();
+                var lastCategory = context.Categories
+                    .OrderByDescending(c => c.CategoryId)
+                    .FirstOrDefault();
+
+                if (lastCategory == null)
+                    return "CAT000";
+
+                // Lấy phần số, giả sử ID là CAT001 -> lấy "001"
+                string numberPart = lastCategory.CategoryId.Substring(3);
+                if (int.TryParse(numberPart, out int num))
+                {
+                    return "CAT" + (num + 1).ToString("D3"); // luôn có 3 chữ số
+                }
+
+                return "CAT000"; // fallback
+            }
+            catch
+            {
+                return "CAT000";
             }
         }
 

@@ -42,14 +42,20 @@
                     <TextBlock Grid.Row="0" Grid.Column="0" Text="Ten danh muc:" 
                                VerticalAlignment="Center" Margin="0,0,10,15" Style="{StaticResource AdminBodyText}"/>
                     <TextBox x:Name="CategoryNameTextBox" Grid.Row="0" Grid.Column="1" 
-                             Style="{StaticResource AdminTextBox}" Margin="0,0,0,15"/>
+                             Style="{StaticResource AdminTextBox}" Margin="0,0,0,5"/>
+                    <TextBlock x:Name="CategoryNameError" Grid.Row="0" Grid.Column="1" 
+                               Foreground="Red" FontSize="11" Margin="0,0,0,10" 
+                               Visibility="Collapsed"/>
 
                     <!-- Description -->
                     <TextBlock Grid.Row="1" Grid.Column="0" Text="Mo ta:" 
                                VerticalAlignment="Top" Margin="0,0,10,0" Style="{StaticResource AdminBodyText}"/>
                     <TextBox x:Name="DescriptionTextBox" Grid.Row="1" Grid.Column="1" 
                              Style="{StaticResource AdminTextBox}" Height="80" 
-                             AcceptsReturn="True" TextWrapping="Wrap"/>
+                             AcceptsReturn="True" TextWrapping="Wrap" Margin="0,0,0,5"/>
+                    <TextBlock x:Name="DescriptionError" Grid.Row="1" Grid.Column="1" 
+                               Foreground="Red" FontSize="11" Margin="0,0,0,10" 
+                               Visibility="Collapsed"/>
                 </Grid>
 
                 <!-- Status (only for edit mode) -->

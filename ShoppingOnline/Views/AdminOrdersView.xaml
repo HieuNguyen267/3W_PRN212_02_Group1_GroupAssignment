@@ -11,19 +11,22 @@
             <Setter Property="HorizontalAlignment" Value="Center"/>
             <Setter Property="Background" Value="{StaticResource AdminNeutralGray}"/>
             <Style.Triggers>
-                <DataTrigger Binding="{Binding Status}" Value="Pending">
+                <DataTrigger Binding="{Binding StatusDisplay}" Value="Chờ xác nhận">
                     <Setter Property="Background" Value="{StaticResource AdminWarningOrange}"/>
                 </DataTrigger>
-                <DataTrigger Binding="{Binding Status}" Value="Confirmed">
+                <DataTrigger Binding="{Binding StatusDisplay}" Value="Đã xác nhận">
                     <Setter Property="Background" Value="{StaticResource AdminSuccessGreen}"/>
                 </DataTrigger>
-                <DataTrigger Binding="{Binding Status}" Value="Shipping">
+                <DataTrigger Binding="{Binding StatusDisplay}" Value="Đang giao">
                     <Setter Property="Background" Value="{StaticResource AdminInfoBlue}"/>
                 </DataTrigger>
-                <DataTrigger Binding="{Binding Status}" Value="Delivered">
+                <DataTrigger Binding="{Binding StatusDisplay}" Value="Đã giao">
                     <Setter Property="Background" Value="#FF8BC34A"/>
                 </DataTrigger>
-                <DataTrigger Binding="{Binding Status}" Value="Cancelled">
+                <DataTrigger Binding="{Binding StatusDisplay}" Value="Hoàn thành">
+                    <Setter Property="Background" Value="#FF4CAF50"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding StatusDisplay}" Value="Đã hủy">
                     <Setter Property="Background" Value="{StaticResource AdminDangerRed}"/>
                 </DataTrigger>
             </Style.Triggers>
@@ -170,7 +173,7 @@
             <!-- Search Box -->
             <Grid Grid.Column="0" Margin="0,0,10,0">
                 <TextBox x:Name="OrderSearchBox" Style="{StaticResource AdminTextBox}"
-                         TextChanged="OrderSearch_TextChanged"/>
+                         TextChanged="OrderSearchBox_TextChanged"/>
                 <TextBlock x:Name="SearchPlaceholder" Text="Tim kiem theo ID don hang, ten khach hang, so dien thoai..." 
                            Style="{StaticResource AdminMutedText}" Margin="15,0,0,0"
                            VerticalAlignment="Center" HorizontalAlignment="Left"
@@ -180,7 +183,7 @@
             <!-- Status Filter -->
             <ComboBox x:Name="StatusFilterComboBox" Grid.Column="1" Width="150" 
                       Style="{StaticResource AdminComboBox}" Margin="0,0,10,0"
-                      SelectionChanged="StatusFilter_Changed">
+                      SelectionChanged="StatusFilterComboBox_SelectionChanged">
                 <ComboBoxItem Content="Tat ca trang thai" IsSelected="True"/>
                 <ComboBoxItem Content="Pending"/>
                 <ComboBoxItem Content="Confirmed"/>
@@ -192,7 +195,7 @@
             <!-- Date Filter -->
             <ComboBox x:Name="DateFilterComboBox" Grid.Column="2" Width="120" 
                       Style="{StaticResource AdminComboBox}" Margin="0,0,10,0"
-                      SelectionChanged="DateFilter_Changed">
+                      SelectionChanged="DateFilterComboBox_SelectionChanged">
                 <ComboBoxItem Content="Tat ca" IsSelected="True"/>
                 <ComboBoxItem Content="Hom nay"/>
                 <ComboBoxItem Content="7 ngay qua"/>
@@ -252,7 +255,7 @@
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <Border Style="{StaticResource StatusBadgeStyle}">
-                                    <TextBlock Text="{Binding Status}" Foreground="White" FontWeight="SemiBold" FontSize="11"/>
+                                    <TextBlock Text="{Binding StatusDisplay}" Foreground="White" FontWeight="SemiBold" FontSize="11"/>
                                 </Border>
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
@@ -265,7 +268,7 @@
                                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                                     <Button Content="Xem"
                                             Style="{StaticResource ViewButtonStyle}"
-                                            Click="ViewOrderDetail_Click" Tag="{Binding OrderId}"/>
+                                            Click="ViewOrderDetails_Click" Tag="{Binding OrderId}"/>
                                     <Button Content="Xac nhan"
                                             Style="{StaticResource ConfirmButtonStyle}"
                                             Click="ConfirmOrder_Click" Tag="{Binding OrderId}"

@@ -1,12 +1,14 @@
 <UserControl x:Class="ShoppingOnline.Views.AdminProductsView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:local="clr-namespace:ShoppingOnline">
+             xmlns:local="clr-namespace:ShoppingOnline"
+             xmlns:converters="clr-namespace:ShoppingOnline.Converters">
     
     <UserControl.Resources>
         <!-- Add converters -->
-        <local:LowStockConverter x:Key="LowStockConverter"/>
-        <local:StockStatusConverter x:Key="StockStatusConverter"/>
+        <converters:LowStockConverter x:Key="LowStockConverter"/>
+        <converters:StockStatusConverter x:Key="StockStatusConverter"/>
+        <converters:ProductStatusConverter x:Key="ProductStatusConverter"/>
     </UserControl.Resources>
 
     <Grid Margin="20">
@@ -34,6 +36,7 @@
                         <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
 
                     <!-- Search Box -->
@@ -54,17 +57,23 @@
                         <ComboBoxItem Content="Tat ca danh muc" IsSelected="True"/>
                     </ComboBox>
 
+                    <!-- Show Inactive Products Checkbox -->
+                    <CheckBox x:Name="ShowInactiveCheckBox" Grid.Column="2" Content="Hiển thị sản phẩm vô hiệu hóa" 
+                              VerticalAlignment="Center" Margin="0,0,10,0"
+                              Checked="ShowInactiveCheckBox_Changed" Unchecked="ShowInactiveCheckBox_Changed"/>
+
                     <!-- Add Product Button -->
-                    <Button Grid.Column="2" Content="Them san pham" Height="35" Margin="0,0,10,0" 
+                    <Button Grid.Column="3" Content="Them san pham" Height="35" Margin="0,0,10,0" 
                             Click="AddProduct_Click" Style="{DynamicResource ModernButton}"/>
 
                     <!-- Refresh Button -->
-                    <Button Grid.Column="3" Content="Refresh" Height="35" 
+                    <Button Grid.Column="4" Content="Refresh" Height="35" 
                             Click="RefreshProducts_Click" Style="{DynamicResource ModernButton}"/>
                 </Grid>
 
                 <!-- Products DataGrid -->
                 <DataGrid x:Name="ProductsDataGrid" 
+                        ItemsSource="{Binding Products}"
                         AutoGenerateColumns="False"
                         HeadersVisibility="Column"
                         GridLinesVisibility="Horizontal"
@@ -84,7 +93,7 @@
                         <DataGridTextColumn Header="Danh muc" Binding="{Binding Category.CategoryName}" Width="150"/>
                         <DataGridTextColumn Header="Gia" Binding="{Binding Price, StringFormat={}{0:N0}d}" Width="120"/>
                         <DataGridTextColumn Header="Ton kho" Binding="{Binding StockQuantity}" Width="80"/>
-                        <DataGridTextColumn Header="Trang thai" Binding="{Binding IsActive}" Width="80"/>
+                        <DataGridTextColumn Header="Trang thai" Binding="{Binding IsActive, Converter={StaticResource ProductStatusConverter}}" Width="80"/>
                         
                         <!-- Stock Status Column -->
                         <DataGridTemplateColumn Header="Tinh trang kho" Width="120">
@@ -102,7 +111,7 @@
                                                         <DataTrigger.Binding>
                                                             <Binding Path="StockQuantity">
                                                                 <Binding.Converter>
-                                                                    <local:LowStockConverter/>
+                                                                    <converters:LowStockConverter/>
                                                                 </Binding.Converter>
                                                             </Binding>
                                                         </DataTrigger.Binding>

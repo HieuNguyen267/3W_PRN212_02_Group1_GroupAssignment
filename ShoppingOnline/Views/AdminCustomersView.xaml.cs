@@ -9,8 +9,6 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-using DAL;
-using Microsoft.EntityFrameworkCore;
 
 namespace ShoppingOnline.Views
 {
@@ -94,80 +92,29 @@ namespace ShoppingOnline.Views
             {
                 System.Diagnostics.Debug.WriteLine("AdminCustomersView: Testing database connection...");
                 
-                using var context = new ShoppingOnlineContext();
+                // Test if we can connect and query the database using service
+                var customers = _adminService.GetAllCustomers();
+                var accounts = _adminService.GetAllAccounts();
                 
-                // Test if we can connect and query the database
-                var customerCount = context.Customers.Count();
-                var accountCount = context.Accounts.Count();
+                System.Diagnostics.Debug.WriteLine($"AdminCustomersView: Database connection OK - Customers: {customers.Count}, Accounts: {accounts.Count}");
                 
-                System.Diagnostics.Debug.WriteLine($"AdminCustomersView: Database connection OK - Customers: {customerCount}, Accounts: {accountCount}");
-                
-                // If no customers exist, offer to create sample data
-                if (customerCount == 0)
+                // If no customers exist, show message
+                if (customers.Count == 0)
                 {
-                    var result = MessageBox.Show("C? s? d? li?u tr?ng! B?n có mu?n t?o d? li?u m?u không?", "Thông báo", 
-                        MessageBoxButton.YesNo, MessageBoxImage.Question);
-                        
-                    if (result == MessageBoxResult.Yes)
-                    {
-                        CreateSampleData();
-                    }
+                    MessageBox.Show("Cơ sở dữ liệu trống! Vui lòng thêm khách hàng mới.", "Thông báo", 
+                        MessageBoxButton.OK, MessageBoxImage.Information);
                 }
             }
             catch (Exception ex)
             {
                 System.Diagnostics.Debug.WriteLine($"AdminCustomersView: Database connection failed: {ex.Message}");
-                MessageBox.Show($"L?i k?t n?i c? s? d? li?u: {ex.Message}\n\nVui lòng ki?m tra:\n1. SQL Server ?ã ch?y\n2. Database 'ShoppingOnline' t?n t?i\n3. Connection string ?úng", 
-                    "L?i Database", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show($"Lỗi kết nối cơ sở dữ liệu: {ex.Message}\n\nVui lòng kiểm tra:\n1. SQL Server đã chạy\n2. Database 'ShoppingOnline' tồn tại\n3. Connection string đúng", 
+                    "Lỗi Database", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
         
-        private void CreateSampleData()
-        {
-            try
-            {
-                using var context = new ShoppingOnlineContext();
-                
-                // Create sample customers with accounts
-                var sampleCustomers = new[]
-                {
-                    new { 
-                        Account = new Account { Username = "customer1", Email = "customer1@example.com", Password = "123456", AccountType = "Customer", CreatedDate = DateTime.Now, IsActive = true },
-                        Customer = new Customer { FullName = "Nguy?n V?n A", Phone = "0901234567", Address = "123 ???ng ABC, TP.HCM", CreatedDate = DateTime.Now, UpdatedDate = DateTime.Now }
-                    },
-                    new { 
-                        Account = new Account { Username = "customer2", Email = "customer2@example.com", Password = "123456", AccountType = "Customer", CreatedDate = DateTime.Now, IsActive = true },
-                        Customer = new Customer { FullName = "Tr?n Th? B", Phone = "0907654321", Address = "456 ???ng XYZ, Hà N?i", CreatedDate = DateTime.Now, UpdatedDate = DateTime.Now }
-                    },
-                    new { 
-                        Account = new Account { Username = "customer3", Email = "customer3@example.com", Password = "123456", AccountType = "Customer", CreatedDate = DateTime.Now, IsActive = false },
-                        Customer = new Customer { FullName = "Lê V?n C", Phone = "0912345678", Address = "789 ???ng DEF, ?à N?ng", CreatedDate = DateTime.Now, UpdatedDate = DateTime.Now }
-                    }
-                };
-                
-                foreach (var sample in sampleCustomers)
-                {
-                    context.Accounts.Add(sample.Account);
-                    context.SaveChanges();
-                    
-                    sample.Customer.AccountId = sample.Account.AccountId;
-                    context.Customers.Add(sample.Customer);
-                }
-                
-                context.SaveChanges();
-                
-                MessageBox.Show("?ã t?o d? li?u m?u thành công!", "Thành công", 
-                    MessageBoxButton.OK, MessageBoxImage.Information);
-                    
-                System.Diagnostics.Debug.WriteLine("AdminCustomersView: Sample data created successfully");
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine($"AdminCustomersView: Failed to create sample data: {ex.Message}");
-                MessageBox.Show($"L?i khi t?o d? li?u m?u: {ex.Message}", "L?i", 
-                    MessageBoxButton.OK, MessageBoxImage.Error);
-            }
-        }
+        // Note: CreateSampleData method removed to maintain 3-layer architecture
+        // Sample data should be created through proper service methods or database scripts
 
         public ObservableCollection<Customer> Customers
         {

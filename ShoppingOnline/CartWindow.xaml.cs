@@ -10,6 +10,7 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
 using ShoppingOnline.Converters;
+using ShoppingOnline.Constants;
 
 
 namespace ShoppingOnline
@@ -330,9 +331,9 @@ namespace ShoppingOnline
                             CustomerId = _customerId,
                             OrderDate = DateTime.Now,
                             TotalAmount = item.Product.Price * item.Quantity,
-                            Status = "Pending",
-                            ShippingAddress = "Địa chỉ giao hàng mặc định",
-                            Phone = "0901234567"
+                            Status = AppConstants.OrderStatus.Pending,
+                            ShippingAddress = "",
+                            Phone = ""
                         };
 
                         var orderService = new OrderService();
@@ -401,9 +402,9 @@ namespace ShoppingOnline
                         CustomerId = _customerId,
                         OrderDate = DateTime.Now,
                         TotalAmount = totalAmount,
-                        Status = "Pending",
-                        ShippingAddress = "Địa chỉ giao hàng mặc định",
-                        Phone = "0901234567"
+                        Status = AppConstants.OrderStatus.Pending,
+                        ShippingAddress = "",
+                        Phone = ""
                     };
 
                     if (orderService.CreateOrder(order))

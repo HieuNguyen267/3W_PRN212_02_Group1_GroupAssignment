@@ -38,9 +38,9 @@ namespace BLL.Services
             _repo.Update(category);
         }
 
-        public void DeleteCategory(string id)
+        public void DisableCategory(string id)
         {
-            _repo.Delete(id);
+            _repo.Delete(id); // This now performs soft delete
         }
     }
 }

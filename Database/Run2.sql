@@ -99,95 +99,113 @@ PRINT '   - Đã thêm 32 Products';
 -- 3. Cập nhật ProductImages
 PRINT '3. Cập nhật ProductImages...';
 INSERT INTO ProductImages (ProductID, ImageURL, IsPrimary, DisplayOrder) VALUES
--- Điện thoại, Tablet
-('P001', 'img/iPhone 16 Pro Max 256GB.jpg', 1, 1),
-('P002', 'img/Samsung Galaxy S25 Ultra.jpg', 1, 1),
-('P003', 'img/iPad Pro 12.9 inch M4.jpg', 1, 1),
-('P004', 'img/Samsung Galaxy Tab S10.jpg', 1, 1),
+-- iPhone 16 Pro Max
+('P001', 'img/iphone16-pro-max-1.jpg', 1, 1),
+('P001', 'img/iphone16-pro-max-2.jpg', 0, 2),
+('P001', 'img/iphone16-pro-max-3.jpg', 0, 3),
 
--- Laptop
-('P005', 'img/MacBook Air M3 13 inch.jpg', 1, 1),
-('P006', 'img/Dell XPS 13 Plus.jpg', 1, 1),
-('P007', 'img/Lenovo ThinkPad X1 Carbon.jpg', 1, 1),
-('P008', 'img/ASUS ROG Strix G16.jpg', 1, 1),
+-- Samsung Galaxy S25 Ultra
+('P002', 'img/samsung-s25-ultra-1.jpg', 1, 1),
+('P002', 'img/samsung-s25-ultra-2.jpg', 0, 2),
 
--- Âm thanh, Mic thu âm
-('P009', 'img/AirPods Pro 3.jpg', 1, 1),
-('P010', 'img/Sony WH-1000XM5.jpg', 1, 1),
-('P011', 'img/Blue Yeti X.jpg', 1, 1),
-('P012', 'img/JBL Flip 6.jpg', 1, 1),
+-- iPad Pro 12.9 inch M4
+('P003', 'img/ipad-pro-12-9-m4-1.jpg', 1, 1),
+('P003', 'img/ipad-pro-12-9-m4-2.jpg', 0, 2),
 
--- Đồng hồ, Camera
-('P013', 'img/Apple Watch Series 10.jpg', 1, 1),
-('P014', 'img/Samsung Galaxy Watch 7.jpg', 1, 1),
-('P015', 'img/Canon EOS R6 Mark II.jpg', 1, 1),
-('P016', 'img/Sony A7 IV.jpg', 1, 1),
+-- Samsung Galaxy Tab S10
+('P004', 'img/samsung-tab-s10-1.jpg', 1, 1),
 
--- Đồ gia dụng
-('P017', 'img/Samsung Smart Refrigerator.jpg', 1, 1),
-('P018', 'img/LG Smart Washing Machine.jpg', 1, 1),
-('P019', 'img/Sharp Microwave Oven.png', 1, 1),
-('P020', 'img/Philips Air Fryer.png', 1, 1),
+-- MacBook Air M3
+('P005', 'img/macbook-air-m3-1.jpg', 1, 1),
+('P005', 'img/macbook-air-m3-2.jpg', 0, 2),
 
--- Phụ kiện
-('P021', 'img/Apple Magic Keyboard.jpg', 1, 1),
-('P022', 'img/Logitech MX Master 3S.jpg', 1, 1),
-('P023', 'img/Samsung T7 Portable SSD.jpg', 1, 1),
-('P024', 'img/Anker PowerCore 20000.png', 1, 1),
+-- Dell XPS 13 Plus
+('P006', 'img/dell-xps-13-plus-1.jpg', 1, 1),
 
--- PC, Màn hình, Máy in
-('P025', 'img/Alienware Aurora R16.jpeg', 1, 1),
-('P026', 'img/Samsung Odyssey G9.jpg', 1, 1),
-('P027', 'img/HP LaserJet Pro M404n.png', 1, 1),
-('P028', 'img/LG 27 4K Monitor.jpg', 1, 1),
+-- Lenovo ThinkPad X1 Carbon
+('P007', 'img/lenovo-thinkpad-x1-1.jpg', 1, 1),
 
--- Tivi
-('P029', 'img/Samsung QLED 4K 65.jpg', 1, 1),
-('P030', 'img/LG OLED 4K 55.jpg', 1, 1),
-('P031', 'img/Sony Bravia 4K 75.png', 1, 1),
-('P032', 'img/TCL 4K Smart TV 50.jpg', 1, 1);
+-- ASUS ROG Strix G16
+('P008', 'img/asus-rog-strix-g16-1.jpg', 1, 1),
 
-PRINT '   - Đã thêm 32 ProductImages';
+-- AirPods Pro 3
+('P009', 'img/airpods-pro-3-1.jpg', 1, 1),
 
--- 4. Kiểm tra kết quả
-PRINT '4. Kiểm tra kết quả...';
+-- Sony WH-1000XM5
+('P010', 'img/sony-wh-1000xm5-1.jpg', 1, 1),
 
-SELECT '=== TỔNG KẾT DỮ LIỆU ===' as Info;
-SELECT 
-    'Categories' as TableName,
-    COUNT(*) as RecordCount
-FROM Categories
+-- Blue Yeti X
+('P011', 'img/blue-yeti-x-1.jpg', 1, 1),
 
-UNION ALL
+-- JBL Flip 6
+('P012', 'img/jbl-flip-6-1.jpg', 1, 1),
 
-SELECT 
-    'Products' as TableName,
-    COUNT(*) as RecordCount
-FROM Products
+-- Apple Watch Series 10
+('P013', 'img/apple-watch-series-10-1.jpg', 1, 1),
 
-UNION ALL
+-- Samsung Galaxy Watch 7
+('P014', 'img/samsung-galaxy-watch-7-1.jpg', 1, 1),
 
-SELECT 
-    'ProductImages' as TableName,
-    COUNT(*) as RecordCount
-FROM ProductImages;
+-- Canon EOS R6 Mark II
+('P015', 'img/canon-eos-r6-mark-ii-1.jpg', 1, 1),
 
--- Thống kê theo Category
-SELECT '=== THỐNG KÊ SẢN PHẨM THEO CATEGORY ===' as Info;
-SELECT 
-    c.CategoryName,
-    COUNT(p.ProductID) as ProductCount,
-    AVG(p.Price) as AveragePrice,
-    MIN(p.Price) as MinPrice,
-    MAX(p.Price) as MaxPrice
-FROM Categories c
-LEFT JOIN Products p ON c.CategoryID = p.CategoryID
-GROUP BY c.CategoryID, c.CategoryName
-ORDER BY c.CategoryID;
+-- Sony A7 IV
+('P016', 'img/sony-a7-iv-1.jpg', 1, 1),
+
+-- Samsung Smart Refrigerator
+('P017', 'img/samsung-smart-refrigerator-1.jpg', 1, 1),
+
+-- LG Smart Washing Machine
+('P018', 'img/lg-smart-washing-machine-1.jpg', 1, 1),
+
+-- Sharp Microwave Oven
+('P019', 'img/sharp-microwave-oven-1.jpg', 1, 1),
+
+-- Philips Air Fryer
+('P020', 'img/philips-air-fryer-1.jpg', 1, 1),
+
+-- Apple Magic Keyboard
+('P021', 'img/apple-magic-keyboard-1.jpg', 1, 1),
+
+-- Logitech MX Master 3S
+('P022', 'img/logitech-mx-master-3s-1.jpg', 1, 1),
+
+-- Samsung T7 Portable SSD
+('P023', 'img/samsung-t7-portable-ssd-1.jpg', 1, 1),
+
+-- Anker PowerCore 20000
+('P024', 'img/anker-powercore-20000-1.jpg', 1, 1),
+
+-- Alienware Aurora R16
+('P025', 'img/alienware-aurora-r16-1.jpg', 1, 1),
+
+-- Samsung Odyssey G9
+('P026', 'img/samsung-odyssey-g9-1.jpg', 1, 1),
+
+-- HP LaserJet Pro M404n
+('P027', 'img/hp-laserjet-pro-m404n-1.jpg', 1, 1),
+
+-- LG 27" 4K Monitor
+('P028', 'img/lg-27-4k-monitor-1.jpg', 1, 1),
+
+-- Samsung QLED 4K 65"
+('P029', 'img/samsung-qled-4k-65-1.jpg', 1, 1),
+
+-- LG OLED 4K 55"
+('P030', 'img/lg-oled-4k-55-1.jpg', 1, 1),
+
+-- Sony Bravia 4K 75"
+('P031', 'img/sony-bravia-4k-75-1.jpg', 1, 1),
+
+-- TCL 4K Smart TV 50"
+('P032', 'img/tcl-4k-smart-tv-50-1.jpg', 1, 1);
+
+PRINT '   - Đã thêm ProductImages';
 
 PRINT '=== HOÀN THÀNH CẬP NHẬT DỮ LIỆU ===';
-PRINT 'Đã cập nhật thành công:';
-PRINT '- 8 Categories mới';
-PRINT '- 32 Products mới';
-PRINT '- 32 ProductImages mới';
-PRINT 'Dữ liệu đã sẵn sàng cho ứng dụng!';
+PRINT 'Tổng cộng:';
+PRINT '   - 8 Categories';
+PRINT '   - 32 Products';
+PRINT '   - ProductImages cho tất cả sản phẩm';
+PRINT '';
+PRINT 'Bạn có thể chạy ứng dụng để kiểm tra dữ liệu!';

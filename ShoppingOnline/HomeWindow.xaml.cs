@@ -44,6 +44,9 @@ namespace ShoppingOnline
             this.DataContext = this;
             LoadProducts();
             UpdateLoginButton();
+            
+            // Subscribe to admin operations completed event
+            AdminSession.AdminOperationsCompleted += OnAdminOperationsCompleted;
         }
 
         public ObservableCollection<Product> Products
@@ -135,6 +138,23 @@ namespace ShoppingOnline
         protected virtual void OnPropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        private void OnAdminOperationsCompleted(object? sender, EventArgs e)
+        {
+            // Refresh products when admin operations are completed
+            LoadProducts();
+            
+            // Show a brief notification that products have been refreshed
+            MessageBox.Show("Danh sách sản phẩm đã được cập nhật!", "Thông báo", 
+                MessageBoxButton.OK, MessageBoxImage.Information);
+        }
+
+        protected override void OnClosed(EventArgs e)
+        {
+            // Unsubscribe from the event when window is closed
+            AdminSession.AdminOperationsCompleted -= OnAdminOperationsCompleted;
+            base.OnClosed(e);
         }
 
         private void ProductCard_Click(object sender, MouseButtonEventArgs e)

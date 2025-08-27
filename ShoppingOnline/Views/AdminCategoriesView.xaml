@@ -1,7 +1,12 @@
 ﻿<UserControl x:Class="ShoppingOnline.Views.AdminCategoriesView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:local="clr-namespace:ShoppingOnline">
+             xmlns:local="clr-namespace:ShoppingOnline"
+             xmlns:converters="clr-namespace:ShoppingOnline.Converters">
+
+    <UserControl.Resources>
+        <converters:BooleanToTextConverter x:Key="BooleanToTextConverter"/>
+    </UserControl.Resources>
 
     <Grid Margin="20">
         <Grid.RowDefinitions>
@@ -22,6 +27,7 @@
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
 
                     <!-- Search Box -->
@@ -35,12 +41,17 @@
                                    IsHitTestVisible="False"/>
                     </Grid>
 
+                    <!-- Show Inactive Categories Checkbox -->
+                    <CheckBox x:Name="ShowInactiveCheckBox" Grid.Column="1" Content="Hiển thị danh mục vô hiệu hóa" 
+                              VerticalAlignment="Center" Margin="0,0,10,0"
+                              Checked="ShowInactiveCheckBox_Changed" Unchecked="ShowInactiveCheckBox_Changed"/>
+
                     <!-- Add Category Button -->
-                    <Button Grid.Column="1" Content="Them danh muc" Height="35" Margin="0,0,10,0" 
+                    <Button Grid.Column="2" Content="Them danh muc" Height="35" Margin="0,0,10,0" 
                             Click="AddCategory_Click" Style="{DynamicResource ModernButton}"/>
 
                     <!-- Refresh Button -->
-                    <Button Grid.Column="2" Content="Refresh" Height="35" 
+                    <Button Grid.Column="3" Content="Refresh" Height="35" 
                             Click="RefreshCategories_Click" Style="{DynamicResource ModernButton}"/>
                 </Grid>
 
@@ -63,6 +74,28 @@
                         <DataGridTextColumn Header="ID" Binding="{Binding CategoryId}" Width="80"/>
                         <DataGridTextColumn Header="Ten danh muc" Binding="{Binding CategoryName}" Width="250"/>
                         <DataGridTextColumn Header="Mo ta" Binding="{Binding Description}" Width="300"/>
+                        
+                        <!-- Status Column -->
+                        <DataGridTemplateColumn Header="Trang thai" Width="100">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Border CornerRadius="10" Padding="5,2" HorizontalAlignment="Center">
+                                        <Border.Style>
+                                            <Style TargetType="Border">
+                                                <Setter Property="Background" Value="#FF4CAF50"/>
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding IsActive}" Value="False">
+                                                        <Setter Property="Background" Value="#FFF44336"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Border.Style>
+                                        <TextBlock Text="{Binding IsActive, Converter={StaticResource BooleanToTextConverter}}" 
+                                                   Foreground="White" FontWeight="SemiBold" FontSize="11"/>
+                                    </Border>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
 
                         <!-- Actions Column -->
                         <DataGridTemplateColumn Header="Thao tac" Width="200">
@@ -75,7 +108,7 @@
                                         <Button Content="Sua" Height="30" FontSize="11" Margin="2" Width="50"
                                                 Background="#FFFF9800" Click="EditCategory_Click" Tag="{Binding CategoryId}"
                                                 Style="{DynamicResource ModernButton}"/>
-                                        <Button Content="Xoa" Height="30" FontSize="11" Margin="2" Width="50"
+                                        <Button Content="Vô hiệu hóa" Height="30" FontSize="11" Margin="2" Width="50"
                                                 Background="#FFF44336" Click="DeleteCategory_Click" Tag="{Binding CategoryId}"
                                                 Style="{DynamicResource ModernButton}"/>
                                     </StackPanel>

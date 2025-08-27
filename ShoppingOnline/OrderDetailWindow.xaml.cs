@@ -446,41 +446,28 @@ namespace ShoppingOnline
                         cancellationNote += $"Ghi chu cu: {_currentOrder.Notes}";
                     }
                     
-                    // Update notes in database
-                    using var context = new DAL.Entities.ShoppingOnlineContext();
-                    var order = context.Orders.Find(_orderId);
-                    if (order != null)
+                    // Update notes in database using service
+                    if (_adminService.UpdateOrderNotes(_orderId, cancellationNote))
                     {
-                        order.Notes = cancellationNote;
-                        var changes = context.SaveChanges();
+                        // Update local order
+                        _currentOrder.Notes = cancellationNote;
+                        NotesTextBox.Text = cancellationNote;
                         
-                        if (changes > 0)
-                        {
-                            // Update local order
-                            _currentOrder.Notes = cancellationNote;
-                            NotesTextBox.Text = cancellationNote;
-                            
-                            // Update status display to show as cancelled (visually)
-                            CurrentStatusText.Text = "Da huy (ghi chu)";
-                            StatusBorder.Background = new SolidColorBrush(Color.FromRgb(244, 67, 54)); // Red
-                            
-                            MessageBox.Show($"THÀNH CÔNG!\n\nĐã đánh dấu hủy đơn hàng #{_orderId}\n\n" +
-                                          $"Lưu ý:\n" +
-                                          $"- Đơn hàng được đánh dấu đã hủy trong ghi chú\n" +
-                                          $"- Trạng thái database vẫn giữ nguyên do hạn chế của hệ thống\n" +
-                                          $"- Thông tin hủy được lưu trong phần ghi chú\n\n" +
-                                          $"Thời gian hủy: {DateTime.Now:dd/MM/yyyy HH:mm}", 
-                                          "Hủy đơn hàng thành công", MessageBoxButton.OK, MessageBoxImage.Information);
-                        }
-                        else
-                        {
-                            MessageBox.Show("Khong the cap nhat thong tin huy don hang!", "Loi", 
-                                          MessageBoxButton.OK, MessageBoxImage.Error);
-                        }
+                        // Update status display to show as cancelled (visually)
+                        CurrentStatusText.Text = "Da huy (ghi chu)";
+                        StatusBorder.Background = new SolidColorBrush(Color.FromRgb(244, 67, 54)); // Red
+                        
+                        MessageBox.Show($"THÀNH CÔNG!\n\nĐã đánh dấu hủy đơn hàng #{_orderId}\n\n" +
+                                      $"Lưu ý:\n" +
+                                      $"- Đơn hàng được đánh dấu đã hủy trong ghi chú\n" +
+                                      $"- Trạng thái database vẫn giữ nguyên do hạn chế của hệ thống\n" +
+                                      $"- Thông tin hủy được lưu trong phần ghi chú\n\n" +
+                                      $"Thời gian hủy: {DateTime.Now:dd/MM/yyyy HH:mm}", 
+                                      "Hủy đơn hàng thành công", MessageBoxButton.OK, MessageBoxImage.Information);
                     }
                     else
                     {
-                        MessageBox.Show("Khong tim thay don hang trong database!", "Loi", 
+                        MessageBox.Show("Khong the cap nhat thong tin huy don hang!", "Loi", 
                                       MessageBoxButton.OK, MessageBoxImage.Error);
                     }
                 }
@@ -690,16 +677,16 @@ namespace ShoppingOnline
         {
             try
             {
-                // Save notes
-                using var context = new DAL.Entities.ShoppingOnlineContext();
-                var order = context.Orders.Find(_orderId);
-                if (order != null)
+                // Save notes using service
+                if (_adminService.UpdateOrderNotes(_orderId, NotesTextBox.Text))
                 {
-                    order.Notes = NotesTextBox.Text;
-                    context.SaveChanges();
-                    
                     MessageBox.Show("Đã lưu thay đổi!", "Thành công", 
                         MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+                else
+                {
+                    MessageBox.Show("Không thể lưu thay đổi!", "Lỗi", 
+                        MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }
             catch (Exception ex)
