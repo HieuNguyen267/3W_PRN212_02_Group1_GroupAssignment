@@ -12,14 +12,14 @@ namespace ShoppingOnline.Views
 {
     public partial class AdminCarriersView : UserControl, INotifyPropertyChanged
     {
-        private readonly IAdminService _adminService;
+        private readonly CarrierService _carrierService;
         private ObservableCollection<Carrier> _carriers = new();
         private List<Carrier> _allCarriers = new();
 
         public AdminCarriersView()
         {
             InitializeComponent();
-            _adminService = new AdminService();
+            _carrierService = new CarrierService();
             DataContext = this;
             
             Loaded += AdminCarriersView_Loaded;
@@ -44,12 +44,14 @@ namespace ShoppingOnline.Views
         {
             try
             {
-                _allCarriers = _adminService.GetAllCarriers();
+                _allCarriers = _carrierService.GetAllCarriers();
                 ApplyCarrierFilter();
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"L?i khi t?i d? li?u nh� v?n chuy?n: {ex.Message}", "L?i", 
+
+                MessageBox.Show($"Lỗi khi tải dữ liệu nhà vận chuyển: {ex.Message}", "Lỗi", 
+
                     MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
@@ -72,12 +74,14 @@ namespace ShoppingOnline.Views
                         (c.VehicleNumber?.ToLower().Contains(searchLower) == true));
                 }
 
-                // Apply status filter using stable Tag values from XAML (All | Active | Locked)
-                var selectedItem = StatusFilterComboBox?.SelectedItem as ComboBoxItem;
-                var selectedTag = selectedItem?.Tag?.ToString();
-                if (!string.IsNullOrEmpty(selectedTag) && selectedTag != "All")
+
+                // Apply status filter
+                var selectedStatus = (StatusFilterComboBox?.SelectedItem as ComboBoxItem)?.Content?.ToString();
+                if (!string.IsNullOrEmpty(selectedStatus) && selectedStatus != "All Status")
                 {
-                    bool isActive = selectedTag == "Active";
+                    bool isActive = selectedStatus == "Active";
+                    // "Locked" corresponds to inactive accounts
+
                     filteredCarriers = filteredCarriers.Where(c => c.Account?.IsActive == isActive);
                 }
 
@@ -97,12 +101,16 @@ namespace ShoppingOnline.Views
                 // Update count
                 if (CarrierCountText != null)
                 {
-                    CarrierCountText.Text = $"T?ng: {filteredCarriers.Count()} nh� v?n chuy?n";
+
+                    CarrierCountText.Text = $"Total: {filteredCarriers.Count()} carriers";
+
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"L?i khi l?c nh� v?n chuy?n: {ex.Message}", "L?i", 
+
+                MessageBox.Show($"Lỗi khi lọc nhà vận chuyển: {ex.Message}", "Lỗi", 
+
                     MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
@@ -127,7 +135,9 @@ namespace ShoppingOnline.Views
         private void RefreshCarriers_Click(object sender, RoutedEventArgs e)
         {
             LoadCarriers();
-            MessageBox.Show("?� l�m m?i danh s�ch nh� v?n chuy?n!", "Th�ng b�o", 
+
+            MessageBox.Show(" làm mới danh sách nhà vận chuyển!", "Thông báo", 
+
                 MessageBoxButton.OK, MessageBoxImage.Information);
         }
 
@@ -139,13 +149,17 @@ namespace ShoppingOnline.Views
                 if (addCarrierWindow.ShowDialog() == true)
                 {
                     LoadCarriers();
-                    MessageBox.Show("Th�m nh� v?n chuy?n th�nh c�ng!", "Th�nh c�ng", 
+
+                    MessageBox.Show("Thêm nhà vận chuyển thành công!", "Thành công", 
+
                         MessageBoxButton.OK, MessageBoxImage.Information);
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"L?i khi th�m nh� v?n chuy?n: {ex.Message}", "L?i", 
+
+                MessageBox.Show($"Lỗi khi thêm nhà vận chuyển: {ex.Message}", "Lỗi", 
+
                     MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
@@ -159,22 +173,26 @@ namespace ShoppingOnline.Views
                     var carrier = _allCarriers.FirstOrDefault(c => c.CarrierId == carrierId);
                     if (carrier != null)
                     {
-                        var info = $"Th�ng tin nh� v?n chuy?n #{carrierId}\n\n" +
-                                  $"T�n: {carrier.FullName}\n" +
+
+                        var info = $"Thông tin nhà vận chuyển #{carrierId}\n\n" +
+                                  $"Tên: {carrier.FullName}\n" +
                                   $"Email: {carrier.Account?.Email}\n" +
-                                  $"?i?n tho?i: {carrier.Phone}\n" +
-                                  $"S? xe: {carrier.VehicleNumber}\n" +
-                                  $"Ng�y t?o: {carrier.CreatedDate:dd/MM/yyyy}\n" +
-                                  $"Tr?ng th�i TK: {(carrier.Account?.IsActive == true ? "Ho?t ??ng" : "Kh�a")}\n" +
-                                  $"S?n s�ng giao h�ng: {(carrier.IsAvailable == true ? "C�" : "Kh�ng")}";
-                        
-                        MessageBox.Show(info, "Th�ng tin nh� v?n chuy?n", 
+                                  $"Điện thoại: {carrier.Phone}\n" +
+                                  $"Số xe: {carrier.VehicleNumber}\n" +
+                                  $"Ngày tạo: {carrier.CreatedDate:dd/MM/yyyy}\n" +
+                                  $"Trạng thái TK: {(carrier.Account?.IsActive == true ? "Hoạt động" : "Khóa")}\n" +
+                                  $"Sẵn sàng giao hàng: {(carrier.IsAvailable == true ? "Có" : "Không")}";
+
+                        MessageBox.Show(info, "Thông tin nhà vận chuyển", 
+
                             MessageBoxButton.OK, MessageBoxImage.Information);
                     }
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show($"L?i khi xem th�ng tin nh� v?n chuy?n: {ex.Message}", "L?i", 
+
+                    MessageBox.Show($"Lỗi khi xem thông tin nhà vận chuyển: {ex.Message}", "Lỗi", 
+
                         MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }
@@ -193,14 +211,18 @@ namespace ShoppingOnline.Views
                         if (editCarrierWindow.ShowDialog() == true)
                         {
                             LoadCarriers();
-                            MessageBox.Show("C?p nh?t th�ng tin nh� v?n chuy?n th�nh c�ng!", "Th�nh c�ng", 
+
+                            MessageBox.Show("Cập nhật thông tin nhà vận chuyển thành công!", "Thành công", 
+
                                 MessageBoxButton.OK, MessageBoxImage.Information);
                         }
                     }
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show($"L?i khi s?a th�ng tin nh� v?n chuy?n: {ex.Message}", "L?i", 
+
+                    MessageBox.Show($"Lỗi khi sửa thông tin nhà vận chuyển: {ex.Message}", "Lỗi", 
+
                         MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }
@@ -210,29 +232,37 @@ namespace ShoppingOnline.Views
         {
             if (sender is Button button && button.Tag is int carrierId)
             {
-                var result = MessageBox.Show($"B?n c� ch?c mu?n x�a nh� v?n chuy?n #{carrierId}?\n" +
-                    "Vi?c n�y s? v� hi?u h�a t�i kho?n c?a nh� v?n chuy?n.", 
-                    "X�c nh?n x�a", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+
+                var result = MessageBox.Show($"Bạn có chắc muốn xóa nhà vận chuyển #{carrierId}?\n" +
+                    "Việc này sẽ vô hiệu hóa tài khoản của nhà vận chuyển.", 
+                    "Xác nhận xóa", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+
                 
                 if (result == MessageBoxResult.Yes)
                 {
                     try
                     {
-                        if (_adminService.DeleteCarrier(carrierId))
+                        if (_carrierService.DeleteCarrier(carrierId))
                         {
                             LoadCarriers();
-                            MessageBox.Show("?� x�a nh� v?n chuy?n th�nh c�ng!", "Th�nh c�ng", 
+
+                            MessageBox.Show("Đã xóa nhà vận chuyển thành công!", "Thành công", 
+
                                 MessageBoxButton.OK, MessageBoxImage.Information);
                         }
                         else
                         {
-                            MessageBox.Show("Kh�ng th? x�a nh� v?n chuy?n!", "L?i", 
+
+                            MessageBox.Show("Không thể xóa nhà vận chuyển!", "Lỗi", 
+
                                 MessageBoxButton.OK, MessageBoxImage.Error);
                         }
                     }
                     catch (Exception ex)
                     {
-                        MessageBox.Show($"L?i khi x�a nh� v?n chuy?n: {ex.Message}", "L?i", 
+
+                        MessageBox.Show($"Lỗi khi xóa nhà vận chuyển: {ex.Message}", "Lỗi", 
+
                             MessageBoxButton.OK, MessageBoxImage.Error);
                     }
                 }
@@ -249,22 +279,28 @@ namespace ShoppingOnline.Views
                     if (carrier != null)
                     {
                         bool newStatus = !carrier.IsAvailable.GetValueOrDefault();
-                        string statusText = newStatus ? "??t s?n s�ng" : "??t kh�ng s?n s�ng";
-                        
-                        var result = MessageBox.Show($"B?n c� mu?n {statusText} giao h�ng cho nh� v?n chuy?n n�y?", 
-                            "X�c nh?n", MessageBoxButton.YesNo, MessageBoxImage.Question);
+
+                        string statusText = newStatus ? "đặt sẵn sàng" : "đặt không sẵn sàng";
+
+                        var result = MessageBox.Show($"Bạn có muốn {statusText} giao hàng cho nhà vận chuyển này?", 
+                            "Xác nhận", MessageBoxButton.YesNo, MessageBoxImage.Question);
+
                         
                         if (result == MessageBoxResult.Yes)
                         {
-                            if (_adminService.UpdateCarrierStatus(carrierId, newStatus))
+                            if (_carrierService.UpdateCarrierAvailable(carrierId, newStatus))
                             {
                                 LoadCarriers();
-                                MessageBox.Show($"?� {statusText} giao h�ng th�nh c�ng!", "Th�nh c�ng", 
+
+                                MessageBox.Show($"Đã {statusText} giao hàng thành công!", "Thành công", 
+
                                     MessageBoxButton.OK, MessageBoxImage.Information);
                             }
                             else
                             {
-                                MessageBox.Show("Kh�ng th? c?p nh?t tr?ng th�i s?n s�ng!", "L?i", 
+
+                                MessageBox.Show("Không thể cập nhật trạng thái sẵn sàng!", "Lỗi", 
+
                                     MessageBoxButton.OK, MessageBoxImage.Error);
                             }
                         }
@@ -272,7 +308,9 @@ namespace ShoppingOnline.Views
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show($"L?i khi c?p nh?t tr?ng th�i: {ex.Message}", "L?i", 
+
+                    MessageBox.Show($"Lỗi khi cập nhật trạng thái: {ex.Message}", "Lỗi", 
+
                         MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }
@@ -288,22 +326,28 @@ namespace ShoppingOnline.Views
                     if (carrier?.Account != null)
                     {
                         bool newStatus = !carrier.Account.IsActive.GetValueOrDefault();
-                        string statusText = newStatus ? "k�ch ho?t" : "v� hi?u h�a";
-                        
-                        var result = MessageBox.Show($"B?n c� mu?n {statusText} t�i kho?n nh� v?n chuy?n n�y?", 
-                            "X�c nh?n", MessageBoxButton.YesNo, MessageBoxImage.Question);
+
+                        string statusText = newStatus ? "kích hoạt" : "vô hiệu hóa";
+
+                        var result = MessageBox.Show($"Bạn có muốn {statusText} tài khoản nhà vận chuyển này?", 
+                            "Xác nhận", MessageBoxButton.YesNo, MessageBoxImage.Question);
+
                         
                         if (result == MessageBoxResult.Yes)
                         {
-                            if (_adminService.UpdateAccountStatus(carrier.Account.AccountId, newStatus))
+                            if (_carrierService.UpdateAccountStatus(carrier.Account.AccountId, newStatus))
                             {
                                 LoadCarriers();
-                                MessageBox.Show($"?� {statusText} t�i kho?n th�nh c�ng!", "Th�nh c�ng", 
+
+                                MessageBox.Show($"Đã {statusText} tài khoản thành công!", "Thành công", 
+
                                     MessageBoxButton.OK, MessageBoxImage.Information);
                             }
                             else
                             {
-                                MessageBox.Show("Kh�ng th? c?p nh?t tr?ng th�i t�i kho?n!", "L?i", 
+
+                                MessageBox.Show("Không thể cập nhật trạng thái tài khoản!", "Lỗi", 
+
                                     MessageBoxButton.OK, MessageBoxImage.Error);
                             }
                         }
@@ -311,7 +355,9 @@ namespace ShoppingOnline.Views
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show($"L?i khi c?p nh?t tr?ng th�i: {ex.Message}", "L?i", 
+
+                    MessageBox.Show($"Lỗi khi cập nhật trạng thái: {ex.Message}", "Lỗi", 
+
                         MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }
