@@ -3,14 +3,14 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="Đăng ký tài khoản" Height="550" Width="500"
         WindowStartupLocation="CenterScreen" ResizeMode="NoResize">
-    <Grid Background="#FFF5F5F5">
+    <Grid Background="White"> <!-- Nền trắng, header đỏ -->
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
         <!-- Header -->
-        <Border Grid.Row="0" Background="#FF2196F3" Padding="20,15">
+    <Border Grid.Row="0" Background="#E31837" Padding="20,15"> <!-- Header đỏ -->
             <TextBlock Text="Đăng ký tài khoản" Foreground="White" FontSize="18" FontWeight="Bold" HorizontalAlignment="Center"/>
         </Border>
         <!-- Form Content -->
@@ -40,9 +40,9 @@
             </StackPanel>
         </ScrollViewer>
         <!-- Buttons -->
-        <Border Grid.Row="2" Background="#FFEEEEEE" Padding="20,15">
+    <Border Grid.Row="2" Background="#FFEEEEEE" Padding="20,15"> <!-- Footer sáng -->
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                <Button x:Name="RegisterButton" Content="Đăng ký" Width="100" Height="35" Background="#FF4CAF50" Foreground="White" Margin="0,0,10,0" Click="Register_Click"/>
+                <Button x:Name="RegisterButton" Content="Đăng ký" Width="100" Height="35" Background="#E31837" Foreground="White" Margin="0,0,10,0" Click="Register_Click"/>
                 <Button x:Name="CancelButton" Content="Hủy" Width="100" Height="35" Background="#FF9E9E9E" Foreground="White" Click="Cancel_Click"/>
             </StackPanel>
         </Border>
