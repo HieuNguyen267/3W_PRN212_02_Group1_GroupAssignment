@@ -171,11 +171,11 @@ namespace ShoppingOnline.Views
                     OrderCountText.Text = $"Hien thi: {displayOrders.Count} don hang";
                 }
 
-                // Update filtered revenue - only count non-cancelled orders
+                // Update filtered revenue - only count non-cancelled orders (by Status and Notes)
                 if (FilteredRevenueText != null)
                 {
                     var totalRevenue = displayOrders
-                        .Where(o => o.Status != "Cancelled") // Exclude cancelled orders from revenue calculation
+                        .Where(o => o.Status != "Cancelled" && (o.Notes == null || !o.Notes.Contains("[CANCELLED]")))
                         .Sum(o => o.TotalAmount);
                     FilteredRevenueText.Text = $"Tong gia tri don hang: {totalRevenue:N0} VND";
                 }
@@ -209,9 +209,9 @@ namespace ShoppingOnline.Views
 
                 if (TotalRevenueText != null)
                 {
-                    // Calculate total order value (all non-cancelled orders) instead of just completed orders
+                    // Calculate total order value (all non-cancelled orders) - respect both Status and Notes flags
                     var totalOrderValue = allOrders
-                        .Where(o => (o.Notes?.Contains("[CANCELLED]") != true))
+                        .Where(o => o.Status != "Cancelled" && (o.Notes?.Contains("[CANCELLED]") != true))
                         .Sum(o => o.TotalAmount);
                     TotalRevenueText.Text = $"{totalOrderValue:N0} VND";
                 }

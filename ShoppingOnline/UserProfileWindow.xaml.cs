@@ -159,15 +159,16 @@ namespace ShoppingOnline
             {
                 var orders = _orderService.GetAllOrdersByCustomer(UserSession.CustomerId.Value);
                 
-                // Calculate statistics
-                TotalOrders = orders.Count;
-                var totalAmount = orders.Sum(o => o.TotalAmount);
+                // Calculate statistics - only count non-cancelled orders
+                var nonCancelledOrders = orders.Where(o => o.Status != "Cancelled" && (o.Notes == null || !o.Notes.Contains("[CANCELLED]"))).ToList();
+                TotalOrders = nonCancelledOrders.Count;
+                var totalAmount = nonCancelledOrders.Sum(o => o.TotalAmount);
                 TotalSpent = $"{totalAmount:N0}₫";
                 
                 // Calculate membership level
                 MembershipLevel = CalculateMembershipLevel(totalAmount);
                 
-                // Load recent orders (last 5 orders)
+                // Load recent orders (last 5 orders) - show all orders including cancelled ones
                 RecentOrders.Clear();
                 var recentOrders = orders.OrderByDescending(o => o.OrderDate).Take(5);
                 
