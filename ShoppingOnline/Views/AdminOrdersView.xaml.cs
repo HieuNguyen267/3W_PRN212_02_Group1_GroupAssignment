@@ -153,30 +153,18 @@ namespace ShoppingOnline.Views
         {
             try
             {
-                // Use _allOrders (all loaded orders) for statistics
-                var allOrders = _allOrders ?? new List<Order>();
+                // Use filtered Orders for statistics (instead of all loaded orders)
+                var statsOrders = Orders.ToList();
 
-                // Update statistics cards - exclude cancelled orders from counts
-                if (TotalOrdersText != null)
-                    TotalOrdersText.Text = allOrders.Count(o => o.Notes?.Contains("[CANCELLED]") != true).ToString();
+                // Update statistics cards based on filtered Orders
+                TotalOrdersText.Text = statsOrders.Count(o => o.Status != "Cancelled").ToString();
+                PendingOrdersText.Text = statsOrders.Count(o => o.Status == "Pending").ToString();
+                ConfirmedOrdersText.Text = statsOrders.Count(o => o.Status == "Confirmed").ToString();
+                ShippingOrdersText.Text = statsOrders.Count(o => o.Status == "Shipping").ToString();
 
-                if (PendingOrdersText != null)
-                    PendingOrdersText.Text = allOrders.Count(o => o.Status == "Pending" && (o.Notes?.Contains("[CANCELLED]") != true)).ToString();
-
-                if (ConfirmedOrdersText != null)
-                    ConfirmedOrdersText.Text = allOrders.Count(o => o.Status == "Confirmed" && (o.Notes?.Contains("[CANCELLED]") != true)).ToString();
-
-                if (ShippingOrdersText != null)
-                    ShippingOrdersText.Text = allOrders.Count(o => o.Status == "Shipping" && (o.Notes?.Contains("[CANCELLED]") != true)).ToString();
-
-                if (TotalRevenueText != null)
-                {
-                    // Calculate total order value (all non-cancelled orders) - respect both Status and Notes flags
-                    var totalOrderValue = allOrders
-                        .Where(o => o.Status != "Cancelled" && (o.Notes?.Contains("[CANCELLED]") != true))
-                        .Sum(o => o.TotalAmount);
-                    TotalRevenueText.Text = $"{totalOrderValue:N0} VND";
-                }
+                // Calculate and display total revenue for filtered orders
+                var totalValue = statsOrders.Where(o => o.Status != "Cancelled").Sum(o => o.TotalAmount);
+                TotalRevenueText.Text = $"{totalValue:N0} VND";
             }
             catch (Exception ex)
             {
@@ -194,17 +182,23 @@ namespace ShoppingOnline.Views
                     ? Visibility.Visible : Visibility.Hidden;
                 
                 ApplyOrderFilters();
+                // Refresh top statistics after search filter changes
+                UpdateStatistics();
             }
         }
 
         private void StatusFilter_Changed(object sender, SelectionChangedEventArgs e)
         {
             ApplyOrderFilters();
+            // Refresh top statistics after status filter changes
+            UpdateStatistics();
         }
 
         private void DateFilter_Changed(object sender, SelectionChangedEventArgs e)
         {
             ApplyOrderFilters();
+            // Refresh top statistics after date filter changes
+            UpdateStatistics();
         }
 
         private void RefreshOrders_Click(object sender, RoutedEventArgs e)
