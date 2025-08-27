@@ -151,7 +151,7 @@ namespace BLL.Services
             // Calculate total value of all orders (excluding cancelled orders)
             // This includes Pending, Confirmed, Shipping, Delivered, Completed orders
             var totalOrderValue = context.Orders
-                .Where(o => o.Notes == null || !o.Notes.Contains("[CANCELLED]"))
+                .Where(o => o.Status != "Cancelled" && (o.Notes == null || !o.Notes.Contains("[CANCELLED]")))
                 .Sum(o => o.TotalAmount);
                 
             System.Diagnostics.Debug.WriteLine($"GetTotalOrderValue: Total order value: {totalOrderValue}");

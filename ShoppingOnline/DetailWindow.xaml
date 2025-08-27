@@ -4,6 +4,8 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ShoppingOnline"
+        xmlns:converters="clr-namespace:ShoppingOnline.Converters"
+
         mc:Ignorable="d"
         Title="Chi tiết sản phẩm" Height="800" Width="1200"
         WindowStartupLocation="CenterScreen">
@@ -55,8 +57,8 @@
         </Style>
          
          <!-- Converters -->
-         <local:FirstImageConverter x:Key="FirstImageConverter"/>
-         <local:VisibilityConverter x:Key="VisibilityConverter"/>
+         <converters:FirstImageConverter x:Key="FirstImageConverter"/>
+         <converters:VisibilityConverter x:Key="VisibilityConverter"/>
      </Window.Resources>
 
     <Grid>
@@ -119,7 +121,10 @@
                     <TextBlock Text="Giá sản phẩm" Style="{StaticResource PriceLabelStyle}"/>
                     <TextBlock Text="{Binding CurrentProduct.Price, StringFormat='{}{0:N0}₫'}"  Style="{StaticResource CurrentPriceStyle }" />
                     
-                    
+                    <!-- Stock Information -->
+                    <TextBlock Text="Tình trạng kho" Style="{StaticResource PriceLabelStyle}" Margin="0,15,0,0"/>
+                    <TextBlock Text="{Binding StockStatus}" FontSize="16" FontWeight="Bold" Margin="0,0,0,10"/>
+                    <TextBlock Text="{Binding StockMessage}" FontSize="12" Foreground="{StaticResource DarkGray}" Margin="0,0,0,20"/>
 
                     <!-- Add to Cart Button -->
                     <Button Content="THÊM VÀO GIỎ HÀNG" 
@@ -128,8 +133,9 @@
                             FontSize="16" 
                             FontWeight="Bold"
                             Padding="20,15"
-                            Margin="0,20,0,0"
-                            Click="AddToCart_Click">
+                            Margin="0,0,0,0"
+                            Click="AddToCart_Click"
+                            IsEnabled="{Binding CanAddToCart}">
                         <Button.Template>
                             <ControlTemplate TargetType="Button">
                                 <Border Background="{TemplateBinding Background}"

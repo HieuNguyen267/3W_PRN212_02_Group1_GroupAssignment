@@ -9,6 +9,8 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
+using ShoppingOnline.Converters;
+
 
 namespace ShoppingOnline
 {
@@ -179,12 +181,25 @@ namespace ShoppingOnline
             {
                 try
                 {
-                    item.Quantity++;
+                    int newQuantity = item.Quantity + 1;
+                    
+                    // Validate quantity using CartItemViewModel method
+                    if (!item.ValidateQuantity(newQuantity, out string errorMessage))
+                    {
+                        MessageBox.Show(errorMessage, "Thông báo", MessageBoxButton.OK, MessageBoxImage.Warning);
+                        return;
+                    }
+
+                    item.Quantity = newQuantity;
                     if (item.CartId > 0)
                     {
                         _cartService.UpdateQuantity(item.CartId, item.Quantity);
                     }
                     CalculateTotals();
+                }
+                catch (InvalidOperationException ex)
+                {
+                    MessageBox.Show(ex.Message, "Thông báo", MessageBoxButton.OK, MessageBoxImage.Warning);
                 }
                 catch (Exception ex)
                 {
@@ -212,6 +227,58 @@ namespace ShoppingOnline
                     {
                         MessageBox.Show($"Lỗi khi cập nhật số lượng: {ex.Message}", "Lỗi", MessageBoxButton.OK, MessageBoxImage.Error);
                     }
+                }
+            }
+        }
+
+        private void QuantityTextBox_LostFocus(object sender, RoutedEventArgs e)
+        {
+            if (sender is TextBox textBox && textBox.DataContext is CartItemViewModel item)
+            {
+                try
+                {
+                    // Parse the entered quantity
+                    if (int.TryParse(textBox.Text, out int newQuantity))
+                    {
+                        // Validate quantity using CartItemViewModel method
+                        if (!item.ValidateQuantity(newQuantity, out string errorMessage))
+                        {
+                            MessageBox.Show(errorMessage, "Thông báo", MessageBoxButton.OK, MessageBoxImage.Warning);
+                            
+                            // Reset to max available stock if exceeding stock
+                            if (newQuantity > item.Product.StockQuantity && item.Product.StockQuantity > 0)
+                            {
+                                item.Quantity = item.Product.StockQuantity;
+                            }
+                            else
+                            {
+                                item.Quantity = 1; // Reset to 1 for other invalid cases
+                            }
+                            return;
+                        }
+
+                        // Update quantity if valid
+                        if (item.CartId > 0)
+                        {
+                            _cartService.UpdateQuantity(item.CartId, newQuantity);
+                        }
+                        CalculateTotals();
+                    }
+                    else
+                    {
+                        MessageBox.Show("Vui lòng nhập số lượng hợp lệ!", "Thông báo", MessageBoxButton.OK, MessageBoxImage.Warning);
+                        item.Quantity = 1; // Reset to 1
+                    }
+                }
+                catch (InvalidOperationException ex)
+                {
+                    MessageBox.Show(ex.Message, "Thông báo", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    item.Quantity = 1; // Reset to 1
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Lỗi khi cập nhật số lượng: {ex.Message}", "Lỗi", MessageBoxButton.OK, MessageBoxImage.Error);
+                    item.Quantity = 1; // Reset to 1
                 }
             }
         }
@@ -387,6 +454,7 @@ namespace ShoppingOnline
         private Product _product = null!;
         private int _quantity;
         private int _cartId;
+        private string _stockInfo = "";
 
         public int CartId
         {
@@ -405,6 +473,7 @@ namespace ShoppingOnline
             {
                 _product = value;
                 OnPropertyChanged(nameof(Product));
+                UpdateStockInfo();
             }
         }
 
@@ -415,7 +484,62 @@ namespace ShoppingOnline
             {
                 _quantity = value;
                 OnPropertyChanged(nameof(Quantity));
+                UpdateStockInfo();
             }
+        }
+
+        public string StockInfo
+        {
+            get => _stockInfo;
+            set
+            {
+                _stockInfo = value;
+                OnPropertyChanged(nameof(StockInfo));
+            }
+        }
+
+        private void UpdateStockInfo()
+        {
+            if (_product != null)
+            {
+                if (_product.StockQuantity <= 0)
+                {
+                    StockInfo = "Hết hàng";
+                }
+                else if (_product.StockQuantity <= 5)
+                {
+                    StockInfo = $"Còn {_product.StockQuantity} sản phẩm (sắp hết)";
+                }
+                else
+                {
+                    StockInfo = $"Còn {_product.StockQuantity} sản phẩm";
+                }
+            }
+        }
+
+        public bool ValidateQuantity(int newQuantity, out string errorMessage)
+        {
+            errorMessage = "";
+            
+            if (_product == null)
+            {
+                errorMessage = "Sản phẩm không tồn tại!";
+                return false;
+            }
+
+            if (newQuantity <= 0)
+            {
+                errorMessage = "Số lượng phải lớn hơn 0!";
+                return false;
+            }
+
+            if (newQuantity > _product.StockQuantity)
+            {
+                errorMessage = $"Số lượng vượt quá tồn kho! Hiện tại chỉ còn {_product.StockQuantity} sản phẩm trong kho.";
+                return false;
+            }
+
+            return true;
         }
 
         public event PropertyChangedEventHandler? PropertyChanged;
@@ -442,4 +566,6 @@ namespace ShoppingOnline
             throw new NotImplementedException();
         }
     }
+
+
 }

@@ -1,7 +1,96 @@
 <UserControl x:Class="ShoppingOnline.Views.AdminOrdersView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
-    
+
+    <!-- Consolidated local styles -->
+    <UserControl.Resources>
+        <!-- Status badge for the status column -->
+        <Style x:Key="StatusBadgeStyle" TargetType="Border">
+            <Setter Property="CornerRadius" Value="12"/>
+            <Setter Property="Padding" Value="8,4"/>
+            <Setter Property="HorizontalAlignment" Value="Center"/>
+            <Setter Property="Background" Value="{StaticResource AdminNeutralGray}"/>
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding Status}" Value="Pending">
+                    <Setter Property="Background" Value="{StaticResource AdminWarningOrange}"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding Status}" Value="Confirmed">
+                    <Setter Property="Background" Value="{StaticResource AdminSuccessGreen}"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding Status}" Value="Shipping">
+                    <Setter Property="Background" Value="{StaticResource AdminInfoBlue}"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding Status}" Value="Delivered">
+                    <Setter Property="Background" Value="#FF8BC34A"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding Status}" Value="Cancelled">
+                    <Setter Property="Background" Value="{StaticResource AdminDangerRed}"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+
+        <!-- Small action buttons -->
+        <Style x:Key="ViewButtonStyle" TargetType="Button" BasedOn="{StaticResource AdminSmallButton}">
+            <Setter Property="Background" Value="{StaticResource AdminInfoBlue}"/>
+            <Setter Property="Width" Value="50"/>
+            <Setter Property="Margin" Value="2"/>
+        </Style>
+
+        <Style x:Key="ConfirmButtonStyle" TargetType="Button" BasedOn="{StaticResource AdminSmallButton}">
+            <Setter Property="Background" Value="{StaticResource AdminSuccessGreen}"/>
+            <Setter Property="Width" Value="65"/>
+            <Setter Property="Margin" Value="2"/>
+            <Setter Property="Visibility" Value="Visible"/>
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding Status}" Value="Confirmed">
+                    <Setter Property="Visibility" Value="Collapsed"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding Status}" Value="Shipping">
+                    <Setter Property="Visibility" Value="Collapsed"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding Status}" Value="Delivered">
+                    <Setter Property="Visibility" Value="Collapsed"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding Status}" Value="Cancelled">
+                    <Setter Property="Visibility" Value="Collapsed"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="AssignCarrierButtonStyle" TargetType="Button" BasedOn="{StaticResource AdminSmallButton}">
+            <Setter Property="Background" Value="{StaticResource AdminWarningOrange}"/>
+            <Setter Property="Width" Value="70"/>
+            <Setter Property="Margin" Value="2"/>
+            <Setter Property="Visibility" Value="Visible"/>
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding Status}" Value="Delivered">
+                    <Setter Property="Visibility" Value="Collapsed"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding Status}" Value="Cancelled">
+                    <Setter Property="Visibility" Value="Collapsed"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding HasCarrierAssigned}" Value="True">
+                    <Setter Property="Visibility" Value="Collapsed"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="CancelButtonStyle" TargetType="Button" BasedOn="{StaticResource AdminSmallButton}">
+            <Setter Property="Background" Value="{StaticResource AdminDangerRed}"/>
+            <Setter Property="Width" Value="50"/>
+            <Setter Property="Margin" Value="2"/>
+            <Setter Property="Visibility" Value="Visible"/>
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding Status}" Value="Delivered">
+                    <Setter Property="Visibility" Value="Collapsed"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding Status}" Value="Cancelled">
+                    <Setter Property="Visibility" Value="Collapsed"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+    </UserControl.Resources>
+
     <Grid Margin="20">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -158,29 +247,7 @@
                     <DataGridTemplateColumn Header="Trang thai" Width="120">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
-                                <Border CornerRadius="12" Padding="8,4" HorizontalAlignment="Center">
-                                    <Border.Style>
-                                        <Style TargetType="Border">
-                                            <Setter Property="Background" Value="{StaticResource AdminNeutralGray}"/>
-                                            <Style.Triggers>
-                                                <DataTrigger Binding="{Binding Status}" Value="Pending">
-                                                    <Setter Property="Background" Value="{StaticResource AdminWarningOrange}"/>
-                                                </DataTrigger>
-                                                <DataTrigger Binding="{Binding Status}" Value="Confirmed">
-                                                    <Setter Property="Background" Value="{StaticResource AdminSuccessGreen}"/>
-                                                </DataTrigger>
-                                                <DataTrigger Binding="{Binding Status}" Value="Shipping">
-                                                    <Setter Property="Background" Value="{StaticResource AdminInfoBlue}"/>
-                                                </DataTrigger>
-                                                <DataTrigger Binding="{Binding Status}" Value="Delivered">
-                                                    <Setter Property="Background" Value="#FF8BC34A"/>
-                                                </DataTrigger>
-                                                <DataTrigger Binding="{Binding Status}" Value="Cancelled">
-                                                    <Setter Property="Background" Value="{StaticResource AdminDangerRed}"/>
-                                                </DataTrigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </Border.Style>
+                                <Border Style="{StaticResource StatusBadgeStyle}">
                                     <TextBlock Text="{Binding Status}" Foreground="White" FontWeight="SemiBold" FontSize="11"/>
                                 </Border>
                             </DataTemplate>
@@ -192,75 +259,19 @@
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                                    <Button Content="Xem" Width="50" Margin="2"
-                                            Click="ViewOrderDetail_Click" Tag="{Binding OrderId}">
-                                        <Button.Style>
-                                            <Style TargetType="Button" BasedOn="{StaticResource AdminSmallButton}">
-                                                <Setter Property="Background" Value="{StaticResource AdminInfoBlue}"/>
-                                            </Style>
-                                        </Button.Style>
-                                    </Button>
-                                    <Button Content="Xac nhan" Width="65" Margin="2"
-                                            Click="ConfirmOrder_Click" Tag="{Binding OrderId}">
-                                        <Button.Style>
-                                            <Style TargetType="Button" BasedOn="{StaticResource AdminSmallButton}">
-                                                <Setter Property="Background" Value="{StaticResource AdminSuccessGreen}"/>
-                                                <Setter Property="Visibility" Value="Visible"/>
-                                                <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding Status}" Value="Confirmed">
-                                                        <Setter Property="Visibility" Value="Collapsed"/>
-                                                    </DataTrigger>
-                                                    <DataTrigger Binding="{Binding Status}" Value="Shipping">
-                                                        <Setter Property="Visibility" Value="Collapsed"/>
-                                                    </DataTrigger>
-                                                    <DataTrigger Binding="{Binding Status}" Value="Delivered">
-                                                        <Setter Property="Visibility" Value="Collapsed"/>
-                                                    </DataTrigger>
-                                                    <DataTrigger Binding="{Binding Status}" Value="Cancelled">
-                                                        <Setter Property="Visibility" Value="Collapsed"/>
-                                                    </DataTrigger>
-                                                </Style.Triggers>
-                                            </Style>
-                                        </Button.Style>
-                                    </Button>
-                                    <Button Content="Chon NVC" Width="70" Margin="2"
+                                    <Button Content="Xem"
+                                            Style="{StaticResource ViewButtonStyle}"
+                                            Click="ViewOrderDetail_Click" Tag="{Binding OrderId}"/>
+                                    <Button Content="Xac nhan"
+                                            Style="{StaticResource ConfirmButtonStyle}"
+                                            Click="ConfirmOrder_Click" Tag="{Binding OrderId}"/>
+                                    <Button Content="Chon NVC"
+                                            Style="{StaticResource AssignCarrierButtonStyle}"
                                             Click="AssignCarrierToOrder_Click" Tag="{Binding OrderId}"
-                                            ToolTip="Chon nguoi van chuyen">
-                                        <Button.Style>
-                                            <Style TargetType="Button" BasedOn="{StaticResource AdminSmallButton}">
-                                                <Setter Property="Background" Value="{StaticResource AdminWarningOrange}"/>
-                                                <Setter Property="Visibility" Value="Visible"/>
-                                                <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding Status}" Value="Delivered">
-                                                        <Setter Property="Visibility" Value="Collapsed"/>
-                                                    </DataTrigger>
-                                                    <DataTrigger Binding="{Binding Status}" Value="Cancelled">
-                                                        <Setter Property="Visibility" Value="Collapsed"/>
-                                                    </DataTrigger>
-                                                    <DataTrigger Binding="{Binding HasCarrierAssigned}" Value="True">
-                                                        <Setter Property="Visibility" Value="Collapsed"/>
-                                                    </DataTrigger>
-                                                </Style.Triggers>
-                                            </Style>
-                                        </Button.Style>
-                                    </Button>
-                                    <Button Content="Huy" Width="50" Margin="2"
-                                            Click="CancelOrder_Click" Tag="{Binding OrderId}">
-                                        <Button.Style>
-                                            <Style TargetType="Button" BasedOn="{StaticResource AdminSmallButton}">
-                                                <Setter Property="Background" Value="{StaticResource AdminDangerRed}"/>
-                                                <Setter Property="Visibility" Value="Visible"/>
-                                                <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding Status}" Value="Delivered">
-                                                        <Setter Property="Visibility" Value="Collapsed"/>
-                                                    </DataTrigger>
-                                                    <DataTrigger Binding="{Binding Status}" Value="Cancelled">
-                                                        <Setter Property="Visibility" Value="Collapsed"/>
-                                                    </DataTrigger>
-                                                </Style.Triggers>
-                                            </Style>
-                                        </Button.Style>
-                                    </Button>
+                                            ToolTip="Chon nguoi van chuyen"/>
+                                    <Button Content="Huy"
+                                            Style="{StaticResource CancelButtonStyle}"
+                                            Click="CancelOrder_Click" Tag="{Binding OrderId}"/>
                                 </StackPanel>
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>

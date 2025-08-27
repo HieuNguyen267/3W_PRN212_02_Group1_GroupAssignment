@@ -17,6 +17,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using System.Windows.Controls.Primitives;
+using ShoppingOnline.Converters;
+
 
 namespace ShoppingOnline
 {
@@ -91,6 +93,8 @@ namespace ShoppingOnline
                 // Load ALL active products for main grid
                 var products = _productService.GetActiveProducts();
                 _allProducts = products.ToList(); // Store all products for search
+                
+
                 
                 Products.Clear();
                 foreach (var product in products)
@@ -573,6 +577,10 @@ namespace ShoppingOnline
                     MessageBoxButton.OK, MessageBoxImage.Information);
             }
         }
+
+
+
+
     }
 
     public class PriceToMillionConverter : IValueConverter
@@ -598,4 +606,8 @@ namespace ShoppingOnline
             throw new NotImplementedException();
         }
     }
+
+
+
+
 }

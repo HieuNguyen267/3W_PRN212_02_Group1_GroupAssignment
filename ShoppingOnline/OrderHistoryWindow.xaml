@@ -1,10 +1,14 @@
 <Window x:Class="ShoppingOnline.OrderHistoryWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:system="clr-namespace:System;assembly=mscorlib"
         Title="Lịch sử đơn hàng" Height="700" Width="1000" 
         WindowStartupLocation="CenterScreen">
 
     <Window.Resources>
+        <!-- Converters -->
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+        
         <!-- Colors -->
         <SolidColorBrush x:Key="PrimaryRed" Color="#E31837"/>
         <SolidColorBrush x:Key="DarkRed" Color="#C41230"/>
@@ -48,6 +52,20 @@
             <Setter Property="Foreground" Value="{StaticResource PrimaryRed}"/>
         </Style>
 
+        <Style x:Key="StatusStyle" TargetType="Border">
+            <Setter Property="CornerRadius" Value="12"/>
+            <Setter Property="Padding" Value="8,4"/>
+            <Setter Property="HorizontalAlignment" Value="Left"/>
+            <Setter Property="Margin" Value="0,5,0,0"/>
+        </Style>
+
+        <Style x:Key="StatusTextStyle" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="11"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Foreground" Value="{StaticResource White}"/>
+            <Setter Property="HorizontalAlignment" Value="Center"/>
+        </Style>
+
         <Style x:Key="BackButtonStyle" TargetType="Button">
             <Setter Property="Background" Value="{StaticResource White}"/>
             <Setter Property="Foreground" Value="{StaticResource PrimaryRed}"/>
@@ -73,6 +91,53 @@
             <Setter Property="Foreground" Value="{StaticResource DarkGray}"/>
             <Setter Property="HorizontalAlignment" Value="Center"/>
             <Setter Property="VerticalAlignment" Value="Center"/>
+        </Style>
+
+        <Style x:Key="CancelButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="{StaticResource PrimaryRed}"/>
+            <Setter Property="Foreground" Value="{StaticResource White}"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding" Value="12,6"/>
+            <Setter Property="Margin" Value="0,10,0,0"/>
+            <Setter Property="HorizontalAlignment" Value="Right"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" 
+                                CornerRadius="4" 
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" 
+                                              VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        
+        <!-- Received Button Style -->
+        <Style x:Key="ReceivedButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="{StaticResource SuccessGreen}"/>
+            <Setter Property="Foreground" Value="{StaticResource White}"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding" Value="12,6"/>
+            <Setter Property="Margin" Value="0,10,10,0"/>
+            <Setter Property="HorizontalAlignment" Value="Right"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}"
+                                CornerRadius="4"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center"
+                                              VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
         </Style>
     </Window.Resources>
 
@@ -103,7 +168,7 @@
         <!-- Content -->
         <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
             <StackPanel Margin="20">
-                <TextBlock Text="Các đơn hàng đã thanh toán" 
+                <TextBlock Text="Lịch sử đơn hàng" 
                            Style="{StaticResource HeaderStyle}"/>
 
                 <!-- Orders List -->
@@ -116,8 +181,30 @@
                                                Style="{StaticResource OrderNumberStyle}"/>
                                     <TextBlock Text="{Binding OrderDate, StringFormat='Ngày đặt: {0:dd/MM/yyyy HH:mm}'}" 
                                                Style="{StaticResource OrderDateStyle}"/>
+                                    
+                                    <!-- Status Badge -->
+                                    <Border Style="{StaticResource StatusStyle}" 
+                                            Background="{Binding StatusColor}">
+                                        <TextBlock Text="{Binding StatusDisplay}" 
+                                                   Style="{StaticResource StatusTextStyle}"/>
+                                    </Border>
+                                    
                                     <TextBlock Text="{Binding TotalAmount, StringFormat='Tổng tiền: {0:N0}₫'}" 
                                                Style="{StaticResource OrderTotalStyle}"/>
+                                    
+                                    <!-- Actions Row: Received + Cancel -->
+                                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                                        <Button Content="✔ Đã nhận hàng"
+                                                Style="{StaticResource ReceivedButtonStyle}"
+                                                Visibility="{Binding CanMarkReceived, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                                Click="ReceiveOrder_Click"
+                                                Tag="{Binding OrderId}"/>
+                                        <Button Content="❌ Hủy đơn hàng" 
+                                                Style="{StaticResource CancelButtonStyle}"
+                                                Visibility="{Binding CanCancel, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                                Click="CancelOrder_Click"
+                                                Tag="{Binding OrderId}"/>
+                                    </StackPanel>
                                 </StackPanel>
                             </Border>
                         </DataTemplate>
@@ -125,7 +212,7 @@
                 </ItemsControl>
 
                 <!-- Empty State -->
-                <TextBlock x:Name="EmptyStateText" Text="Bạn chưa có đơn hàng nào đã thanh toán." 
+                <TextBlock x:Name="EmptyStateText" Text="Bạn chưa có đơn hàng nào." 
                            Style="{StaticResource EmptyStateStyle}" Visibility="Collapsed"/>
             </StackPanel>
         </ScrollViewer>

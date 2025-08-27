@@ -4,171 +4,266 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ShoppingOnline"
+        xmlns:converters="clr-namespace:ShoppingOnline.Converters"
         mc:Ignorable="d"
         Title="HomeWindow" Height="1080" Width="1920" WindowStartupLocation="CenterScreen"
         WindowState="Maximized">
 
     <Window.Resources>
-        <!-- Colors -->
+        <!-- Enhanced Color Palette -->
         <SolidColorBrush x:Key="PrimaryRed" Color="#E31837"/>
         <SolidColorBrush x:Key="DarkRed" Color="#C41230"/>
-        <SolidColorBrush x:Key="LightGray" Color="#F5F5F5"/>
-        <SolidColorBrush x:Key="MediumGray" Color="#E0E0E0"/>
-        <SolidColorBrush x:Key="DarkGray" Color="#666666"/>
+        <SolidColorBrush x:Key="LightRed" Color="#FF6B7A"/>
+        <SolidColorBrush x:Key="LightGray" Color="#F8F9FA"/>
+        <SolidColorBrush x:Key="MediumGray" Color="#E9ECEF"/>
+        <SolidColorBrush x:Key="DarkGray" Color="#6C757D"/>
+        <SolidColorBrush x:Key="TextDark" Color="#212529"/>
+        <SolidColorBrush x:Key="SuccessGreen" Color="#28A745"/>
+        <SolidColorBrush x:Key="WarningYellow" Color="#FFC107"/>
 
-        <!-- Styles -->
+        <!-- Enhanced Header Text Style -->
         <Style x:Key="HeaderTextStyle" TargetType="TextBlock">
             <Setter Property="Foreground" Value="White"/>
-            <Setter Property="FontSize" Value="12"/>
-            <Setter Property="Margin" Value="0,0,20,0"/>
+            <Setter Property="FontSize" Value="11"/>
+            <Setter Property="FontWeight" Value="Medium"/>
+            <Setter Property="Margin" Value="0,0,25,0"/>
+            <Setter Property="Opacity" Value="0.95"/>
         </Style>
 
+        <!-- Enhanced Category Button Style -->
         <Style x:Key="CategoryButtonStyle" TargetType="Button">
             <Setter Property="Background" Value="Transparent"/>
-            <Setter Property="Foreground" Value="Black"/>
-            <Setter Property="Padding" Value="15,10"/>
+            <Setter Property="Foreground" Value="{StaticResource TextDark}"/>
+            <Setter Property="Padding" Value="20,12"/>
             <Setter Property="HorizontalAlignment" Value="Stretch"/>
             <Setter Property="HorizontalContentAlignment" Value="Left"/>
             <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="FontWeight" Value="Medium"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="{StaticResource LightRed}"/>
+                    <Setter Property="Foreground" Value="White"/>
+                </Trigger>
+            </Style.Triggers>
         </Style>
 
+        <!-- Enhanced Brand Filter Button Style -->
         <Style x:Key="BrandFilterButtonStyle" TargetType="Button">
-            <Setter Property="Padding" Value="15,8"/>
-            <Setter Property="Margin" Value="0,0,5,0"/>
+            <Setter Property="Padding" Value="18,10"/>
+            <Setter Property="Margin" Value="0,0,8,0"/>
             <Setter Property="Background" Value="{StaticResource MediumGray}"/>
-            <Setter Property="Foreground" Value="Black"/>
-        </Style>
-
-        <Style x:Key="BrandFilterButtonActiveStyle" TargetType="Button" BasedOn="{StaticResource BrandFilterButtonStyle}">
-            <Setter Property="Background" Value="{StaticResource PrimaryRed}"/>
-            <Setter Property="Foreground" Value="White"/>
-        </Style>
-
-        <Style x:Key="ProductCardStyle" TargetType="Border">
-            <Setter Property="Background" Value="White"/>
-            <Setter Property="BorderBrush" Value="#E0E0E0"/>
-            <Setter Property="BorderThickness" Value="1"/>
-            <Setter Property="CornerRadius" Value="8"/>
-            <Setter Property="Padding" Value="10"/>
-            <Setter Property="Margin" Value="5"/>
-            <Setter Property="Width" Value="200"/>
-        </Style>
-
-        <Style x:Key="ProductImageStyle" TargetType="Border">
-            <Setter Property="Background" Value="{StaticResource LightGray}"/>
-            <Setter Property="Height" Value="150"/>
-            <Setter Property="CornerRadius" Value="5"/>
-            <Setter Property="Margin" Value="0,0,0,10"/>
-        </Style>
-
-        <Style x:Key="DiscountBadgeStyle" TargetType="Border">
-            <Setter Property="Background" Value="{StaticResource PrimaryRed}"/>
-            <Setter Property="CornerRadius" Value="3"/>
-            <Setter Property="HorizontalAlignment" Value="Left"/>
-            <Setter Property="Padding" Value="5,2"/>
-            <Setter Property="Margin" Value="0,0,0,5"/>
-        </Style>
-
-        <Style x:Key="ProductTitleStyle" TargetType="TextBlock">
-            <Setter Property="FontWeight" Value="Bold"/>
-            <Setter Property="TextWrapping" Value="Wrap"/>
-            <Setter Property="Margin" Value="0,0,0,5"/>
-        </Style>
-
-        <Style x:Key="ProductSubtitleStyle" TargetType="TextBlock">
-            <Setter Property="FontSize" Value="10"/>
-            <Setter Property="Foreground" Value="{StaticResource DarkGray}"/>
-            <Setter Property="Margin" Value="0,0,0,5"/>
-        </Style>
-
-        <Style x:Key="ProductPriceStyle" TargetType="TextBlock">
-            <Setter Property="FontWeight" Value="Bold"/>
-            <Setter Property="Foreground" Value="{StaticResource PrimaryRed}"/>
-            <Setter Property="FontSize" Value="14"/>
-        </Style>
-
-        <Style x:Key="ProductOldPriceStyle" TargetType="TextBlock">
-            <Setter Property="FontSize" Value="10"/>
-            <Setter Property="TextDecorations" Value="Strikethrough"/>
-            <Setter Property="Foreground" Value="{StaticResource DarkGray}"/>
-        </Style>
-
-        <Style x:Key="ProductRatingStyle" TargetType="TextBlock">
-            <Setter Property="FontSize" Value="10"/>
-            <Setter Property="Margin" Value="0,5,0,0"/>
-        </Style>
-
-        <Style x:Key="PromoButtonStyle" TargetType="Button">
-            <Setter Property="Background" Value="White"/>
-            <Setter Property="Padding" Value="20,10"/>
-            <Setter Property="FontWeight" Value="Bold"/>
-            <Setter Property="Margin" Value="0,10,0,0"/>
-        </Style>
-
-        <Style x:Key="SmallPromoButtonStyle" TargetType="Button">
-            <Setter Property="Background" Value="White"/>
-            <Setter Property="Padding" Value="15,8"/>
-            <Setter Property="FontWeight" Value="Bold"/>
-            <Setter Property="FontSize" Value="10"/>
-            <Setter Property="Margin" Value="0,5,0,0"/>
-        </Style>
-
-        <Style x:Key="SmallPromoBorderStyle" TargetType="Border">
-            <Setter Property="Background" Value="Red"/>
-            <Setter Property="CornerRadius" Value="8"/>
-            <Setter Property="Padding" Value="15"/>
-            <Setter Property="Margin" Value="0,0,0,10"/>
-        </Style>
-
-        <Style x:Key="UserMenuItemStyle" TargetType="Button">
-            <Setter Property="Background" Value="Transparent"/>
-            <Setter Property="Foreground" Value="Black"/>
-            <Setter Property="Padding" Value="15,10"/>
-            <Setter Property="HorizontalAlignment" Value="Stretch"/>
-            <Setter Property="HorizontalContentAlignment" Value="Left"/>
+            <Setter Property="Foreground" Value="{StaticResource TextDark}"/>
             <Setter Property="BorderThickness" Value="0"/>
-            <Setter Property="FontSize" Value="12"/>
-            <Setter Property="MinWidth" Value="150"/>
+            <Setter Property="FontWeight" Value="Medium"/>
             <Style.Triggers>
                 <Trigger Property="IsMouseOver" Value="True">
                     <Setter Property="Background" Value="{StaticResource LightGray}"/>
                 </Trigger>
             </Style.Triggers>
         </Style>
+
+        <!-- Enhanced Brand Filter Button Active Style -->
+        <Style x:Key="BrandFilterButtonActiveStyle" TargetType="Button" BasedOn="{StaticResource BrandFilterButtonStyle}">
+            <Setter Property="Background" Value="{StaticResource PrimaryRed}"/>
+            <Setter Property="Foreground" Value="White"/>
+        </Style>
+
+        <!-- Enhanced Product Card Style -->
+        <Style x:Key="ProductCardStyle" TargetType="Border">
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="BorderBrush" Value="{StaticResource MediumGray}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="CornerRadius" Value="12"/>
+            <Setter Property="Padding" Value="15"/>
+            <Setter Property="Margin" Value="8"/>
+            <Setter Property="Width" Value="220"/>
+            <Setter Property="Effect">
+                <Setter.Value>
+                    <DropShadowEffect Color="Black" Direction="270" ShadowDepth="2" Opacity="0.1" BlurRadius="8"/>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Enhanced Product Image Style -->
+        <Style x:Key="ProductImageStyle" TargetType="Border">
+            <Setter Property="Background" Value="{StaticResource LightGray}"/>
+            <Setter Property="Height" Value="160"/>
+            <Setter Property="CornerRadius" Value="8"/>
+            <Setter Property="Margin" Value="0,0,0,12"/>
+        </Style>
+
+        <!-- Enhanced Discount Badge Style -->
+        <Style x:Key="DiscountBadgeStyle" TargetType="Border">
+            <Setter Property="Background" Value="{StaticResource PrimaryRed}"/>
+            <Setter Property="CornerRadius" Value="4"/>
+            <Setter Property="HorizontalAlignment" Value="Left"/>
+            <Setter Property="Padding" Value="8,4"/>
+            <Setter Property="Margin" Value="0,0,0,8"/>
+        </Style>
+
+        <!-- Enhanced Product Title Style -->
+        <Style x:Key="ProductTitleStyle" TargetType="TextBlock">
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="TextWrapping" Value="Wrap"/>
+            <Setter Property="Margin" Value="0,0,0,6"/>
+            <Setter Property="Foreground" Value="{StaticResource TextDark}"/>
+        </Style>
+
+        <!-- Enhanced Product Subtitle Style -->
+        <Style x:Key="ProductSubtitleStyle" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="11"/>
+            <Setter Property="Foreground" Value="{StaticResource DarkGray}"/>
+            <Setter Property="Margin" Value="0,0,0,8"/>
+            <Setter Property="FontStyle" Value="Italic"/>
+        </Style>
+
+        <!-- Enhanced Product Price Style -->
+        <Style x:Key="ProductPriceStyle" TargetType="TextBlock">
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Foreground" Value="{StaticResource PrimaryRed}"/>
+            <Setter Property="FontSize" Value="15"/>
+            <Setter Property="Margin" Value="0,0,0,4"/>
+        </Style>
+
+        <!-- Enhanced Product Old Price Style -->
+        <Style x:Key="ProductOldPriceStyle" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="11"/>
+            <Setter Property="TextDecorations" Value="Strikethrough"/>
+            <Setter Property="Foreground" Value="{StaticResource DarkGray}"/>
+            <Setter Property="Margin" Value="0,0,0,4"/>
+        </Style>
+
+        <!-- Enhanced Product Rating Style -->
+        <Style x:Key="ProductRatingStyle" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="11"/>
+            <Setter Property="Margin" Value="0,6,0,0"/>
+            <Setter Property="Foreground" Value="{StaticResource WarningYellow}"/>
+            <Setter Property="FontWeight" Value="Medium"/>
+        </Style>
+
+        <!-- Enhanced Promo Button Style -->
+        <Style x:Key="PromoButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="Padding" Value="24,12"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Margin" Value="0,12,0,0"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="{StaticResource LightGray}"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <!-- Enhanced Small Promo Button Style -->
+        <Style x:Key="SmallPromoButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="Padding" Value="16,8"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="FontSize" Value="10"/>
+            <Setter Property="Margin" Value="0,6,0,0"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="{StaticResource LightGray}"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <!-- Enhanced Small Promo Border Style -->
+        <Style x:Key="SmallPromoBorderStyle" TargetType="Border">
+            <Setter Property="Background" Value="{StaticResource PrimaryRed}"/>
+            <Setter Property="CornerRadius" Value="10"/>
+            <Setter Property="Padding" Value="18"/>
+            <Setter Property="Margin" Value="0,0,0,12"/>
+            <Setter Property="Effect">
+                <Setter.Value>
+                    <DropShadowEffect Color="Black" Direction="270" ShadowDepth="3" Opacity="0.15" BlurRadius="10"/>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Enhanced User Menu Item Style -->
+        <Style x:Key="UserMenuItemStyle" TargetType="Button">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="{StaticResource TextDark}"/>
+            <Setter Property="Padding" Value="18,12"/>
+            <Setter Property="HorizontalAlignment" Value="Stretch"/>
+            <Setter Property="HorizontalContentAlignment" Value="Left"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="MinWidth" Value="180"/>
+            <Setter Property="FontWeight" Value="Medium"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="{StaticResource LightGray}"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <!-- Enhanced Search Box Style -->
+        <Style x:Key="SearchComboBoxStyle" TargetType="ComboBox">
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Padding" Value="18,12"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="BorderBrush" Value="{StaticResource MediumGray}"/>
+            <Setter Property="Background" Value="White"/>
+        </Style>
+
+        <!-- Enhanced Search Button Style -->
+        <Style x:Key="SearchButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="{StaticResource DarkRed}"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Padding" Value="18,12"/>
+            <Setter Property="Margin" Value="12,0,0,0"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="FontWeight" Value="Medium"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="{StaticResource PrimaryRed}"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
         
         <!-- Converters -->
         <local:PriceToMillionConverter x:Key="PriceToMillionConverter"/>
+        <converters:FirstImageConverter x:Key="FirstImageConverter"/>
+        <converters:VisibilityConverter x:Key="VisibilityConverter"/>
     </Window.Resources>
 
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="40"/>
-            <RowDefinition Height="80"/>
+            <RowDefinition Height="45"/>
+            <RowDefinition Height="90"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <!-- Top Header Bar -->
+        <!-- Enhanced Top Header Bar -->
         <Grid Grid.Row="0" Background="{StaticResource PrimaryRed}">
-            <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="20,0">
-                <TextBlock Text="Miễn phí cho đơn 300k" Style="{StaticResource HeaderTextStyle}"/>
-                <TextBlock Text="Thu cũ giá ngon - Lên đời tiết kiệm" Style="{StaticResource HeaderTextStyle}"/>
-                <TextBlock Text="Sản phẩm Chính hãng - Xuất VAT đầy đủ" Style="{StaticResource HeaderTextStyle}"/>
-                <TextBlock Text="Giao nhanh - Miễn phí cho đi" Foreground="White" FontSize="12"/>
+            <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="25,0">
+                <TextBlock Text="🚚 Miễn phí vận chuyển cho đơn 300k" Style="{StaticResource HeaderTextStyle}"/>
+                <TextBlock Text="🔄 Thu cũ giá ngon - Lên đời tiết kiệm" Style="{StaticResource HeaderTextStyle}"/>
+                <TextBlock Text="✅ Sản phẩm Chính hãng - Xuất VAT đầy đủ" Style="{StaticResource HeaderTextStyle}"/>
+                <TextBlock Text="⚡ Giao nhanh - Miễn phí cho đi" Foreground="White" FontSize="11" FontWeight="Medium"/>
             </StackPanel>
         </Grid>
 
-        <!-- Main Header -->
+        <!-- Enhanced Main Header -->
         <Grid Grid.Row="1" Background="{StaticResource PrimaryRed}">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="200"/>
+                <ColumnDefinition Width="220"/>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
 
-            <TextBlock Grid.Column="0" Text="cellphoneS" Foreground="White" FontSize="24" FontWeight="Bold" 
+            <TextBlock Grid.Column="0" Text="📱 cellphoneS" Foreground="White" FontSize="26" FontWeight="Bold" 
                        VerticalAlignment="Center" HorizontalAlignment="Center"/>
 
-            <Grid Grid.Column="1" VerticalAlignment="Center" Margin="20,0">
+            <Grid Grid.Column="1" VerticalAlignment="Center" Margin="25,0">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="*"/>
@@ -176,42 +271,44 @@
                 </Grid.ColumnDefinitions>
 
                 <ComboBox x:Name="SearchComboBox" Grid.Column="1" 
-                          FontSize="14" Padding="15,10" VerticalAlignment="Center"
+                          Style="{StaticResource SearchComboBoxStyle}"
                           IsEditable="True" IsTextSearchEnabled="True"
                           TextSearch.TextPath="ProductName"
                           ItemsSource="{Binding SearchSuggestions}"
                           SelectedValuePath="ProductId"
-                          Text="Q Bạn muốn mua gì hôm nay?"
+                          Text="🔍 Bạn muốn mua gì hôm nay?"
                           SelectionChanged="SearchComboBox_SelectionChanged"
                           DropDownOpened="SearchComboBox_DropDownOpened">
                     <ComboBox.ItemTemplate>
                         <DataTemplate>
                             <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="{Binding ProductName}" FontWeight="Bold"/>
-                                <TextBlock Text=" - " Foreground="Gray"/>
-                                <TextBlock Text="{Binding Category.CategoryName}" Foreground="Gray" FontStyle="Italic"/>
+                                <TextBlock Text="{Binding ProductName}" FontWeight="SemiBold"/>
+                                <TextBlock Text=" - " Foreground="{StaticResource DarkGray}"/>
+                                <TextBlock Text="{Binding Category.CategoryName}" Foreground="{StaticResource DarkGray}" FontStyle="Italic"/>
                             </StackPanel>
                         </DataTemplate>
                     </ComboBox.ItemTemplate>
                 </ComboBox>
 
-                <Button Grid.Column="2" Content="Tìm kiếm" Background="{StaticResource DarkRed}" 
-                        Foreground="White" Padding="15,10" Margin="10,0,0,0" Click="SearchButton_Click"/>
+                <Button Grid.Column="2" Content="Tìm kiếm" Style="{StaticResource SearchButtonStyle}" Click="SearchButton_Click"/>
             </Grid>
 
-            <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center" Margin="20,0">
-                <Button Content="🛒" Background="Transparent" Foreground="White" FontSize="20" BorderThickness="0" Click="OpenCart_Click"/>
+            <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center" Margin="25,0">
+                <Button Content="🛒" Background="Transparent" Foreground="White" FontSize="22" BorderThickness="0" 
+                        Click="OpenCart_Click" Padding="8" Margin="0,0,15,0"/>
                 
                 <!-- Login/User Menu -->
                 <StackPanel x:Name="LoginPanel" Orientation="Horizontal" Margin="10,0,0,0">
-                    <Button x:Name="LoginButton" Content="Đăng nhập" Background="Transparent" Foreground="White" BorderThickness="0" Click="Login_Click"/>
+                    <Button x:Name="LoginButton" Content="Đăng nhập" Background="Transparent" Foreground="White" 
+                            BorderThickness="0" Click="Login_Click" FontWeight="Medium" Padding="8"/>
                 </StackPanel>
                 
                 <!-- User Menu Dropdown -->
                 <StackPanel x:Name="UserMenuPanel" Orientation="Horizontal" Margin="10,0,0,0" Visibility="Collapsed">
-                    <Button x:Name="UserMenuButton" Background="Transparent" Foreground="White" BorderThickness="0" Click="UserMenuButton_Click">
+                    <Button x:Name="UserMenuButton" Background="Transparent" Foreground="White" BorderThickness="0" 
+                            Click="UserMenuButton_Click" Padding="8">
                         <StackPanel Orientation="Horizontal">
-                            <TextBlock x:Name="UserNameText" Text="Tên người dùng" VerticalAlignment="Center"/>
+                            <TextBlock x:Name="UserNameText" Text="Tên người dùng" VerticalAlignment="Center" FontWeight="Medium"/>
                             <TextBlock Text=" ▼" FontSize="10" VerticalAlignment="Center" Margin="5,0,0,0"/>
                         </StackPanel>
                     </Button>
@@ -219,14 +316,14 @@
                     <Popup x:Name="UserMenuPopup" PlacementTarget="{Binding ElementName=UserMenuButton}" 
                            Placement="Bottom" StaysOpen="False" PopupAnimation="Fade">
                         <Border Background="White" BorderBrush="{StaticResource MediumGray}" BorderThickness="1" 
-                                CornerRadius="5" Padding="0">
+                                CornerRadius="8" Padding="0">
                             <StackPanel>
-                                <Button Content="Xem thông tin cá nhân" Style="{StaticResource UserMenuItemStyle}" Click="ViewProfile_Click"/>
-                                <Button Content="Cài đặt tài khoản" Style="{StaticResource UserMenuItemStyle}" Click="AccountSettings_Click"/>
-                                <Button Content="Quản lý địa chỉ" Style="{StaticResource UserMenuItemStyle}" Click="AddressManagement_Click"/>
-                                <Button Content="Xem đơn hàng đã đặt" Style="{StaticResource UserMenuItemStyle}" Click="ViewOrders_Click"/>
-                                <Separator Margin="5,0"/>
-                                <Button Content="Đăng xuất" Style="{StaticResource UserMenuItemStyle}" Click="Logout_Click"/>
+                                <Button Content="👤 Xem thông tin cá nhân" Style="{StaticResource UserMenuItemStyle}" Click="ViewProfile_Click"/>
+                                <Button Content="⚙️ Cài đặt tài khoản" Style="{StaticResource UserMenuItemStyle}" Click="AccountSettings_Click"/>
+                                <Button Content="📍 Quản lý địa chỉ" Style="{StaticResource UserMenuItemStyle}" Click="AddressManagement_Click"/>
+                                <Button Content="📋 Xem đơn hàng đã đặt" Style="{StaticResource UserMenuItemStyle}" Click="ViewOrders_Click"/>
+                                <Separator Margin="8,0" Background="{StaticResource MediumGray}"/>
+                                <Button Content="🚪 Đăng xuất" Style="{StaticResource UserMenuItemStyle}" Click="Logout_Click"/>
                             </StackPanel>
                         </Border>
                     </Popup>
@@ -234,41 +331,44 @@
             </StackPanel>
         </Grid>
 
-        <!-- Main Content -->
+        <!-- Enhanced Main Content -->
         <Grid Grid.Row="2">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="250"/>
+                <ColumnDefinition Width="280"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
 
-            <!-- Left Sidebar Categories -->
+            <!-- Enhanced Left Sidebar Categories -->
             <ScrollViewer Grid.Column="0" Background="{StaticResource LightGray}">
-                <StackPanel>
-                    <Button Content="▶ Tất cả sản phẩm" Style="{StaticResource CategoryButtonStyle}" Click="AllProducts_Click"/>
-                    <Button Content="▶ Điện thoại, Tablet" Style="{StaticResource CategoryButtonStyle}" Click="Category_Click" Tag="CAT001"/>
-                    <Button Content="▶ Laptop" Style="{StaticResource CategoryButtonStyle}" Click="Category_Click" Tag="CAT002"/>
-                    <Button Content="▶ Âm thanh, Mic thu âm" Style="{StaticResource CategoryButtonStyle}" Click="Category_Click" Tag="CAT003"/>
-                    <Button Content="▶ Đồng hồ, Camera" Style="{StaticResource CategoryButtonStyle}" Click="Category_Click" Tag="CAT004"/>
-                    <Button Content="▶ Đồ gia dụng" Style="{StaticResource CategoryButtonStyle}" Click="Category_Click" Tag="CAT005"/>
-                    <Button Content="▶ Phụ kiện" Style="{StaticResource CategoryButtonStyle}" Click="Category_Click" Tag="CAT006"/>
-                    <Button Content="▶ PC, Màn hình, Máy in" Style="{StaticResource CategoryButtonStyle}" Click="Category_Click" Tag="CAT007"/>
-                    <Button Content="▶ Tivi" Style="{StaticResource CategoryButtonStyle}" Click="Category_Click" Tag="CAT008"/>
+                <StackPanel Margin="0,20,0,20">
+                    <Button Content="🏠 Tất cả sản phẩm" Style="{StaticResource CategoryButtonStyle}" Click="AllProducts_Click"/>
+                    <Button Content="📱 Điện thoại, Tablet" Style="{StaticResource CategoryButtonStyle}" Click="Category_Click" Tag="CAT001"/>
+                    <Button Content="💻 Laptop" Style="{StaticResource CategoryButtonStyle}" Click="Category_Click" Tag="CAT002"/>
+                    <Button Content="🎵 Âm thanh, Mic thu âm" Style="{StaticResource CategoryButtonStyle}" Click="Category_Click" Tag="CAT003"/>
+                    <Button Content="⌚ Đồng hồ, Camera" Style="{StaticResource CategoryButtonStyle}" Click="Category_Click" Tag="CAT004"/>
+                    <Button Content="🏠 Đồ gia dụng" Style="{StaticResource CategoryButtonStyle}" Click="Category_Click" Tag="CAT005"/>
+                    <Button Content="🔌 Phụ kiện" Style="{StaticResource CategoryButtonStyle}" Click="Category_Click" Tag="CAT006"/>
+                    <Button Content="🖥️ PC, Màn hình, Máy in" Style="{StaticResource CategoryButtonStyle}" Click="Category_Click" Tag="CAT007"/>
+                    <Button Content="📺 Tivi" Style="{StaticResource CategoryButtonStyle}" Click="Category_Click" Tag="CAT008"/>
                 </StackPanel>
             </ScrollViewer>
 
-            <!-- Main Content Area -->
+            <!-- Enhanced Main Content Area -->
             <ScrollViewer Grid.Column="1" VerticalScrollBarVisibility="Auto">
-                <StackPanel Margin="20">
+                <StackPanel Margin="25">
 
-                    <!-- Promotional Banners -->
-                    <Grid Margin="0,0,0,20">
+                    <!-- Enhanced Promotional Banners -->
+                    <Grid Margin="0,0,0,25">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="2*"/>
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
 
-                        <!-- Left Large Banner -->
-                        <Border Grid.Column="0" Background="Red" CornerRadius="10" Padding="20" Margin="0,0,10,0">
+                        <!-- Enhanced Left Large Banner -->
+                        <Border Grid.Column="0" Background="{StaticResource PrimaryRed}" CornerRadius="15" Padding="25" Margin="0,0,15,0">
+                            <Border.Effect>
+                                <DropShadowEffect Color="Black" Direction="270" ShadowDepth="2" Opacity="0.1" BlurRadius="8"/>
+                            </Border.Effect>
                             <Grid>
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="*"/>
@@ -276,69 +376,84 @@
                                 </Grid.ColumnDefinitions>
 
                                 <StackPanel Grid.Column="0" VerticalAlignment="Center">
-                                    <TextBlock Text="{Binding MainBannerProduct.ProductName, FallbackValue='SẢN PHẨM HOT'}" 
-                                               Foreground="White" FontSize="24" FontWeight="Bold"/>
-                                    <TextBlock Text="{Binding MainBannerProduct.Price, Converter={StaticResource PriceToMillionConverter}, FallbackValue='Giá từ 0₫'}" 
-                                               Foreground="White" FontSize="18" Margin="0,5"/>
-                                    <TextBlock Text="Trợ giá lên đời đến 500K+" Foreground="White" FontSize="12" Margin="0,5"/>
-                                    <TextBlock Text="S-Student S-Teacher Giảm thêm 15%" Foreground="White" FontSize="12" Margin="0,5"/>
-                                    <Button Content="Mua Ngay" Style="{StaticResource PromoButtonStyle}" 
+                                    <TextBlock Text="{Binding MainBannerProduct.ProductName, FallbackValue='🔥 SẢN PHẨM HOT'}" 
+                                               Foreground="White" FontSize="26" FontWeight="Bold" Margin="0,0,0,8"/>
+                                    <TextBlock Text="{Binding MainBannerProduct.Price, Converter={StaticResource PriceToMillionConverter}, FallbackValue='💰 Giá từ 0₫'}" 
+                                               Foreground="White" FontSize="20" Margin="0,0,0,8" FontWeight="SemiBold"/>
+                                    <TextBlock Text="🎁 Trợ giá lên đời đến 500K+" Foreground="White" FontSize="13" Margin="0,0,0,4"/>
+                                    <TextBlock Text="🎓 S-Student S-Teacher Giảm thêm 15%" Foreground="White" FontSize="13" Margin="0,0,0,8"/>
+                                    <Button Content="🛒 Mua Ngay" Style="{StaticResource PromoButtonStyle}" 
                                             Foreground="{StaticResource PrimaryRed}" Click="MainBanner_Click"/>
                                 </StackPanel>
 
-                                <TextBlock Grid.Column="1" Text="📱" FontSize="80" VerticalAlignment="Center"/>
+                                <Grid Grid.Column="1" VerticalAlignment="Center">
+                                    <!-- Banner Product Image -->
+                                    <Image Stretch="Uniform" MaxWidth="130" MaxHeight="130" 
+                                           HorizontalAlignment="Center" VerticalAlignment="Center">
+                                        <Image.Source>
+                                            <Binding Path="MainBannerProduct.ProductImages" Converter="{StaticResource FirstImageConverter}"/>
+                                        </Image.Source>
+                                    </Image>
+                                    
+                                    <!-- Fallback icon if no image -->
+                                    <TextBlock Text="📱" FontSize="90" HorizontalAlignment="Center" VerticalAlignment="Center"
+                                               Visibility="{Binding MainBannerProduct.ProductImages.Count, Converter={StaticResource VisibilityConverter}}"/>
+                                </Grid>
                             </Grid>
                         </Border>
 
-                        <!-- Right Stacked Banners -->
-                        <ItemsControl Grid.Column="1" ItemsSource="{Binding SmallBannerProducts}" Margin="10,0,0,0">
+                        <!-- Enhanced Right Stacked Banners -->
+                        <ItemsControl Grid.Column="1" ItemsSource="{Binding SmallBannerProducts}" Margin="15,0,0,0">
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
                                     <Border Style="{StaticResource SmallPromoBorderStyle}" MouseLeftButtonDown="SmallBanner_Click">
-                                <StackPanel>
-                                            <TextBlock Text="{Binding ProductName, FallbackValue='Sản phẩm hot'}" 
-                                                       Foreground="White" FontWeight="Bold"/>
-                                            <TextBlock Text="{Binding Price, Converter={StaticResource PriceToMillionConverter}, FallbackValue='Giá liên hệ'}" 
-                                                       Foreground="White" FontSize="12"/>
-                                            <TextBlock Text="{Binding Category.CategoryName, FallbackValue='Khuyến mãi đặc biệt'}" 
-                                                       Foreground="White" FontSize="10"/>
-                                            <Button Content="MUA NGAY" Style="{StaticResource SmallPromoButtonStyle}" 
+                                        <StackPanel>
+                                            <TextBlock Text="{Binding ProductName, FallbackValue='🔥 Sản phẩm hot'}" 
+                                                       Foreground="White" FontWeight="Bold" FontSize="13"/>
+                                            <TextBlock Text="{Binding Price, Converter={StaticResource PriceToMillionConverter}, FallbackValue='💰 Giá liên hệ'}" 
+                                                       Foreground="White" FontSize="11" Margin="0,2"/>
+                                            <TextBlock Text="{Binding Category.CategoryName, FallbackValue='🎯 Khuyến mãi đặc biệt'}" 
+                                                       Foreground="White" FontSize="10" Margin="0,2"/>
+                                            <Button Content="🛒 MUA NGAY" Style="{StaticResource SmallPromoButtonStyle}" 
                                                     Foreground="#4A90E2" Click="SmallBannerButton_Click"/>
-                                </StackPanel>
-                            </Border>
+                                        </StackPanel>
+                                    </Border>
                                 </DataTemplate>
                             </ItemsControl.ItemTemplate>
                         </ItemsControl>
                     </Grid>
 
-                    <!-- Featured Phones Section -->
+                    <!-- Enhanced Featured Products Section -->
                     <Border Background="White" BorderBrush="{StaticResource MediumGray}" BorderThickness="1" 
-                            CornerRadius="10" Padding="20">
+                            CornerRadius="15" Padding="25">
+                        <Border.Effect>
+                            <DropShadowEffect Color="Black" Direction="270" ShadowDepth="2" Opacity="0.1" BlurRadius="8"/>
+                        </Border.Effect>
                         <StackPanel>
                            
-                            <!-- Section Header with Title and Sort -->
-                            <Grid Margin="0,0,0,20">
+                            <!-- Enhanced Section Header with Title and Sort -->
+                            <Grid Margin="0,0,0,25">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="*"/>
                                     <ColumnDefinition Width="Auto"/>
                                 </Grid.ColumnDefinitions>
 
-                                <TextBlock x:Name="SectionTitle" Text="Tất cả sản phẩm" FontSize="20" FontWeight="Bold" 
+                                <TextBlock x:Name="SectionTitle" Text="🛍️ Tất cả sản phẩm" FontSize="22" FontWeight="Bold" 
                                            Foreground="{StaticResource PrimaryRed}"/>
                                 
                                 <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
-                                    <TextBlock Text="Sắp xếp theo: " FontSize="12" Foreground="{StaticResource DarkGray}" 
-                                               VerticalAlignment="Center" Margin="0,0,5,0"/>
-                                    <ComboBox x:Name="SortComboBox" Width="150" FontSize="12" 
-                                              SelectionChanged="SortComboBox_SelectionChanged">
+                                    <TextBlock Text="Sắp xếp theo: " FontSize="13" Foreground="{StaticResource DarkGray}" 
+                                               VerticalAlignment="Center" Margin="0,0,8,0" FontWeight="Medium"/>
+                                    <ComboBox x:Name="SortComboBox" Width="160" FontSize="12" 
+                                              SelectionChanged="SortComboBox_SelectionChanged" Padding="8,6">
                                         <ComboBoxItem Content="Mặc định" IsSelected="True"/>
                                         <ComboBoxItem Content="Giá: Thấp → Cao"/>
                                         <ComboBoxItem Content="Giá: Cao → Thấp"/>
                                     </ComboBox>
-                                    </StackPanel>
+                                </StackPanel>
                             </Grid>
                            
-                            <!-- Product Grid -->
+                            <!-- Enhanced Product Grid -->
                             <ItemsControl ItemsSource="{Binding Products}">
                                 <ItemsControl.ItemsPanel>
                                     <ItemsPanelTemplate>
@@ -348,16 +463,26 @@
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate>
                                         <Border Style="{StaticResource ProductCardStyle}" MouseLeftButtonDown="ProductCard_Click">
-                                    <StackPanel>
-                                        <Border Style="{StaticResource ProductImageStyle}">
-                                            <TextBlock Text="📱" FontSize="60" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                                        </Border>
+                                            <StackPanel>
+                                                <Border Style="{StaticResource ProductImageStyle}">
+                                                    <Grid>
+                                                        <Image Stretch="Uniform" MaxWidth="190" MaxHeight="150" 
+                                                               HorizontalAlignment="Center" VerticalAlignment="Center">
+                                                            <Image.Source>
+                                                                <Binding Path="ProductImages" Converter="{StaticResource FirstImageConverter}"/>
+                                                            </Image.Source>
+                                                        </Image>
+                                                        
+                                                        <TextBlock Text="📱" FontSize="70" HorizontalAlignment="Center" VerticalAlignment="Center"
+                                                                   Visibility="{Binding ProductImages.Count, Converter={StaticResource VisibilityConverter}}"/>
+                                                    </Grid>
+                                                </Border>
                                                 <TextBlock Text="{Binding ProductName}" Style="{StaticResource ProductTitleStyle}"/>
                                                 <TextBlock Text="{Binding Category.CategoryName}" Style="{StaticResource ProductSubtitleStyle}"/>
                                                 <TextBlock Text="{Binding Price, StringFormat='{}{0:N0}₫'}" Style="{StaticResource ProductPriceStyle}"/>
-                                        <TextBlock Text="⭐ 4.9" Style="{StaticResource ProductRatingStyle}"/>
-                                    </StackPanel>
-                                </Border>
+                                                <TextBlock Text="⭐ 4.9 (128 đánh giá)" Style="{StaticResource ProductRatingStyle}"/>
+                                            </StackPanel>
+                                        </Border>
                                     </DataTemplate>
                                 </ItemsControl.ItemTemplate>
                             </ItemsControl>

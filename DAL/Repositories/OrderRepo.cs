@@ -21,8 +21,9 @@ namespace DAL.Repositories
                 .Include(o => o.OrderDetails)
                     .ThenInclude(od => od.Product)
                         .ThenInclude(p => p.Category)
-                .Where(o => o.CustomerId == customerId && o.Status == "Pending")
+                .Where(o => o.CustomerId == customerId)
                 .OrderByDescending(o => o.OrderDate)
+                .ThenBy(o => o.Status == "Cancelled" ? 1 : 0) // Cancelled orders go to bottom
                 .ToList();
         }
 
