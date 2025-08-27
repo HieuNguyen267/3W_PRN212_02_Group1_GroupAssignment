@@ -82,9 +82,7 @@ namespace ShoppingOnline.Views
         {
             try
             {
-                var filteredProducts = _allProducts
-                    .Where(p => p.IsActive == true) // hide soft-deleted products by default
-                    .AsEnumerable();
+                var filteredProducts = _allProducts.AsEnumerable();
 
                 // Apply search filter
                 var searchText = ProductSearchBox?.Text?.Trim();
@@ -156,22 +154,8 @@ namespace ShoppingOnline.Views
 
         private void AddProduct_Click(object sender, RoutedEventArgs e)
         {
-            try
-            {
-                var win = new AdminProductEditWindow();
-                win.Owner = Window.GetWindow(this);
-                var result = win.ShowDialog();
-                if (result == true)
-                {
-                    LoadProducts();
-                    ProductsDataGrid?.Items.Refresh();
-                    MessageBox.Show("Da them san pham thanh cong!", "Thanh cong", MessageBoxButton.OK, MessageBoxImage.Information);
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Loi khi them san pham: {ex.Message}", "Loi", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
+            MessageBox.Show("Tinh nang them san pham se duoc phat trien sau!", "Thong bao", 
+                MessageBoxButton.OK, MessageBoxImage.Information);
         }
 
         private void ViewProduct_Click(object sender, RoutedEventArgs e)
@@ -195,29 +179,8 @@ namespace ShoppingOnline.Views
         {
             if (sender is Button button && button.Tag is string productId)
             {
-                try
-                {
-                    var product = _allProducts.FirstOrDefault(p => p.ProductId == productId);
-                    if (product == null)
-                    {
-                        MessageBox.Show("Khong tim thay san pham!", "Loi", MessageBoxButton.OK, MessageBoxImage.Error);
-                        return;
-                    }
-
-                    var win = new AdminProductEditWindow(product);
-                    win.Owner = Window.GetWindow(this);
-                    var result = win.ShowDialog();
-                    if (result == true)
-                    {
-                        LoadProducts();
-                        ProductsDataGrid?.Items.Refresh();
-                        MessageBox.Show("Da cap nhat san pham!", "Thanh cong", MessageBoxButton.OK, MessageBoxImage.Information);
-                    }
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show($"Loi khi sua san pham: {ex.Message}", "Loi", MessageBoxButton.OK, MessageBoxImage.Error);
-                }
+                MessageBox.Show($"Tinh nang sua san pham {productId} se duoc phat trien sau!", "Thong bao", 
+                    MessageBoxButton.OK, MessageBoxImage.Information);
             }
         }
 
@@ -225,29 +188,13 @@ namespace ShoppingOnline.Views
         {
             if (sender is Button button && button.Tag is string productId)
             {
-                var result = MessageBox.Show($"Ban co chac muon xoa (vo hieu hoa) san pham {productId}?", 
+                var result = MessageBox.Show($"Ban co chac muon xoa san pham {productId}?", 
                     "Xac nhan xoa", MessageBoxButton.YesNo, MessageBoxImage.Warning);
-
+                
                 if (result == MessageBoxResult.Yes)
                 {
-                    try
-                    {
-                        var ok = _adminService.DeleteProduct(productId);
-                        if (ok)
-                        {
-                            LoadProducts();
-                            ProductsDataGrid?.Items.Refresh();
-                            MessageBox.Show("Da vo hieu hoa san pham!", "Thanh cong", MessageBoxButton.OK, MessageBoxImage.Information);
-                        }
-                        else
-                        {
-                            MessageBox.Show("Khong the xoa san pham!", "Loi", MessageBoxButton.OK, MessageBoxImage.Error);
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show($"Loi khi xoa san pham: {ex.Message}", "Loi", MessageBoxButton.OK, MessageBoxImage.Error);
-                    }
+                    MessageBox.Show("Tinh nang xoa san pham se duoc phat trien sau!", "Thong bao", 
+                        MessageBoxButton.OK, MessageBoxImage.Information);
                 }
             }
         }
