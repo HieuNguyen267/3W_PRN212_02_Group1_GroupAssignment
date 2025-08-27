@@ -228,7 +228,7 @@
                 </Trigger>
             </Style.Triggers>
         </Style>
-        
+
         <!-- Converters -->
         <local:PriceToMillionConverter x:Key="PriceToMillionConverter"/>
         <converters:FirstImageConverter x:Key="FirstImageConverter"/>
@@ -260,8 +260,8 @@
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
 
-            <TextBlock Grid.Column="0" Text="📱 cellphoneS" Foreground="White" FontSize="26" FontWeight="Bold" 
-                       VerticalAlignment="Center" HorizontalAlignment="Center"/>
+            <TextBlock Grid.Column="0" Text="📱 Shopping Online" Foreground="White" FontSize="26" FontWeight="Bold" 
+                       VerticalAlignment="Center" HorizontalAlignment="Left" Width="300" Grid.ColumnSpan="2" Margin="20,0,0,0"/>
 
             <Grid Grid.Column="1" VerticalAlignment="Center" Margin="25,0">
                 <Grid.ColumnDefinitions>
@@ -278,7 +278,7 @@
                           SelectedValuePath="ProductId"
                           Text="🔍 Bạn muốn mua gì hôm nay?"
                           SelectionChanged="SearchComboBox_SelectionChanged"
-                          DropDownOpened="SearchComboBox_DropDownOpened">
+                          DropDownOpened="SearchComboBox_DropDownOpened" Grid.ColumnSpan="2" Margin="50,0,98,0">
                     <ComboBox.ItemTemplate>
                         <DataTemplate>
                             <StackPanel Orientation="Horizontal">
@@ -296,13 +296,13 @@
             <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center" Margin="25,0">
                 <Button Content="🛒" Background="Transparent" Foreground="White" FontSize="22" BorderThickness="0" 
                         Click="OpenCart_Click" Padding="8" Margin="0,0,15,0"/>
-                
+
                 <!-- Login/User Menu -->
                 <StackPanel x:Name="LoginPanel" Orientation="Horizontal" Margin="10,0,0,0">
                     <Button x:Name="LoginButton" Content="Đăng nhập" Background="Transparent" Foreground="White" 
                             BorderThickness="0" Click="Login_Click" FontWeight="Medium" Padding="8"/>
                 </StackPanel>
-                
+
                 <!-- User Menu Dropdown -->
                 <StackPanel x:Name="UserMenuPanel" Orientation="Horizontal" Margin="10,0,0,0" Visibility="Collapsed">
                     <Button x:Name="UserMenuButton" Background="Transparent" Foreground="White" BorderThickness="0" 
@@ -312,7 +312,7 @@
                             <TextBlock Text=" ▼" FontSize="10" VerticalAlignment="Center" Margin="5,0,0,0"/>
                         </StackPanel>
                     </Button>
-                    
+
                     <Popup x:Name="UserMenuPopup" PlacementTarget="{Binding ElementName=UserMenuButton}" 
                            Placement="Bottom" StaysOpen="False" PopupAnimation="Fade">
                         <Border Background="White" BorderBrush="{StaticResource MediumGray}" BorderThickness="1" 
@@ -394,7 +394,7 @@
                                             <Binding Path="MainBannerProduct.ProductImages" Converter="{StaticResource FirstImageConverter}"/>
                                         </Image.Source>
                                     </Image>
-                                    
+
                                     <!-- Fallback icon if no image -->
                                     <TextBlock Text="📱" FontSize="90" HorizontalAlignment="Center" VerticalAlignment="Center"
                                                Visibility="{Binding MainBannerProduct.ProductImages.Count, Converter={StaticResource VisibilityConverter}}"/>
@@ -407,7 +407,7 @@
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
                                     <Border Style="{StaticResource SmallPromoBorderStyle}" MouseLeftButtonDown="SmallBanner_Click">
-                                <StackPanel>
+                                        <StackPanel>
                                             <TextBlock Text="{Binding ProductName, FallbackValue='🔥 Sản phẩm hot'}" 
                                                        Foreground="White" FontWeight="Bold" FontSize="13"/>
                                             <TextBlock Text="{Binding Price, Converter={StaticResource PriceToMillionConverter}, FallbackValue='💰 Giá liên hệ'}" 
@@ -416,8 +416,8 @@
                                                        Foreground="White" FontSize="10" Margin="0,2"/>
                                             <Button Content="🛒 MUA NGAY" Style="{StaticResource SmallPromoButtonStyle}" 
                                                     Foreground="#4A90E2" Click="SmallBannerButton_Click"/>
-                                </StackPanel>
-                            </Border>
+                                        </StackPanel>
+                                    </Border>
                                 </DataTemplate>
                             </ItemsControl.ItemTemplate>
                         </ItemsControl>
@@ -430,7 +430,7 @@
                             <DropShadowEffect Color="Black" Direction="270" ShadowDepth="2" Opacity="0.1" BlurRadius="8"/>
                         </Border.Effect>
                         <StackPanel>
-                           
+
                             <!-- Enhanced Section Header with Title and Sort -->
                             <Grid Margin="0,0,0,25">
                                 <Grid.ColumnDefinitions>
@@ -440,7 +440,7 @@
 
                                 <TextBlock x:Name="SectionTitle" Text="🛍️ Tất cả sản phẩm" FontSize="22" FontWeight="Bold" 
                                            Foreground="{StaticResource PrimaryRed}"/>
-                                
+
                                 <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
                                     <TextBlock Text="Sắp xếp theo: " FontSize="13" Foreground="{StaticResource DarkGray}" 
                                                VerticalAlignment="Center" Margin="0,0,8,0" FontWeight="Medium"/>
@@ -450,9 +450,9 @@
                                         <ComboBoxItem Content="Giá: Thấp → Cao"/>
                                         <ComboBoxItem Content="Giá: Cao → Thấp"/>
                                     </ComboBox>
-                                    </StackPanel>
+                                </StackPanel>
                             </Grid>
-                           
+
                             <!-- Enhanced Product Grid -->
                             <ItemsControl ItemsSource="{Binding Products}">
                                 <ItemsControl.ItemsPanel>
@@ -463,8 +463,8 @@
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate>
                                         <Border Style="{StaticResource ProductCardStyle}" MouseLeftButtonDown="ProductCard_Click">
-                                    <StackPanel>
-                                        <Border Style="{StaticResource ProductImageStyle}">
+                                            <StackPanel>
+                                                <Border Style="{StaticResource ProductImageStyle}">
                                                     <Grid>
                                                         <Image Stretch="Uniform" MaxWidth="190" MaxHeight="150" 
                                                                HorizontalAlignment="Center" VerticalAlignment="Center">
@@ -472,17 +472,17 @@
                                                                 <Binding Path="ProductImages" Converter="{StaticResource FirstImageConverter}"/>
                                                             </Image.Source>
                                                         </Image>
-                                                        
+
                                                         <TextBlock Text="📱" FontSize="70" HorizontalAlignment="Center" VerticalAlignment="Center"
                                                                    Visibility="{Binding ProductImages.Count, Converter={StaticResource VisibilityConverter}}"/>
                                                     </Grid>
-                                        </Border>
+                                                </Border>
                                                 <TextBlock Text="{Binding ProductName}" Style="{StaticResource ProductTitleStyle}"/>
                                                 <TextBlock Text="{Binding Category.CategoryName}" Style="{StaticResource ProductSubtitleStyle}"/>
                                                 <TextBlock Text="{Binding Price, StringFormat='{}{0:N0}₫'}" Style="{StaticResource ProductPriceStyle}"/>
                                                 <TextBlock Text="⭐ 4.9 (128 đánh giá)" Style="{StaticResource ProductRatingStyle}"/>
-                                    </StackPanel>
-                                </Border>
+                                            </StackPanel>
+                                        </Border>
                                     </DataTemplate>
                                 </ItemsControl.ItemTemplate>
                             </ItemsControl>
