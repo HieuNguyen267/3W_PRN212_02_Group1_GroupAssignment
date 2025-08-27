@@ -68,6 +68,7 @@
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
 
                     <!-- Search Box -->
@@ -81,12 +82,16 @@
                                    IsHitTestVisible="False"/>
                     </Grid>
 
+                    <!-- Add Customer Button -->
+                    <Button Grid.Column="1" Content="Them khach hang" Style="{StaticResource ModernButton}" 
+                            Height="35" Margin="0,0,10,0" Click="AddCustomer_Click"/>
+
                     <!-- Add Admin Button -->
-                    <Button Grid.Column="1" Content="Them admin" Style="{StaticResource ModernButton}" 
+                    <Button Grid.Column="2" Content="Them admin" Style="{StaticResource ModernButton}" 
                             Height="35" Margin="0,0,10,0" Click="AddAdmin_Click"/>
 
                     <!-- Refresh Button -->
-                    <Button Grid.Column="2" Content="Refresh" Style="{StaticResource ModernButton}" 
+                    <Button Grid.Column="3" Content="Refresh" Style="{StaticResource ModernButton}" 
                             Height="35" Click="RefreshAdmins_Click"/>
                 </Grid>
 

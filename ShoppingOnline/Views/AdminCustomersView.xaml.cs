@@ -1,4 +1,4 @@
-using BLL.Services;
+Ôªøusing BLL.Services;
 using DAL.Entities;
 using System;
 using System.Collections.Generic;
@@ -105,7 +105,7 @@ namespace ShoppingOnline.Views
                 // If no customers exist, offer to create sample data
                 if (customerCount == 0)
                 {
-                    var result = MessageBox.Show("C? s? d? li?u tr?ng! B?n cÛ mu?n t?o d? li?u m?u khÙng?", "ThÙng b·o", 
+                    var result = MessageBox.Show("C? s? d? li?u tr?ng! B?n c√≥ mu?n t?o d? li?u m?u kh√¥ng?", "Th√¥ng b√°o", 
                         MessageBoxButton.YesNo, MessageBoxImage.Question);
                         
                     if (result == MessageBoxResult.Yes)
@@ -117,7 +117,7 @@ namespace ShoppingOnline.Views
             catch (Exception ex)
             {
                 System.Diagnostics.Debug.WriteLine($"AdminCustomersView: Database connection failed: {ex.Message}");
-                MessageBox.Show($"L?i k?t n?i c? s? d? li?u: {ex.Message}\n\nVui lÚng ki?m tra:\n1. SQL Server ?„ ch?y\n2. Database 'ShoppingOnline' t?n t?i\n3. Connection string ?˙ng", 
+                MessageBox.Show($"L?i k?t n?i c? s? d? li?u: {ex.Message}\n\nVui l√≤ng ki?m tra:\n1. SQL Server ?√£ ch?y\n2. Database 'ShoppingOnline' t?n t?i\n3. Connection string ?√∫ng", 
                     "L?i Database", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
@@ -137,11 +137,11 @@ namespace ShoppingOnline.Views
                     },
                     new { 
                         Account = new Account { Username = "customer2", Email = "customer2@example.com", Password = "123456", AccountType = "Customer", CreatedDate = DateTime.Now, IsActive = true },
-                        Customer = new Customer { FullName = "Tr?n Th? B", Phone = "0907654321", Address = "456 ???ng XYZ, H‡ N?i", CreatedDate = DateTime.Now, UpdatedDate = DateTime.Now }
+                        Customer = new Customer { FullName = "Tr?n Th? B", Phone = "0907654321", Address = "456 ???ng XYZ, H√† N?i", CreatedDate = DateTime.Now, UpdatedDate = DateTime.Now }
                     },
                     new { 
                         Account = new Account { Username = "customer3", Email = "customer3@example.com", Password = "123456", AccountType = "Customer", CreatedDate = DateTime.Now, IsActive = false },
-                        Customer = new Customer { FullName = "LÍ V?n C", Phone = "0912345678", Address = "789 ???ng DEF, ?‡ N?ng", CreatedDate = DateTime.Now, UpdatedDate = DateTime.Now }
+                        Customer = new Customer { FullName = "L√™ V?n C", Phone = "0912345678", Address = "789 ???ng DEF, ?√† N?ng", CreatedDate = DateTime.Now, UpdatedDate = DateTime.Now }
                     }
                 };
                 
@@ -156,7 +156,7 @@ namespace ShoppingOnline.Views
                 
                 context.SaveChanges();
                 
-                MessageBox.Show("?„ t?o d? li?u m?u th‡nh cÙng!", "Th‡nh cÙng", 
+                MessageBox.Show("?√£ t?o d? li?u m?u th√†nh c√¥ng!", "Th√†nh c√¥ng", 
                     MessageBoxButton.OK, MessageBoxImage.Information);
                     
                 System.Diagnostics.Debug.WriteLine("AdminCustomersView: Sample data created successfully");
@@ -194,7 +194,7 @@ namespace ShoppingOnline.Views
             catch (Exception ex)
             {
                 System.Diagnostics.Debug.WriteLine($"AdminCustomersView: Error loading customers: {ex.Message}");
-                MessageBox.Show($"L?i khi t?i d? li?u kh·ch h‡ng: {ex.Message}", "L?i", 
+                MessageBox.Show($"L?i khi t?i d? li?u kh√°ch h√†ng: {ex.Message}", "L?i", 
                     MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
@@ -280,7 +280,7 @@ namespace ShoppingOnline.Views
         private void RefreshCustomers_Click(object sender, RoutedEventArgs e)
         {
             LoadCustomers();
-            MessageBox.Show("?„ l‡m m?i danh s·ch kh·ch h‡ng!", "ThÙng b·o", 
+            MessageBox.Show("?√£ l√†m m?i danh s√°ch kh√°ch h√†ng!", "Th√¥ng b√°o", 
                 MessageBoxButton.OK, MessageBoxImage.Information);
         }
 
@@ -304,7 +304,7 @@ namespace ShoppingOnline.Views
             catch (Exception ex)
             {
                 System.Diagnostics.Debug.WriteLine($"AdminCustomersView: Error in AddCustomer_Click: {ex.Message}");
-                MessageBox.Show($"L?i khi m? c?a s? thÍm kh·ch h‡ng:\n{ex.Message}", "L?i", 
+                MessageBox.Show($"L?i khi m? c?a s? th√™m kh√°ch h√†ng:\n{ex.Message}", "L?i", 
                     MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
@@ -318,21 +318,21 @@ namespace ShoppingOnline.Views
                     var customer = _allCustomers.FirstOrDefault(c => c.CustomerId == customerId);
                     if (customer != null)
                     {
-                        var info = $"ThÙng tin kh·ch h‡ng #{customerId}\n\n" +
-                                  $"TÍn: {customer.FullName}\n" +
+                        var info = $"Th√¥ng tin kh√°ch h√†ng #{customerId}\n\n" +
+                                  $"T√™n: {customer.FullName}\n" +
                                   $"Email: {customer.Account?.Email}\n" +
                                   $"?i?n tho?i: {customer.Phone}\n" +
                                   $"??a ch?: {customer.Address}\n" +
-                                  $"Ng‡y t?o: {customer.CreatedDate:dd/MM/yyyy}\n" +
-                                  $"Tr?ng th·i: {(customer.Account?.IsActive == true ? "Ho?t ??ng" : "KhÛa")}";
+                                  $"Ng√†y t?o: {customer.CreatedDate:dd/MM/yyyy}\n" +
+                                  $"Tr?ng th√°i: {(customer.Account?.IsActive == true ? "Ho?t ??ng" : "Kh√≥a")}";
                         
-                        MessageBox.Show(info, "ThÙng tin kh·ch h‡ng", 
+                        MessageBox.Show(info, "Th√¥ng tin kh√°ch h√†ng", 
                             MessageBoxButton.OK, MessageBoxImage.Information);
                     }
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show($"L?i khi xem thÙng tin kh·ch h‡ng: {ex.Message}", "L?i", 
+                    MessageBox.Show($"L?i khi xem th√¥ng tin kh√°ch h√†ng: {ex.Message}", "L?i", 
                         MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }
@@ -348,7 +348,7 @@ namespace ShoppingOnline.Views
                     var customer = _allCustomers.FirstOrDefault(c => c.CustomerId == customerId);
                     if (customer == null)
                     {
-                        MessageBox.Show($"KhÙng tÏm th?y kh·ch h‡ng #{customerId}!\n\nKh·ch h‡ng cÛ th? ?„ b? xÛa ho?c khÙng t?n t?i.", 
+                        MessageBox.Show($"Kh√¥ng t√¨m th?y kh√°ch h√†ng #{customerId}!\n\nKh√°ch h√†ng c√≥ th? ?√£ b? x√≥a ho?c kh√¥ng t?n t?i.", 
                             "L?i", MessageBoxButton.OK, MessageBoxImage.Warning);
                         LoadCustomers(); // Refresh the list
                         return;
@@ -369,7 +369,7 @@ namespace ShoppingOnline.Views
                 catch (Exception ex)
                 {
                     System.Diagnostics.Debug.WriteLine($"AdminCustomersView: Error in EditCustomer_Click: {ex.Message}");
-                    MessageBox.Show($"L?i khi m? c?a s? s?a thÙng tin kh·ch h‡ng:\n{ex.Message}", "L?i", 
+                    MessageBox.Show($"L?i khi m? c?a s? s?a th√¥ng tin kh√°ch h√†ng:\n{ex.Message}", "L?i", 
                         MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }
@@ -385,25 +385,25 @@ namespace ShoppingOnline.Views
                     if (customer?.Account != null)
                     {
                         bool newStatus = !customer.Account.IsActive.GetValueOrDefault();
-                        string action = newStatus ? "kÌch ho?t" : "khÛa";
+                        string action = newStatus ? "k√≠ch ho?t" : "kh√≥a";
                         
-                        var result = MessageBox.Show($"B?n cÛ mu?n {action} t‡i kho?n n‡y?\n\n" +
-                                                   $"ï TÍn: {customer.FullName}\n" +
-                                                   $"ï Email: {customer.Account?.Email}\n\n" +
-                                                   $"Thao t·c n‡y s? {action} t‡i kho?n kh·ch h‡ng.", 
-                            $"X·c nh?n {action}", MessageBoxButton.YesNo, MessageBoxImage.Question);
+                        var result = MessageBox.Show($"B?n c√≥ mu?n {action} t√†i kho?n n√†y?\n\n" +
+                                                   $"‚Ä¢ T√™n: {customer.FullName}\n" +
+                                                   $"‚Ä¢ Email: {customer.Account?.Email}\n\n" +
+                                                   $"Thao t√°c n√†y s? {action} t√†i kho?n kh√°ch h√†ng.", 
+                            $"X√°c nh?n {action}", MessageBoxButton.YesNo, MessageBoxImage.Question);
                         
                         if (result == MessageBoxResult.Yes)
                         {
                             if (_adminService.UpdateCustomerStatus(customerId, newStatus))
                             {
                                 LoadCustomers();
-                                MessageBox.Show($"?„ {action} t‡i kho?n th‡nh cÙng!", "Th‡nh cÙng", 
+                                MessageBox.Show($"?√£ {action} t√†i kho?n th√†nh c√¥ng!", "Th√†nh c√¥ng", 
                                     MessageBoxButton.OK, MessageBoxImage.Information);
                             }
                             else
                             {
-                                MessageBox.Show($"KhÙng th? {action} t‡i kho?n!", "L?i", 
+                                MessageBox.Show($"Kh√¥ng th? {action} t√†i kho?n!", "L?i", 
                                     MessageBoxButton.OK, MessageBoxImage.Error);
                             }
                         }
@@ -411,7 +411,7 @@ namespace ShoppingOnline.Views
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show($"L?i khi thay ??i tr?ng th·i: {ex.Message}", "L?i", 
+                    MessageBox.Show($"L?i khi thay ??i tr?ng th√°i: {ex.Message}", "L?i", 
                         MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }
@@ -419,94 +419,71 @@ namespace ShoppingOnline.Views
 
         private void DeleteCustomer_Click(object sender, RoutedEventArgs e)
         {
-            if (sender is Button button && button.Tag is int customerId)
+            if (!(sender is Button button))
+                return;
+
+            // robustly parse Tag (support boxed int, string, etc.)
+            if (!TryGetCustomerIdFromTag(button.Tag, out int customerId))
+                return;
+
+            try
             {
-                try
+                System.Diagnostics.Debug.WriteLine($"AdminCustomersView: Attempting to delete customer {customerId}");
+
+                var customer = _adminService.GetCustomerById(customerId);
+                if (customer == null)
                 {
-                    System.Diagnostics.Debug.WriteLine($"AdminCustomersView: Attempting to delete customer {customerId}");
-                    
-                    var customer = _allCustomers.FirstOrDefault(c => c.CustomerId == customerId);
-                    if (customer == null)
-                    {
-                        MessageBox.Show($"KhÙng tÏm th?y kh·ch h‡ng #{customerId}!\n\nKh·ch h‡ng cÛ th? ?„ b? xÛa ho?c khÙng t?n t?i.", 
-                            "L?i", MessageBoxButton.OK, MessageBoxImage.Warning);
-                        LoadCustomers(); // Refresh the list
-                        return;
-                    }
-                    
-                    // Check if customer has orders
-                    bool hasOrders = _adminService.CustomerHasOrders(customerId);
-                    System.Diagnostics.Debug.WriteLine($"AdminCustomersView: Customer {customerId} has orders: {hasOrders}");
-                    
-                    string message;
-                    if (hasOrders)
-                    {
-                        message = $"?? TH‘NG B¡O: KH¡CH H¿NG C” ??N H¿NG ??\n\n" +
-                                 $"Kh·ch h‡ng #{customerId} ?„ cÛ ??n h‡ng trong h? th?ng.\n\n" +
-                                 $"ï TÍn: {customer.FullName}\n" +
-                                 $"ï Email: {customer.Account?.Email}\n\n" +
-                                 $"THAO T¡C N¿Y S?:\n" +
-                                 $"? V‘ HI?U H”A t‡i kho?n (khÙng xÛa ho‡n to‡n)\n" +
-                                 $"? Gi? l?i d? li?u ??n h‡ng\n" +
-                                 $"? Kh·ch h‡ng khÙng th? ??ng nh?p\n\n" +
-                                 $"B?n cÛ mu?n vÙ hi?u hÛa t‡i kho?n n‡y?";
-                    }
-                    else
-                    {
-                        message = $"?? C?NH B¡O: X”A HO¿N TO¿N KH¡CH H¿NG ??\n\n" +
-                                 $"Kh·ch h‡ng #{customerId} ch?a cÛ ??n h‡ng n‡o.\n\n" +
-                                 $"ï TÍn: {customer.FullName}\n" +
-                                 $"ï Email: {customer.Account?.Email}\n\n" +
-                                 $"THAO T¡C N¿Y S?:\n" +
-                                 $"? X”A HO¿N TO¿N kh·ch h‡ng\n" +
-                                 $"? X”A HO¿N TO¿N t‡i kho?n\n" +
-                                 $"? KH‘NG TH? KH‘I PH?C\n\n" +
-                                 $"B?n cÛ ch?c ch?n mu?n xÛa ho‡n to‡n?";
-                    }
-                    
-                    var result = MessageBox.Show(message, hasOrders ? "V‘ HI?U H”A T¿I KHO?N" : "?? X”A HO¿N TO¿N KH¡CH H¿NG", 
-                        MessageBoxButton.YesNo, MessageBoxImage.Warning);
-                    
-                    if (result == MessageBoxResult.Yes)
-                    {
-                        System.Diagnostics.Debug.WriteLine($"AdminCustomersView: User confirmed deletion of customer {customerId}");
-                        
-                        bool deleteSuccess = _adminService.DeleteCustomer(customerId);
-                        System.Diagnostics.Debug.WriteLine($"AdminCustomersView: Delete operation result: {deleteSuccess}");
-                        
-                        if (deleteSuccess)
-                        {
-                            LoadCustomers();
-                            string successMessage = hasOrders ? 
-                                "?„ vÙ hi?u hÛa t‡i kho?n kh·ch h‡ng th‡nh cÙng!" : 
-                                "?„ xÛa ho‡n to‡n kh·ch h‡ng th‡nh cÙng!";
-                            MessageBox.Show(successMessage, "Th‡nh cÙng", 
-                                MessageBoxButton.OK, MessageBoxImage.Information);
-                        }
-                        else
-                        {
-                            MessageBox.Show("KhÙng th? xÛa kh·ch h‡ng!\n\n" +
-                                           "CÛ th? do:\n" +
-                                           "ï Kh·ch h‡ng khÙng t?n t?i\n" +
-                                           "ï L?i c? s? d? li?u\n" +
-                                           "ï R‡ng bu?c d? li?u\n" +
-                                           "ï Kh·ch h‡ng ?ang cÛ giao d?ch ?ang x? l˝", 
-                                "L?i", MessageBoxButton.OK, MessageBoxImage.Error);
-                        }
-                    }
-                    else
-                    {
-                        System.Diagnostics.Debug.WriteLine($"AdminCustomersView: User cancelled deletion of customer {customerId}");
-                    }
+                    MessageBox.Show($"Kh√¥ng t√¨m th·∫•y kh√°ch h√†ng #{customerId}.\nKh√°ch h√†ng c√≥ th·ªÉ ƒë√£ b·ªã x√≥a ho·∫∑c kh√¥ng t·ªìn t·∫°i.",
+                        "L·ªói", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    LoadCustomers();
+                    return;
                 }
-                catch (Exception ex)
+
+                bool hasOrders = _adminService.CustomerHasOrders(customerId);
+                System.Diagnostics.Debug.WriteLine($"AdminCustomersView: Customer {customerId} has orders: {hasOrders}");
+
+                string caption = hasOrders ? "V√î HI·ªÜU H√ìA T√ÄI KHO·∫¢N" : "X√ìA HO√ÄN TO√ÄN KH√ÅCH H√ÄNG";
+                string message = hasOrders
+                    ? $"Kh√°ch h√†ng #{customerId} ƒë√£ c√≥ ƒë∆°n h√†ng.\n\n‚Ä¢ T√™n: {customer.FullName}\n‚Ä¢ Email: {customer.Account?.Email}\n\nB·∫°n c√≥ ch·∫Øc mu·ªën v√¥ hi·ªáu h√≥a t√†i kho·∫£n?"
+                    : $"Kh√°ch h√†ng #{customerId} ch∆∞a c√≥ ƒë∆°n h√†ng.\n\n‚Ä¢ T√™n: {customer.FullName}\n‚Ä¢ Email: {customer.Account?.Email}\n\nB·∫°n c√≥ ch·∫Øc mu·ªën x√≥a ho√†n to√†n?";
+
+                if (MessageBox.Show(message, caption, MessageBoxButton.YesNo, MessageBoxImage.Warning) != MessageBoxResult.Yes)
                 {
-                    System.Diagnostics.Debug.WriteLine($"AdminCustomersView: Error in DeleteCustomer_Click: {ex.Message}");
-                    MessageBox.Show($"L?i khi xÛa kh·ch h‡ng:\n{ex.Message}\n\n" +
-                                   "Vui lÚng th? l?i ho?c liÍn h? qu?n tr? viÍn.", 
-                        "L?i h? th?ng", MessageBoxButton.OK, MessageBoxImage.Error);
+                    System.Diagnostics.Debug.WriteLine($"AdminCustomersView: User cancelled deletion of customer {customerId}");
+                    return;
+                }
+
+                bool deleteSuccess = _adminService.DeleteCustomer(customerId);
+                System.Diagnostics.Debug.WriteLine($"AdminCustomersView: Delete operation result: {deleteSuccess}");
+
+                if (deleteSuccess)
+                {
+                    LoadCustomers();
+                    string successMessage = hasOrders
+                        ? "T√†i kho·∫£n kh√°ch h√†ng ƒë√£ ƒë∆∞·ª£c v√¥ hi·ªáu h√≥a th√†nh c√¥ng!"
+                        : "Kh√°ch h√†ng v√† t√†i kho·∫£n ƒë√£ ƒë∆∞·ª£c x√≥a ho√†n to√†n th√†nh c√¥ng!";
+                    MessageBox.Show(successMessage, "Th√†nh c√¥ng", MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+                else
+                {
+                    MessageBox.Show("Kh√¥ng th·ªÉ x√≥a kh√°ch h√†ng. Vui l√≤ng ki·ªÉm tra nh·∫≠t k√Ω ho·∫∑c th·ª≠ l·∫°i.", "L·ªói", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"AdminCustomersView: Error in DeleteCustomer_Click: {ex}");
+                MessageBox.Show($"L·ªói khi x√≥a kh√°ch h√†ng:\n{ex.Message}\n\nVui l√≤ng th·ª≠ l·∫°i ho·∫∑c li√™n h·ªá qu·∫£n tr·ªã vi√™n.",
+                                "L·ªói h·ªá th·ªëng", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private bool TryGetCustomerIdFromTag(object tag, out int customerId)
+        {
+            customerId = 0;
+            if (tag == null) return false;
+            if (tag is int id) { customerId = id; return true; }
+            if (int.TryParse(tag.ToString(), out id)) { customerId = id; return true; }
+            return false;
         }
 
         private void ToggleCustomerStatus_Click(object sender, RoutedEventArgs e)

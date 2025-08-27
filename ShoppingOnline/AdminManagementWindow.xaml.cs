@@ -151,6 +151,24 @@ namespace ShoppingOnline
                 MessageBoxButton.OK, MessageBoxImage.Information);
         }
 
+        private void AddCustomer_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                var addCustomerWindow = new CustomerEditWindow();
+                var result = addCustomerWindow.ShowDialog();
+                if (result == true)
+                {
+                    MessageBox.Show("Thêm khách hàng thành công!", "Thành công", MessageBoxButton.OK, MessageBoxImage.Information);
+                    // N?u mu?n reload danh sách khách hàng, có th? g?i hàm load ? view khách hàng
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"L?i khi thêm khách hàng: {ex.Message}", "L?i", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
         protected override void OnClosing(CancelEventArgs e)
         {
             // Not needed anymore in single-window navigation

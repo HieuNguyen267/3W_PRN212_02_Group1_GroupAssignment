@@ -1,4 +1,4 @@
-using BLL.Services;
+Ôªøusing BLL.Services;
 using DAL.Entities;
 using System;
 using System.Collections.ObjectModel;
@@ -43,7 +43,7 @@ namespace ShoppingOnline
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"L?i khi t?i d? li?u kh·ch h‡ng: {ex.Message}", "L?i", 
+                MessageBox.Show($"L?i khi t?i d? li?u kh√°ch h√†ng: {ex.Message}", "L?i", 
                     MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
@@ -77,11 +77,11 @@ namespace ShoppingOnline
                 CustomersDataGrid.ItemsSource = Customers;
                 
                 // Update count
-                CustomerCountText.Text = $"T?ng: {filteredCustomers.Count()} kh·ch h‡ng";
+                CustomerCountText.Text = $"T?ng: {filteredCustomers.Count()} kh√°ch h√†ng";
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"L?i khi l?c kh·ch h‡ng: {ex.Message}", "L?i", 
+                MessageBox.Show($"L?i khi l?c kh√°ch h√†ng: {ex.Message}", "L?i", 
                     MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
@@ -101,13 +101,13 @@ namespace ShoppingOnline
         private void RefreshCustomers_Click(object sender, RoutedEventArgs e)
         {
             LoadCustomers();
-            MessageBox.Show("?„ l‡m m?i danh s·ch kh·ch h‡ng!", "ThÙng b·o", 
+            MessageBox.Show("?√£ l√†m m?i danh s√°ch kh√°ch h√†ng!", "Th√¥ng b√°o", 
                 MessageBoxButton.OK, MessageBoxImage.Information);
         }
 
         private void AddCustomer_Click(object sender, RoutedEventArgs e)
         {
-            MessageBox.Show("TÌnh n?ng thÍm kh·ch h‡ng s? ???c ph·t tri?n sau!", "ThÙng b·o", 
+            MessageBox.Show("T√≠nh n?ng th√™m kh√°ch h√†ng s? ???c ph√°t tri?n sau!", "Th√¥ng b√°o", 
                 MessageBoxButton.OK, MessageBoxImage.Information);
         }
 
@@ -120,20 +120,20 @@ namespace ShoppingOnline
                     var customer = _adminService.GetCustomerById(customerId);
                     if (customer != null)
                     {
-                        var details = $"Kh·ch h‡ng #{customerId}\n" +
-                                     $"TÍn: {customer.FullName}\n" +
+                        var details = $"Kh√°ch h√†ng #{customerId}\n" +
+                                     $"T√™n: {customer.FullName}\n" +
                                      $"Email: {customer.Account?.Email}\n" +
                                      $"S?T: {customer.Phone}\n" +
                                      $"??a ch?: {customer.Address}\n" +
-                                     $"Ng‡y t?o: {customer.CreatedDate:dd/MM/yyyy}";
+                                     $"Ng√†y t?o: {customer.CreatedDate:dd/MM/yyyy}";
                         
-                        MessageBox.Show(details, "ThÙng tin kh·ch h‡ng", 
+                        MessageBox.Show(details, "Th√¥ng tin kh√°ch h√†ng", 
                             MessageBoxButton.OK, MessageBoxImage.Information);
                     }
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show($"L?i khi xem thÙng tin kh·ch h‡ng: {ex.Message}", "L?i", 
+                    MessageBox.Show($"L?i khi xem th√¥ng tin kh√°ch h√†ng: {ex.Message}", "L?i", 
                         MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }
@@ -143,7 +143,7 @@ namespace ShoppingOnline
         {
             if (sender is Button button && button.Tag is int customerId)
             {
-                MessageBox.Show($"TÌnh n?ng s?a thÙng tin kh·ch h‡ng #{customerId} s? ???c ph·t tri?n sau!", "ThÙng b·o", 
+                MessageBox.Show($"T√≠nh n?ng s?a th√¥ng tin kh√°ch h√†ng #{customerId} s? ???c ph√°t tri?n sau!", "Th√¥ng b√°o", 
                     MessageBoxButton.OK, MessageBoxImage.Information);
             }
         }
@@ -152,12 +152,12 @@ namespace ShoppingOnline
         {
             if (sender is Button button && button.Tag is int customerId)
             {
-                var result = MessageBox.Show($"B?n cÛ ch?c mu?n xÛa kh·ch h‡ng #{customerId}?", 
-                    "X·c nh?n xÛa", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+                var result = MessageBox.Show($"B·∫°n c√≥ ch?c mu?n x√≥a kh√°ch h√†ng #{customerId}?", 
+                    "X√°c nh?n x√≥a", MessageBoxButton.YesNo, MessageBoxImage.Warning);
                 
                 if (result == MessageBoxResult.Yes)
                 {
-                    MessageBox.Show("TÌnh n?ng xÛa kh·ch h‡ng s? ???c ph·t tri?n sau!", "ThÙng b·o", 
+                    MessageBox.Show("T√≠nh n?ng x√≥a kh√°ch h√†ng s? ???c ph√°t tri?n sau!", "Th√¥ng b√°o", 
                         MessageBoxButton.OK, MessageBoxImage.Information);
                 }
             }
@@ -171,7 +171,7 @@ namespace ShoppingOnline
         private void BackToDashboard_Click(object sender, RoutedEventArgs e)
         {
             // Not needed anymore in single-window navigation
-            MessageBox.Show("Navigation ?„ ???c c?p nh?t! Vui lÚng s? d?ng menu bÍn tr·i ?? chuy?n trang.", "ThÙng b·o", 
+            MessageBox.Show("Navigation ?√£ ???c c?p nh?t! Vui l√≤ng s? d?ng menu b√™n tr√°i ?? chuy?n trang.", "Th√¥ng b√°o", 
                 MessageBoxButton.OK, MessageBoxImage.Information);
         }
 
