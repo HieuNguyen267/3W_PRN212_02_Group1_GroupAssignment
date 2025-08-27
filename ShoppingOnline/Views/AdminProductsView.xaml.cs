@@ -59,7 +59,7 @@ namespace ShoppingOnline.Views
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Loi khi tai danh muc: {ex.Message}", "Loi", 
+                MessageBox.Show($"Lỗi khi tải danh mục: {ex.Message}", "Lỗi", 
                     MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
@@ -73,7 +73,7 @@ namespace ShoppingOnline.Views
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Loi khi tai du lieu san pham: {ex.Message}", "Loi", 
+                MessageBox.Show($"Lỗi khi tải dữ liệu sản phẩm: {ex.Message}", "Lỗi", 
                     MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
@@ -118,12 +118,12 @@ namespace ShoppingOnline.Views
                 // Update count
                 if (ProductCountText != null)
                 {
-                    ProductCountText.Text = $"Tong: {filteredProducts.Count()} san pham";
+                    ProductCountText.Text = $"Tổng: {filteredProducts.Count()} sản phẩm";
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Loi khi loc san pham: {ex.Message}", "Loi", 
+                MessageBox.Show($"Lỗi khi lọc sản phẩm: {ex.Message}", "Lỗi", 
                     MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
@@ -148,13 +148,13 @@ namespace ShoppingOnline.Views
         private void RefreshProducts_Click(object sender, RoutedEventArgs e)
         {
             LoadProducts();
-            MessageBox.Show("Da lam moi danh sach san pham!", "Thong bao", 
+            MessageBox.Show("Đã làm mới danh sách sản phẩm!", "Thông báo", 
                 MessageBoxButton.OK, MessageBoxImage.Information);
         }
 
         private void AddProduct_Click(object sender, RoutedEventArgs e)
         {
-            MessageBox.Show("Tinh nang them san pham se duoc phat trien sau!", "Thong bao", 
+            MessageBox.Show("Tính năng thêm sản phẩm sẽ được phát triển sau!", "Thông báo", 
                 MessageBoxButton.OK, MessageBoxImage.Information);
         }
 
@@ -169,7 +169,7 @@ namespace ShoppingOnline.Views
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show($"Loi khi xem san pham: {ex.Message}", "Loi", 
+                    MessageBox.Show($"Lỗi khi xem sản phẩm: {ex.Message}", "Lỗi", 
                         MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }
@@ -179,7 +179,7 @@ namespace ShoppingOnline.Views
         {
             if (sender is Button button && button.Tag is string productId)
             {
-                MessageBox.Show($"Tinh nang sua san pham {productId} se duoc phat trien sau!", "Thong bao", 
+                MessageBox.Show($"Tính năng sửa sản phẩm {productId} sẽ được phát triển sau!", "Thông báo", 
                     MessageBoxButton.OK, MessageBoxImage.Information);
             }
         }
@@ -188,12 +188,12 @@ namespace ShoppingOnline.Views
         {
             if (sender is Button button && button.Tag is string productId)
             {
-                var result = MessageBox.Show($"Ban co chac muon xoa san pham {productId}?", 
-                    "Xac nhan xoa", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+                var result = MessageBox.Show($"Bạn có chắc muốn xóa sản phẩm {productId}?", 
+                    "Xác nhận xóa", MessageBoxButton.YesNo, MessageBoxImage.Warning);
                 
                 if (result == MessageBoxResult.Yes)
                 {
-                    MessageBox.Show("Tinh nang xoa san pham se duoc phat trien sau!", "Thong bao", 
+                    MessageBox.Show("Tính năng xóa sản phẩm sẽ được phát triển sau!", "Thông báo", 
                         MessageBoxButton.OK, MessageBoxImage.Information);
                 }
             }

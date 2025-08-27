@@ -17,7 +17,7 @@ namespace ShoppingOnline
             InitializeComponent();
             _adminService = new AdminService();
             _isEditMode = false;
-            HeaderTitle.Text = "Thêm admin m?i";
+            HeaderTitle.Text = "Thï¿½m admin m?i";
         }
 
         // Constructor for editing existing admin
@@ -27,7 +27,7 @@ namespace ShoppingOnline
             _adminService = new AdminService();
             _editingAdmin = admin;
             _isEditMode = true;
-            HeaderTitle.Text = "Ch?nh s?a thông tin admin";
+            HeaderTitle.Text = "Ch?nh s?a thï¿½ng tin admin";
             
             LoadAdminData();
         }
@@ -77,7 +77,7 @@ namespace ShoppingOnline
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"L?i khi l?u thông tin admin:\n{ex.Message}", "L?i", 
+                MessageBox.Show($"L?i khi l?u thï¿½ng tin admin:\n{ex.Message}", "L?i", 
                     MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
@@ -87,7 +87,7 @@ namespace ShoppingOnline
             // Validate username
             if (string.IsNullOrWhiteSpace(UsernameTextBox.Text))
             {
-                MessageBox.Show("Vui lòng nh?p tên ??ng nh?p!", "L?i validation", 
+                MessageBox.Show("Vui lÃ²ng nháº­p tÃªn Ä‘Äƒng nháº­p!", "Lá»—i validation", 
                     MessageBoxButton.OK, MessageBoxImage.Warning);
                 UsernameTextBox.Focus();
                 return false;
@@ -96,7 +96,7 @@ namespace ShoppingOnline
             // Validate username length and format
             if (UsernameTextBox.Text.Trim().Length < 3)
             {
-                MessageBox.Show("Tên ??ng nh?p ph?i có ít nh?t 3 ký t?!", "L?i validation", 
+                MessageBox.Show("TÃªn Ä‘Äƒng nháº­p pháº£i cÃ³ Ã­t nháº¥t 3 kÃ½ tá»±!", "Lá»—i validation", 
                     MessageBoxButton.OK, MessageBoxImage.Warning);
                 UsernameTextBox.Focus();
                 return false;
@@ -105,7 +105,7 @@ namespace ShoppingOnline
             // Validate email
             if (string.IsNullOrWhiteSpace(EmailTextBox.Text) || !IsValidEmail(EmailTextBox.Text))
             {
-                MessageBox.Show("Vui lòng nh?p email h?p l?!", "L?i validation", 
+                MessageBox.Show("Vui lÃ²ng nháº­p email há»£p lá»‡!", "Lá»—i validation", 
                     MessageBoxButton.OK, MessageBoxImage.Warning);
                 EmailTextBox.Focus();
                 return false;
@@ -114,7 +114,7 @@ namespace ShoppingOnline
             // Validate password (required for new admin, optional for edit)
             if (!_isEditMode && string.IsNullOrWhiteSpace(PasswordBox.Password))
             {
-                MessageBox.Show("Vui lòng nh?p m?t kh?u!", "L?i validation", 
+                MessageBox.Show("Vui lÃ²ng nháº­p máº­t kháº©u!", "Lá»—i validation", 
                     MessageBoxButton.OK, MessageBoxImage.Warning);
                 PasswordBox.Focus();
                 return false;
@@ -123,7 +123,7 @@ namespace ShoppingOnline
             // Validate password length for new accounts
             if (!_isEditMode && PasswordBox.Password.Length < 6)
             {
-                MessageBox.Show("M?t kh?u ph?i có ít nh?t 6 ký t?!", "L?i validation", 
+                MessageBox.Show("Máº­t kháº©u pháº£i cÃ³ Ã­t nháº¥t 6 kÃ½ tá»±!", "Lá»—i validation", 
                     MessageBoxButton.OK, MessageBoxImage.Warning);
                 PasswordBox.Focus();
                 return false;
@@ -132,7 +132,7 @@ namespace ShoppingOnline
             // Validate full name
             if (string.IsNullOrWhiteSpace(FullNameTextBox.Text))
             {
-                MessageBox.Show("Vui lòng nh?p h? và tên!", "L?i validation", 
+                MessageBox.Show("Vui lÃ²ng nháº­p há» vÃ  tÃªn!", "Lá»—i validation", 
                     MessageBoxButton.OK, MessageBoxImage.Warning);
                 FullNameTextBox.Focus();
                 return false;
@@ -141,7 +141,7 @@ namespace ShoppingOnline
             // Validate phone
             if (string.IsNullOrWhiteSpace(PhoneTextBox.Text))
             {
-                MessageBox.Show("Vui lòng nh?p s? ?i?n tho?i!", "L?i validation", 
+                MessageBox.Show("Vui lÃ²ng nháº­p sá»‘ Ä‘iá»‡n thoáº¡i!", "Lá»—i validation", 
                     MessageBoxButton.OK, MessageBoxImage.Warning);
                 PhoneTextBox.Focus();
                 return false;
@@ -151,7 +151,7 @@ namespace ShoppingOnline
             var phone = PhoneTextBox.Text.Trim();
             if (phone.Length < 10 || !System.Text.RegularExpressions.Regex.IsMatch(phone, @"^[0-9+\-\s()]+$"))
             {
-                MessageBox.Show("S? ?i?n tho?i không h?p l?!", "L?i validation", 
+                MessageBox.Show("Sá»‘ Ä‘iá»‡n thoáº¡i khÃ´ng há»£p lá»‡!", "Lá»—i validation", 
                     MessageBoxButton.OK, MessageBoxImage.Warning);
                 PhoneTextBox.Focus();
                 return false;
@@ -180,10 +180,10 @@ namespace ShoppingOnline
                 // Check for duplicates first
                 if (_adminService.IsUsernameOrEmailExists(UsernameTextBox.Text.Trim(), EmailTextBox.Text.Trim()))
                 {
-                    MessageBox.Show("Không th? thêm admin!\n\n" +
-                                   "Email ho?c tên ??ng nh?p ?ã ???c s? d?ng.\n\n" +
-                                   "Vui lòng s? d?ng email và tên ??ng nh?p khác.", 
-                        "Trùng l?p thông tin", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    MessageBox.Show("KhÃ´ng thá»ƒ thÃªm admin!\n\n" +
+                                   "Email hoáº·c tÃªn Ä‘Äƒng nháº­p Ä‘Ã£ Ä‘Æ°á»£c sá»­ dá»¥ng.\n\n" +
+                                   "Vui lÃ²ng sá»­ dá»¥ng email vÃ  tÃªn Ä‘Äƒng nháº­p khÃ¡c.", 
+                        "TrÃ¹ng láº·p thÃ´ng tin", MessageBoxButton.OK, MessageBoxImage.Warning);
                     return;
                 }
 
@@ -211,26 +211,26 @@ namespace ShoppingOnline
                 
                 if (!success)
                 {
-                    MessageBox.Show("Không th? thêm admin!\n\n" +
-                                   "Có th? do:\n" +
-                                   "• L?i c? s? d? li?u\n" +
-                                   "• Ràng bu?c d? li?u\n" +
-                                   "• Email ho?c tên ??ng nh?p ?ã t?n t?i", 
-                        "L?i thêm admin", MessageBoxButton.OK, MessageBoxImage.Error);
+                    MessageBox.Show("KhÃ´ng thá»ƒ thÃªm admin!\n\n" +
+                                   "CÃ³ thá»ƒ do:\n" +
+                                   "â€¢ Lá»—i cÆ¡ sá»Ÿ dá»¯ liá»‡u\n" +
+                                   "â€¢ RÃ ng buá»™c dá»¯ liá»‡u\n" +
+                                   "â€¢ Email hoáº·c tÃªn Ä‘Äƒng nháº­p Ä‘Ã£ tá»“n táº¡i", 
+                        "Lá»—i thÃªm admin", MessageBoxButton.OK, MessageBoxImage.Error);
                     return;
                 }
 
                 // Success - this line should only be reached if the operation was successful
-                MessageBox.Show($"Thêm admin thành công!\n\n" +
-                               $"• Tên: {admin.FullName}\n" +
-                               $"• Email: {account.Email}\n" +
-                               $"• Tên ??ng nh?p: {account.Username}", 
-                    "Thành công", MessageBoxButton.OK, MessageBoxImage.Information);
+                MessageBox.Show($"ThÃªm admin thÃ nh cÃ´ng!\n\n" +
+                               $"â€¢ TÃªn: {admin.FullName}\n" +
+                               $"â€¢ Email: {account.Email}\n" +
+                               $"â€¢ TÃªn Ä‘Äƒng nháº­p: {account.Username}", 
+                    "ThÃ nh cÃ´ng", MessageBoxButton.OK, MessageBoxImage.Information);
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"L?i khi thêm admin:\n{ex.Message}\n\n" +
-                               "Vui lòng th? l?i ho?c liên h? qu?n tr? viên.", 
+                MessageBox.Show($"L?i khi thï¿½m admin:\n{ex.Message}\n\n" +
+                               "Vui lï¿½ng th? l?i ho?c liï¿½n h? qu?n tr? viï¿½n.", 
                     "L?i h? th?ng", MessageBoxButton.OK, MessageBoxImage.Error);
                 throw; // Re-throw to be caught by Save_Click
             }
@@ -247,10 +247,10 @@ namespace ShoppingOnline
                 int? excludeAccountId = _editingAdmin.Account?.AccountId;
                 if (_adminService.IsUsernameOrEmailExists(UsernameTextBox.Text.Trim(), EmailTextBox.Text.Trim(), excludeAccountId))
                 {
-                    MessageBox.Show("Không th? c?p nh?t thông tin!\n\n" +
-                                   "Email ho?c tên ??ng nh?p ?ã ???c s? d?ng b?i tài kho?n khác.\n\n" +
-                                   "Vui lòng s? d?ng email và tên ??ng nh?p khác.", 
-                        "Trùng l?p thông tin", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    MessageBox.Show("Khï¿½ng th? c?p nh?t thï¿½ng tin!\n\n" +
+                                   "Email ho?c tï¿½n ??ng nh?p ?ï¿½ ???c s? d?ng b?i tï¿½i kho?n khï¿½c.\n\n" +
+                                   "Vui lï¿½ng s? d?ng email vï¿½ tï¿½n ??ng nh?p khï¿½c.", 
+                        "Trï¿½ng l?p thï¿½ng tin", MessageBoxButton.OK, MessageBoxImage.Warning);
                     return;
                 }
 
@@ -276,26 +276,26 @@ namespace ShoppingOnline
                 
                 if (!success)
                 {
-                    MessageBox.Show("Không th? c?p nh?t thông tin admin!\n\n" +
-                                   "Có th? do:\n" +
-                                   "• Email ho?c tên ??ng nh?p ?ã t?n t?i\n" +
-                                   "• L?i c? s? d? li?u\n" +
-                                   "• Ràng bu?c d? li?u", 
+                    MessageBox.Show("Khï¿½ng th? c?p nh?t thï¿½ng tin admin!\n\n" +
+                                   "Cï¿½ th? do:\n" +
+                                   "ï¿½ Email ho?c tï¿½n ??ng nh?p ?ï¿½ t?n t?i\n" +
+                                   "ï¿½ L?i c? s? d? li?u\n" +
+                                   "ï¿½ Rï¿½ng bu?c d? li?u", 
                         "L?i c?p nh?t", MessageBoxButton.OK, MessageBoxImage.Error);
                     return;
                 }
 
                 // Success
-                MessageBox.Show($"C?p nh?t thông tin admin thành công!\n\n" +
-                               $"• Tên: {_editingAdmin.FullName}\n" +
-                               $"• Email: {_editingAdmin.Account.Email}\n" +
-                               $"• Tr?ng thái: {(_editingAdmin.Account.IsActive == true ? "Ho?t ??ng" : "Khóa")}", 
-                    "Thành công", MessageBoxButton.OK, MessageBoxImage.Information);
+                MessageBox.Show($"C?p nh?t thï¿½ng tin admin thï¿½nh cï¿½ng!\n\n" +
+                               $"ï¿½ Tï¿½n: {_editingAdmin.FullName}\n" +
+                               $"ï¿½ Email: {_editingAdmin.Account.Email}\n" +
+                               $"ï¿½ Tr?ng thï¿½i: {(_editingAdmin.Account.IsActive == true ? "Ho?t ??ng" : "Khï¿½a")}", 
+                    "Thï¿½nh cï¿½ng", MessageBoxButton.OK, MessageBoxImage.Information);
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"L?i khi c?p nh?t thông tin admin:\n{ex.Message}\n\n" +
-                               "Vui lòng th? l?i ho?c liên h? qu?n tr? viên.", 
+                MessageBox.Show($"L?i khi c?p nh?t thï¿½ng tin admin:\n{ex.Message}\n\n" +
+                               "Vui lï¿½ng th? l?i ho?c liï¿½n h? qu?n tr? viï¿½n.", 
                     "L?i h? th?ng", MessageBoxButton.OK, MessageBoxImage.Error);
                 throw; // Re-throw to be caught by Save_Click
             }

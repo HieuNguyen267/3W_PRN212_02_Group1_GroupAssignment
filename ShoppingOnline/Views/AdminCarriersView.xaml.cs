@@ -49,7 +49,9 @@ namespace ShoppingOnline.Views
             }
             catch (Exception ex)
             {
+
                 MessageBox.Show($"Lỗi khi tải dữ liệu nhà vận chuyển: {ex.Message}", "Lỗi", 
+
                     MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
@@ -72,12 +74,14 @@ namespace ShoppingOnline.Views
                         (c.VehicleNumber?.ToLower().Contains(searchLower) == true));
                 }
 
+
                 // Apply status filter
                 var selectedStatus = (StatusFilterComboBox?.SelectedItem as ComboBoxItem)?.Content?.ToString();
                 if (!string.IsNullOrEmpty(selectedStatus) && selectedStatus != "All Status")
                 {
                     bool isActive = selectedStatus == "Active";
                     // "Locked" corresponds to inactive accounts
+
                     filteredCarriers = filteredCarriers.Where(c => c.Account?.IsActive == isActive);
                 }
 
@@ -97,12 +101,16 @@ namespace ShoppingOnline.Views
                 // Update count
                 if (CarrierCountText != null)
                 {
+
                     CarrierCountText.Text = $"Total: {filteredCarriers.Count()} carriers";
+
                 }
             }
             catch (Exception ex)
             {
+
                 MessageBox.Show($"Lỗi khi lọc nhà vận chuyển: {ex.Message}", "Lỗi", 
+
                     MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
@@ -127,7 +135,9 @@ namespace ShoppingOnline.Views
         private void RefreshCarriers_Click(object sender, RoutedEventArgs e)
         {
             LoadCarriers();
+
             MessageBox.Show(" làm mới danh sách nhà vận chuyển!", "Thông báo", 
+
                 MessageBoxButton.OK, MessageBoxImage.Information);
         }
 
@@ -139,13 +149,17 @@ namespace ShoppingOnline.Views
                 if (addCarrierWindow.ShowDialog() == true)
                 {
                     LoadCarriers();
+
                     MessageBox.Show("Thêm nhà vận chuyển thành công!", "Thành công", 
+
                         MessageBoxButton.OK, MessageBoxImage.Information);
                 }
             }
             catch (Exception ex)
             {
+
                 MessageBox.Show($"Lỗi khi thêm nhà vận chuyển: {ex.Message}", "Lỗi", 
+
                     MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
@@ -159,6 +173,7 @@ namespace ShoppingOnline.Views
                     var carrier = _allCarriers.FirstOrDefault(c => c.CarrierId == carrierId);
                     if (carrier != null)
                     {
+
                         var info = $"Thông tin nhà vận chuyển #{carrierId}\n\n" +
                                   $"Tên: {carrier.FullName}\n" +
                                   $"Email: {carrier.Account?.Email}\n" +
@@ -169,12 +184,15 @@ namespace ShoppingOnline.Views
                                   $"Sẵn sàng giao hàng: {(carrier.IsAvailable == true ? "Có" : "Không")}";
 
                         MessageBox.Show(info, "Thông tin nhà vận chuyển", 
+
                             MessageBoxButton.OK, MessageBoxImage.Information);
                     }
                 }
                 catch (Exception ex)
                 {
+
                     MessageBox.Show($"Lỗi khi xem thông tin nhà vận chuyển: {ex.Message}", "Lỗi", 
+
                         MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }
@@ -193,14 +211,18 @@ namespace ShoppingOnline.Views
                         if (editCarrierWindow.ShowDialog() == true)
                         {
                             LoadCarriers();
+
                             MessageBox.Show("Cập nhật thông tin nhà vận chuyển thành công!", "Thành công", 
+
                                 MessageBoxButton.OK, MessageBoxImage.Information);
                         }
                     }
                 }
                 catch (Exception ex)
                 {
+
                     MessageBox.Show($"Lỗi khi sửa thông tin nhà vận chuyển: {ex.Message}", "Lỗi", 
+
                         MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }
@@ -210,9 +232,11 @@ namespace ShoppingOnline.Views
         {
             if (sender is Button button && button.Tag is int carrierId)
             {
+
                 var result = MessageBox.Show($"Bạn có chắc muốn xóa nhà vận chuyển #{carrierId}?\n" +
                     "Việc này sẽ vô hiệu hóa tài khoản của nhà vận chuyển.", 
                     "Xác nhận xóa", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+
                 
                 if (result == MessageBoxResult.Yes)
                 {
@@ -221,18 +245,24 @@ namespace ShoppingOnline.Views
                         if (_carrierService.DeleteCarrier(carrierId))
                         {
                             LoadCarriers();
+
                             MessageBox.Show("Đã xóa nhà vận chuyển thành công!", "Thành công", 
+
                                 MessageBoxButton.OK, MessageBoxImage.Information);
                         }
                         else
                         {
+
                             MessageBox.Show("Không thể xóa nhà vận chuyển!", "Lỗi", 
+
                                 MessageBoxButton.OK, MessageBoxImage.Error);
                         }
                     }
                     catch (Exception ex)
                     {
+
                         MessageBox.Show($"Lỗi khi xóa nhà vận chuyển: {ex.Message}", "Lỗi", 
+
                             MessageBoxButton.OK, MessageBoxImage.Error);
                     }
                 }
@@ -249,22 +279,28 @@ namespace ShoppingOnline.Views
                     if (carrier != null)
                     {
                         bool newStatus = !carrier.IsAvailable.GetValueOrDefault();
+
                         string statusText = newStatus ? "đặt sẵn sàng" : "đặt không sẵn sàng";
 
                         var result = MessageBox.Show($"Bạn có muốn {statusText} giao hàng cho nhà vận chuyển này?", 
                             "Xác nhận", MessageBoxButton.YesNo, MessageBoxImage.Question);
+
                         
                         if (result == MessageBoxResult.Yes)
                         {
                             if (_carrierService.UpdateCarrierAvailable(carrierId, newStatus))
                             {
                                 LoadCarriers();
+
                                 MessageBox.Show($"Đã {statusText} giao hàng thành công!", "Thành công", 
+
                                     MessageBoxButton.OK, MessageBoxImage.Information);
                             }
                             else
                             {
+
                                 MessageBox.Show("Không thể cập nhật trạng thái sẵn sàng!", "Lỗi", 
+
                                     MessageBoxButton.OK, MessageBoxImage.Error);
                             }
                         }
@@ -272,7 +308,9 @@ namespace ShoppingOnline.Views
                 }
                 catch (Exception ex)
                 {
+
                     MessageBox.Show($"Lỗi khi cập nhật trạng thái: {ex.Message}", "Lỗi", 
+
                         MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }
@@ -288,22 +326,28 @@ namespace ShoppingOnline.Views
                     if (carrier?.Account != null)
                     {
                         bool newStatus = !carrier.Account.IsActive.GetValueOrDefault();
+
                         string statusText = newStatus ? "kích hoạt" : "vô hiệu hóa";
 
                         var result = MessageBox.Show($"Bạn có muốn {statusText} tài khoản nhà vận chuyển này?", 
                             "Xác nhận", MessageBoxButton.YesNo, MessageBoxImage.Question);
+
                         
                         if (result == MessageBoxResult.Yes)
                         {
                             if (_carrierService.UpdateAccountStatus(carrier.Account.AccountId, newStatus))
                             {
                                 LoadCarriers();
+
                                 MessageBox.Show($"Đã {statusText} tài khoản thành công!", "Thành công", 
+
                                     MessageBoxButton.OK, MessageBoxImage.Information);
                             }
                             else
                             {
+
                                 MessageBox.Show("Không thể cập nhật trạng thái tài khoản!", "Lỗi", 
+
                                     MessageBoxButton.OK, MessageBoxImage.Error);
                             }
                         }
@@ -311,7 +355,9 @@ namespace ShoppingOnline.Views
                 }
                 catch (Exception ex)
                 {
+
                     MessageBox.Show($"Lỗi khi cập nhật trạng thái: {ex.Message}", "Lỗi", 
+
                         MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }

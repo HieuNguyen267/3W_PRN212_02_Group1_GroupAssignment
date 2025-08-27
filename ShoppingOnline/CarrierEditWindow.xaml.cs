@@ -17,6 +17,8 @@ namespace ShoppingOnline
             InitializeComponent();
             _carrierService = new CarrierService();
             _isEditMode = false;
+
+
             HeaderTitle.Text = "Thêm nhà vận chuyển mới";
         }
 
@@ -27,7 +29,10 @@ namespace ShoppingOnline
             _carrierService = new CarrierService();
             _editingCarrier = carrier;
             _isEditMode = true;
+
+
             HeaderTitle.Text = "Chỉnh sửa thông tin nhà vận chuyển";
+
             
             LoadCarrierData();
         }
@@ -86,7 +91,10 @@ namespace ShoppingOnline
             }
             catch (Exception ex)
             {
+
+
                 MessageBox.Show($"Lỗi khi lưu thông tin: {ex.Message}", "Lỗi", 
+
                     MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
@@ -96,7 +104,9 @@ namespace ShoppingOnline
             // Validate username
             if (string.IsNullOrWhiteSpace(UsernameTextBox.Text))
             {
+
                 MessageBox.Show("Vui lòng nhập tên đăng nhập!", "Lỗi xác thực", 
+
                     MessageBoxButton.OK, MessageBoxImage.Warning);
                 UsernameTextBox.Focus();
                 return false;
@@ -105,7 +115,9 @@ namespace ShoppingOnline
             // Validate email
             if (string.IsNullOrWhiteSpace(EmailTextBox.Text) || !IsValidEmail(EmailTextBox.Text))
             {
+
                 MessageBox.Show("Vui lòng nhập email hợp lệ!", "Lỗi xác thực", 
+
                     MessageBoxButton.OK, MessageBoxImage.Warning);
                 EmailTextBox.Focus();
                 return false;
@@ -114,7 +126,9 @@ namespace ShoppingOnline
             // Validate password (required for new carrier, optional for edit)
             if (!_isEditMode && string.IsNullOrWhiteSpace(PasswordBox.Password))
             {
+
                 MessageBox.Show("Vui lòng nhập mật khẩu!", "Lỗi xác thực", 
+
                     MessageBoxButton.OK, MessageBoxImage.Warning);
                 PasswordBox.Focus();
                 return false;
@@ -123,7 +137,9 @@ namespace ShoppingOnline
             // Validate full name
             if (string.IsNullOrWhiteSpace(FullNameTextBox.Text))
             {
+
                 MessageBox.Show("Vui lòng nhập họ và tên!", "Lỗi xác thực", 
+
                     MessageBoxButton.OK, MessageBoxImage.Warning);
                 FullNameTextBox.Focus();
                 return false;
@@ -132,7 +148,9 @@ namespace ShoppingOnline
             // Validate phone
             if (string.IsNullOrWhiteSpace(PhoneTextBox.Text))
             {
+
                 MessageBox.Show("Vui lòng nhập số điện thoại!", "Lỗi xác thực", 
+
                     MessageBoxButton.OK, MessageBoxImage.Warning);
                 PhoneTextBox.Focus();
                 return false;
@@ -141,7 +159,9 @@ namespace ShoppingOnline
             // Validate vehicle number
             if (string.IsNullOrWhiteSpace(VehicleNumberTextBox.Text))
             {
+
                 MessageBox.Show("Vui lòng nhập số xe!", "Lỗi xác thực", 
+
                     MessageBoxButton.OK, MessageBoxImage.Warning);
                 VehicleNumberTextBox.Focus();
                 return false;
@@ -185,6 +205,7 @@ namespace ShoppingOnline
             // Pre-check duplicate username/email
             if (_carrierService.UsernameOrEmailExists(account.Username!, account.Email!))
             {
+
                 MessageBox.Show("Email hoặc tên đăng nhập đã tồn tại. Vui lòng chọn thông tin khác.", 
                     "Lỗi", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return false;
@@ -195,6 +216,7 @@ namespace ShoppingOnline
                 MessageBox.Show("Không thể thêm nhà vận chuyển. Vui lòng thử lại.", 
                     "Lỗi", MessageBoxButton.OK, MessageBoxImage.Error);
                 return false;
+
             }
 
             return true;

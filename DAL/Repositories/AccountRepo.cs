@@ -83,5 +83,21 @@ namespace DAL.Repositories
             }
             _context.SaveChanges();
         }
+
+        // Retrieve account by username
+        public Account? GetAccountByUsername(string username)
+        {
+            return _context.Accounts
+                .Include(a => a.Customers)
+                .Include(a => a.Admins)
+                .FirstOrDefault(a => a.Username == username);
+        }
+
+        // Add new customer record
+        public void AddCustomer(Customer customer)
+        {
+            _context.Customers.Add(customer);
+            _context.SaveChanges();
+        }
     }
 }
