@@ -99,7 +99,7 @@ namespace ShoppingOnline
         private void BackToDashboard_Click(object sender, RoutedEventArgs e)
         {
             // Not needed anymore in single-window navigation
-            MessageBox.Show("Navigation ?ã ???c c?p nh?t! Vui lòng s? d?ng menu bên trái ?? chuy?n trang.", "Thông báo", 
+            MessageBox.Show("Navigation ?ï¿½ ???c c?p nh?t! Vui lï¿½ng s? d?ng menu bï¿½n trï¿½i ?? chuy?n trang.", "Thï¿½ng bï¿½o", 
                 MessageBoxButton.OK, MessageBoxImage.Information);
         }
 
@@ -148,7 +148,7 @@ namespace ShoppingOnline
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Loi khi tao bao cao: {ex.Message}", "Loi", 
+                MessageBox.Show($"Lá»—i khi táº¡o bÃ¡o cÃ¡o: {ex.Message}", "Lá»—i", 
                     MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }

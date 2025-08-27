@@ -44,7 +44,7 @@ namespace ShoppingOnline
         {
             if (string.IsNullOrWhiteSpace(CategoryNameTextBox.Text))
             {
-                MessageBox.Show("Ten danh muc khong duoc de trong!", "Loi", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show("Tên danh mục không được để trống!", "Lỗi", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 

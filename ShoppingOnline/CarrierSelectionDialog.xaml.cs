@@ -45,7 +45,7 @@ namespace ShoppingOnline
                 _currentOrder = _adminService.GetOrderById(_orderId);
                 if (_currentOrder == null)
                 {
-                    MessageBox.Show("Khong tim thay don hang!", "Loi", 
+                    MessageBox.Show("Không tìm thấy đơn hàng!", "Lỗi", 
                         MessageBoxButton.OK, MessageBoxImage.Error);
                     this.Close();
                     return;
@@ -62,7 +62,7 @@ namespace ShoppingOnline
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Loi khi tai thong tin: {ex.Message}", "Loi", 
+                MessageBox.Show($"Lỗi khi tải thông tin: {ex.Message}", "Lỗi", 
                     MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
@@ -101,7 +101,7 @@ namespace ShoppingOnline
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Loi khi tai danh sach nguoi giao hang: {ex.Message}", "Loi", 
+                MessageBox.Show($"Lỗi khi tải danh sách người giao hàng: {ex.Message}", "Lỗi", 
                     MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
@@ -115,7 +115,7 @@ namespace ShoppingOnline
                     var selectedCarrier = _availableCarriers?.FirstOrDefault(c => c.CarrierId == carrierId);
                     if (selectedCarrier == null)
                     {
-                        MessageBox.Show("Khong tim thay thong tin nguoi giao hang!", "Loi", 
+                        MessageBox.Show("Không tìm thấy thông tin người giao hàng!", "Lỗi", 
                             MessageBoxButton.OK, MessageBoxImage.Error);
                         return;
                     }
@@ -130,12 +130,12 @@ namespace ShoppingOnline
 
                     // Show confirmation dialog
                     var result = MessageBox.Show($"CHON NGUOI GIAO HANG\n\n" +
-                                               $"Don hang: #{_orderId}\n" +
-                                               $"Nguoi giao hang: {selectedCarrier.FullName}\n" +
-                                               $"So dien thoai: {selectedCarrier.Phone ?? "Khong co"}\n" +
-                                               $"So xe: {selectedCarrier.VehicleNumber ?? "Khong co"}\n\n" +
-                                               $"Ban co chac chan muon gan nguoi giao hang nay?", 
-                        "Xac nhan chon nguoi giao hang", MessageBoxButton.YesNo, MessageBoxImage.Question);
+                                               $"Đơn hàng: #{_orderId}\n" +
+                                               $"Người giao hàng: {selectedCarrier.FullName}\n" +
+                                               $"Số điện thoại: {selectedCarrier.Phone ?? "Không có"}\n" +
+                                               $"Số xe: {selectedCarrier.VehicleNumber ?? "Không có"}\n\n" +
+                                               $"Bạn có chắc chắn muốn gán người giao hàng này?", 
+                        "Xác nhận chọn người giao hàng", MessageBoxButton.YesNo, MessageBoxImage.Question);
 
                     if (result == MessageBoxResult.Yes)
                     {
@@ -152,13 +152,13 @@ namespace ShoppingOnline
                             // Update display
                             UpdateCurrentCarrierDisplay();
 
-                            MessageBox.Show($"THANH CONG!\n\n" +
-                                          $"Da gan nguoi giao hang {selectedCarrier.FullName} cho don hang #{_orderId}.\n\n" +
-                                          $"Thong tin lien he:\n" +
-                                          $"- Ten: {selectedCarrier.FullName}\n" +
-                                          $"- So dien thoai: {selectedCarrier.Phone ?? "Khong co"}\n" +
-                                          $"- So xe: {selectedCarrier.VehicleNumber ?? "Khong co"}", 
-                                          "Gan nguoi giao hang thanh cong", MessageBoxButton.OK, MessageBoxImage.Information);
+                            MessageBox.Show($"THÀNH CÔNG!\n\n" +
+                                          $"Đã gán người giao hàng {selectedCarrier.FullName} cho đơn hàng #{_orderId}.\n\n" +
+                                          $"Thông tin liên hệ:\n" +
+                                          $"- Tên: {selectedCarrier.FullName}\n" +
+                                          $"- Số điện thoại: {selectedCarrier.Phone ?? "Không có"}\n" +
+                                          $"- Số xe: {selectedCarrier.VehicleNumber ?? "Không có"}", 
+                                          "Gán người giao hàng thành công", MessageBoxButton.OK, MessageBoxImage.Information);
 
                             // Set dialog result and close
                             this.DialogResult = true;
@@ -166,14 +166,14 @@ namespace ShoppingOnline
                         }
                         else
                         {
-                            MessageBox.Show("Loi khi gan nguoi giao hang. Vui long thu lai!", "Loi", 
+                            MessageBox.Show("Lỗi khi gán người giao hàng. Vui lòng thử lại!", "Lỗi", 
                                           MessageBoxButton.OK, MessageBoxImage.Error);
                         }
                     }
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show($"Loi khi chon nguoi giao hang: {ex.Message}", "Loi", 
+                    MessageBox.Show($"Lỗi khi chọn người giao hàng: {ex.Message}", "Lỗi", 
                         MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }

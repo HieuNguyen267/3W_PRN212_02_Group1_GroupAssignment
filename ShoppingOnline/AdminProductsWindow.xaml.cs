@@ -63,7 +63,7 @@ namespace ShoppingOnline
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Loi khi tai danh muc: {ex.Message}", "Loi", 
+                MessageBox.Show($"Lỗi khi tải danh mục: {ex.Message}", "Lỗi", 
                     MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
@@ -77,7 +77,7 @@ namespace ShoppingOnline
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Loi khi tai du lieu san pham: {ex.Message}", "Loi", 
+                MessageBox.Show($"Lỗi khi tải dữ liệu sản phẩm: {ex.Message}", "Lỗi", 
                     MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
@@ -127,7 +127,7 @@ namespace ShoppingOnline
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Loi khi loc san pham: {ex.Message}", "Loi", 
+                MessageBox.Show($"Lỗi khi lọc sản phẩm: {ex.Message}", "Lỗi", 
                     MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
@@ -173,7 +173,7 @@ namespace ShoppingOnline
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show($"Loi khi xem san pham: {ex.Message}", "Loi", 
+                    MessageBox.Show($"Lỗi khi xem sản phẩm: {ex.Message}", "Lỗi", 
                         MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }
@@ -192,8 +192,8 @@ namespace ShoppingOnline
         {
             if (sender is Button button && button.Tag is string productId)
             {
-                var result = MessageBox.Show($"Ban co chac muon xoa san pham {productId}?", 
-                    "Xac nhan xoa", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+                var result = MessageBox.Show($"Bạn có chắc muốn xóa sản phẩm {productId}?", 
+                    "Xác nhận xóa", MessageBoxButton.YesNo, MessageBoxImage.Warning);
                 
                 if (result == MessageBoxResult.Yes)
                 {
@@ -211,7 +211,7 @@ namespace ShoppingOnline
         private void BackToDashboard_Click(object sender, RoutedEventArgs e)
         {
             // Not needed anymore in single-window navigation
-            MessageBox.Show("Navigation ?� ???c c?p nh?t! Vui l�ng s? d?ng menu b�n tr�i ?? chuy?n trang.", "Th�ng b�o", 
+            MessageBox.Show("Navigation ?� ???c c?p nh?t! Vui l�ng s? d?ng menu b�n tr�i ?? chuy?n trang.", "Th�ng b�o", 
                 MessageBoxButton.OK, MessageBoxImage.Information);
         }
 
@@ -259,9 +259,9 @@ namespace ShoppingOnline
             {
                 return stock switch
                 {
-                    0 => "H?t h�ng",
+                    0 => "H?t h�ng",
                     <= 10 => "S?p h?t",
-                    _ => "C�n h�ng"
+                    _ => "C�n h�ng"
                 };
             }
             return "N/A";

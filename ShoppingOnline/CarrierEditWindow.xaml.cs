@@ -17,7 +17,7 @@ namespace ShoppingOnline
             InitializeComponent();
             _adminService = new AdminService();
             _isEditMode = false;
-            HeaderTitle.Text = "Th�m nh� v?n chuy?n m?i";
+            HeaderTitle.Text = "Th�m nh� v?n chuy?n m?i";
         }
 
         // Constructor for editing existing carrier
@@ -27,7 +27,7 @@ namespace ShoppingOnline
             _adminService = new AdminService();
             _editingCarrier = carrier;
             _isEditMode = true;
-            HeaderTitle.Text = "Ch?nh s?a th�ng tin nh� v?n chuy?n";
+            HeaderTitle.Text = "Ch?nh s?a th�ng tin nh� v?n chuy?n";
             
             LoadCarrierData();
         }
@@ -82,7 +82,7 @@ namespace ShoppingOnline
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"L?i khi l?u th�ng tin: {ex.Message}", "L?i", 
+                MessageBox.Show($"L?i khi l?u th�ng tin: {ex.Message}", "L?i", 
                     MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
@@ -92,7 +92,7 @@ namespace ShoppingOnline
             // Validate username
             if (string.IsNullOrWhiteSpace(UsernameTextBox.Text))
             {
-                MessageBox.Show("Vui l�ng nh?p t�n ??ng nh?p!", "L?i validation", 
+                MessageBox.Show("Vui lòng nhập tên đăng nhập!", "Lỗi validation", 
                     MessageBoxButton.OK, MessageBoxImage.Warning);
                 UsernameTextBox.Focus();
                 return false;
@@ -101,7 +101,7 @@ namespace ShoppingOnline
             // Validate email
             if (string.IsNullOrWhiteSpace(EmailTextBox.Text) || !IsValidEmail(EmailTextBox.Text))
             {
-                MessageBox.Show("Vui l�ng nh?p email h?p l?!", "L?i validation", 
+                MessageBox.Show("Vui lòng nhập email hợp lệ!", "Lỗi validation", 
                     MessageBoxButton.OK, MessageBoxImage.Warning);
                 EmailTextBox.Focus();
                 return false;
@@ -110,7 +110,7 @@ namespace ShoppingOnline
             // Validate password (required for new carrier, optional for edit)
             if (!_isEditMode && string.IsNullOrWhiteSpace(PasswordBox.Password))
             {
-                MessageBox.Show("Vui l�ng nh?p m?t kh?u!", "L?i validation", 
+                MessageBox.Show("Vui lòng nhập mật khẩu!", "Lỗi validation", 
                     MessageBoxButton.OK, MessageBoxImage.Warning);
                 PasswordBox.Focus();
                 return false;
@@ -119,7 +119,7 @@ namespace ShoppingOnline
             // Validate full name
             if (string.IsNullOrWhiteSpace(FullNameTextBox.Text))
             {
-                MessageBox.Show("Vui l�ng nh?p h? v� t�n!", "L?i validation", 
+                MessageBox.Show("Vui lòng nhập họ và tên!", "Lỗi validation", 
                     MessageBoxButton.OK, MessageBoxImage.Warning);
                 FullNameTextBox.Focus();
                 return false;
@@ -128,7 +128,7 @@ namespace ShoppingOnline
             // Validate phone
             if (string.IsNullOrWhiteSpace(PhoneTextBox.Text))
             {
-                MessageBox.Show("Vui l�ng nh?p s? ?i?n tho?i!", "L?i validation", 
+                MessageBox.Show("Vui lòng nhập số điện thoại!", "Lỗi validation", 
                     MessageBoxButton.OK, MessageBoxImage.Warning);
                 PhoneTextBox.Focus();
                 return false;
@@ -137,7 +137,7 @@ namespace ShoppingOnline
             // Validate vehicle number
             if (string.IsNullOrWhiteSpace(VehicleNumberTextBox.Text))
             {
-                MessageBox.Show("Vui l�ng nh?p s? xe!", "L?i validation", 
+                MessageBox.Show("Vui lòng nhập số xe!", "Lỗi validation", 
                     MessageBoxButton.OK, MessageBoxImage.Warning);
                 VehicleNumberTextBox.Focus();
                 return false;
@@ -180,8 +180,8 @@ namespace ShoppingOnline
 
             if (!_adminService.AddCarrier(carrier, account))
             {
-                MessageBox.Show("Kh�ng th? th�m nh� v?n chuy?n. C� th? email ho?c t�n ??ng nh?p ?� t?n t?i!", 
-                    "L?i", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show("Không thể thêm nhà vận chuyển. Có thể email hoặc tên đăng nhập đã tồn tại!", 
+                    "Lỗi", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
         }
@@ -213,8 +213,8 @@ namespace ShoppingOnline
 
             if (!_adminService.UpdateCarrier(_editingCarrier))
             {
-                MessageBox.Show("Kh�ng th? c?p nh?t th�ng tin nh� v?n chuy?n. C� th? email ho?c t�n ??ng nh?p ?� t?n t?i!", 
-                    "L?i", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show("Không thể cập nhật thông tin nhà vận chuyển. Có thể email hoặc tên đăng nhập đã tồn tại!", 
+                    "Lỗi", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
         }

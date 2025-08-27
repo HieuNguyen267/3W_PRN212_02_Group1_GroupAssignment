@@ -97,8 +97,8 @@ namespace ShoppingOnline.Views
                 var category = _categoryRepository.GetById(categoryId);
                 if (category != null)
                 {
-                    var result = MessageBox.Show($"Ban co chac muon xoa danh muc '{category.CategoryName}'?",
-                        "Xac nhan xoa", MessageBoxButton.YesNo, MessageBoxImage.Question);
+                    var result = MessageBox.Show($"Bạn có chắc muốn xóa danh mục '{category.CategoryName}'?",
+                        "Xác nhận xóa", MessageBoxButton.YesNo, MessageBoxImage.Question);
 
                     if (result == MessageBoxResult.Yes)
                     {

@@ -987,6 +987,25 @@ namespace BLL.Services
                 
                 if (existingCarrier != null)
                 {
+                    // Prevent duplicate username/email when updating account info
+                    if (carrier.Account != null && existingCarrier.Account != null)
+                    {
+                        string? newUsername = carrier.Account.Username?.Trim();
+                        string? newEmail = carrier.Account.Email?.Trim();
+                        if (!string.IsNullOrEmpty(newUsername) || !string.IsNullOrEmpty(newEmail))
+                        {
+                            bool duplicate = context.Accounts.Any(a =>
+                                a.AccountId != existingCarrier.Account.AccountId &&
+                                ((newUsername != null && a.Username == newUsername) ||
+                                 (newEmail != null && a.Email == newEmail)));
+                            if (duplicate)
+                            {
+                                System.Diagnostics.Debug.WriteLine("UpdateCarrier: Duplicate username or email detected");
+                                return false;
+                            }
+                        }
+                    }
+
                     existingCarrier.FullName = carrier.FullName;
                     existingCarrier.Phone = carrier.Phone;
                     existingCarrier.VehicleNumber = carrier.VehicleNumber;
@@ -995,8 +1014,12 @@ namespace BLL.Services
                     // Update account info if provided
                     if (carrier.Account != null && existingCarrier.Account != null)
                     {
-                        existingCarrier.Account.Username = carrier.Account.Username;
-                        existingCarrier.Account.Email = carrier.Account.Email;
+                        var newUsername = carrier.Account.Username?.Trim();
+                        var newEmail = carrier.Account.Email?.Trim();
+                        if (!string.IsNullOrEmpty(newUsername))
+                            existingCarrier.Account.Username = newUsername;
+                        if (!string.IsNullOrEmpty(newEmail))
+                            existingCarrier.Account.Email = newEmail;
                         if (!string.IsNullOrEmpty(carrier.Account.Password))
                         {
                             existingCarrier.Account.Password = carrier.Account.Password;

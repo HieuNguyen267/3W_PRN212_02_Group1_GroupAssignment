@@ -50,7 +50,7 @@ namespace ShoppingOnline
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Loi khi tai chi tiet don hang: {ex.Message}", "Loi", 
+                MessageBox.Show($"Lỗi khi tải chi tiết đơn hàng: {ex.Message}", "Lỗi", 
                     MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
@@ -288,13 +288,13 @@ namespace ShoppingOnline
             
             return status switch
             {
-                "Pending" => "Cho xac nhan",
-                "Confirmed" => "Da xac nhan", 
-                "Preparing" => "Dang chuan bi",
-                "Shipping" => "Dang giao hang",
-                "Delivered" => "Da giao thanh cong",
-                "Completed" => "Da hoan thanh",
-                _ => "Khong xac dinh"
+                "Pending" => "Chờ xác nhận",
+                "Confirmed" => "Đã xác nhận", 
+                "Preparing" => "Đang chuẩn bị",
+                "Shipping" => "Đang giao hàng",
+                "Delivered" => "Đã giao thành công",
+                "Completed" => "Đã hoàn thành",
+                _ => "Không xác định"
             };
         }
 
@@ -309,12 +309,12 @@ namespace ShoppingOnline
                     // Refresh order data to ensure we have latest info
                     RefreshOrderData();
                     
-                    var result = MessageBox.Show($"CAP NHAT TRANG THAI DON HANG?\n\n" +
-                                               $"Don hang: #{_orderId}\n" +
-                                               $"Trang thai hien tai: {GetStatusDisplayText(_currentOrder.Status ?? "")}\n" +
-                                               $"Trang thai moi: {GetStatusDisplayText(newStatus)}\n\n" +
-                                               $"Ban co chac chan muon thay doi?", 
-                        "Xac nhan cap nhat", MessageBoxButton.YesNo, MessageBoxImage.Question);
+                    var result = MessageBox.Show($"CẬP NHẬT TRẠNG THÁI ĐƠN HÀNG?\n\n" +
+                                               $"Đơn hàng: #{_orderId}\n" +
+                                               $"Trạng thái hiện tại: {GetStatusDisplayText(_currentOrder.Status ?? "")}\n" +
+                                               $"Trạng thái mới: {GetStatusDisplayText(newStatus)}\n\n" +
+                                               $"Bạn có chắc chắn muốn thay đổi?", 
+                        "Xác nhận cập nhật", MessageBoxButton.YesNo, MessageBoxImage.Question);
                     
                     if (result == MessageBoxResult.Yes)
                     {
@@ -401,8 +401,8 @@ namespace ShoppingOnline
                 return;
             }
 
-            var result = MessageBox.Show("Ban co chac muon xac nhan don hang nay?", 
-                "Xac nhan don hang", MessageBoxButton.YesNo, MessageBoxImage.Question);
+            var result = MessageBox.Show("Bạn có chắc muốn xác nhận đơn hàng này?", 
+                "Xác nhận đơn hàng", MessageBoxButton.YesNo, MessageBoxImage.Question);
             
             if (result == MessageBoxResult.Yes)
             {
@@ -419,8 +419,8 @@ namespace ShoppingOnline
                 return;
             }
 
-            var result = MessageBox.Show("Ban co chac muon huy don hang nay?\nHanh dong nay khong the hoan tac!", 
-                "Huy don hang", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+            var result = MessageBox.Show("Bạn có chắc muốn hủy đơn hàng này?\nHành động này không thể hoàn tác!", 
+                "Hủy đơn hàng", MessageBoxButton.YesNo, MessageBoxImage.Warning);
             
             if (result == MessageBoxResult.Yes)
             {
@@ -464,13 +464,13 @@ namespace ShoppingOnline
                             CurrentStatusText.Text = "Da huy (ghi chu)";
                             StatusBorder.Background = new SolidColorBrush(Color.FromRgb(244, 67, 54)); // Red
                             
-                            MessageBox.Show($"THANH CONG!\n\nDa danh dau huy don hang #{_orderId}\n\n" +
-                                          $"Luu y:\n" +
-                                          $"- Don hang duoc danh dau da huy trong ghi chu\n" +
-                                          $"- Trang thai database van giu nguyen do han che cua he thong\n" +
-                                          $"- Thong tin huy duoc luu trong phan ghi chu\n\n" +
-                                          $"Thoi gian huy: {DateTime.Now:dd/MM/yyyy HH:mm}", 
-                                          "Huy don hang thanh cong", MessageBoxButton.OK, MessageBoxImage.Information);
+                            MessageBox.Show($"THÀNH CÔNG!\n\nĐã đánh dấu hủy đơn hàng #{_orderId}\n\n" +
+                                          $"Lưu ý:\n" +
+                                          $"- Đơn hàng được đánh dấu đã hủy trong ghi chú\n" +
+                                          $"- Trạng thái database vẫn giữ nguyên do hạn chế của hệ thống\n" +
+                                          $"- Thông tin hủy được lưu trong phần ghi chú\n\n" +
+                                          $"Thời gian hủy: {DateTime.Now:dd/MM/yyyy HH:mm}", 
+                                          "Hủy đơn hàng thành công", MessageBoxButton.OK, MessageBoxImage.Information);
                         }
                         else
                         {
@@ -564,9 +564,9 @@ namespace ShoppingOnline
                         }
                     }
                     
-                    MessageBox.Show($"THANH CONG!\n\nDa cap nhat trang thai don hang #{_orderId}\n" +
-                                  $"Trang thai moi: {GetStatusDisplayText(newStatus)}", 
-                                  "Cap nhat thanh cong", MessageBoxButton.OK, MessageBoxImage.Information);
+                    MessageBox.Show($"THÀNH CÔNG!\n\nĐã cập nhật trạng thái đơn hàng #{_orderId}\n" +
+                                  $"Trạng thái mới: {GetStatusDisplayText(newStatus)}", 
+                                  "Cập nhật thành công", MessageBoxButton.OK, MessageBoxImage.Information);
                 }
                 else
                 {
@@ -574,9 +574,9 @@ namespace ShoppingOnline
                                   $"Don hang #{_orderId}\n" +
                                   $"Trang thai: {_currentOrder.Status} ? {newStatus}\n\n" +
                                   $"NGUYEN NHAN CO THE:\n" +
-                                  $"� Database CHECK constraint violation\n" +
-                                  $"� Don hang da bi thay doi boi nguoi khac\n" +
-                                  $"� Conflict khi luu du lieu\n\n" +
+                                  $"� Database CHECK constraint violation\n" +
+                                  $"� Don hang da bi thay doi boi nguoi khac\n" +
+                                  $"� Conflict khi luu du lieu\n\n" +
                                   $"HUONG DAN XU LY:\n" +
                                   $"1. Thu lai sau vai giay\n" +
                                   $"2. Dong cua so va mo lai de cap nhat du lieu moi nhat\n" +
@@ -617,7 +617,7 @@ namespace ShoppingOnline
                 // Check if a carrier is selected
                 if (CarrierComboBox.SelectedItem == null)
                 {
-                    MessageBox.Show("Vui long chon nguoi giao hang tu danh sach!", "Thong bao", 
+                    MessageBox.Show("Vui lòng chọn người giao hàng từ danh sách!", "Thông báo", 
                                   MessageBoxButton.OK, MessageBoxImage.Warning);
                     return;
                 }
@@ -669,12 +669,12 @@ namespace ShoppingOnline
                         // Disable the combobox to prevent further changes
                         CarrierComboBox.IsEnabled = false;
 
-                        MessageBox.Show($"Da gan nguoi giao hang thanh cong!\nNguoi giao hang: {selectedCarrier.FullName}", 
-                                      "Thanh cong", MessageBoxButton.OK, MessageBoxImage.Information);
+                        MessageBox.Show($"Đã gán người giao hàng thành công!\nNgười giao hàng: {selectedCarrier.FullName}", 
+                                      "Thành công", MessageBoxButton.OK, MessageBoxImage.Information);
                     }
                     else
                     {
-                        MessageBox.Show("Loi khi gan nguoi giao hang. Vui long thu lai!", "Loi", 
+                        MessageBox.Show("Lỗi khi gán người giao hàng. Vui lòng thử lại!", "Lỗi", 
                                       MessageBoxButton.OK, MessageBoxImage.Error);
                     }
                 }
@@ -698,7 +698,7 @@ namespace ShoppingOnline
                     order.Notes = NotesTextBox.Text;
                     context.SaveChanges();
                     
-                    MessageBox.Show("Da luu thay doi!", "Thanh cong", 
+                    MessageBox.Show("Đã lưu thay đổi!", "Thành công", 
                         MessageBoxButton.OK, MessageBoxImage.Information);
                 }
             }

@@ -56,7 +56,7 @@
                                      Foreground="#FFBDC3C7" FontSize="12" Margin="0,2,0,0"/>
                         </StackPanel>
                     </Border>
-                    <Button Content="🚪 Dang xuat" Style="{StaticResource AdminSidebarButton}" 
+                    <Button Content="🚪 Đăng xuất" Style="{StaticResource AdminSidebarButton}" 
                           Click="Logout_Click" Background="#B01029"/>
                 </StackPanel>
             </StackPanel>

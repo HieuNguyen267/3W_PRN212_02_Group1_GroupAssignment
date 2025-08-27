@@ -275,8 +275,8 @@ namespace ShoppingOnline.Views
         {
             if (sender is Button button && button.Tag is int orderId)
             {
-                var result = MessageBox.Show("Ban co chac muon xac nhan don hang nay?", 
-                    "Xac nhan don hang", MessageBoxButton.YesNo, MessageBoxImage.Question);
+                var result = MessageBox.Show("Bạn có chắc muốn xác nhận đơn hàng này?", 
+                    "Xác nhận đơn hàng", MessageBoxButton.YesNo, MessageBoxImage.Question);
                 
                 if (result == MessageBoxResult.Yes)
                 {
@@ -310,7 +310,7 @@ namespace ShoppingOnline.Views
 
                         if (_adminService.UpdateOrderStatus(orderId, "Confirmed"))
                         {
-                            MessageBox.Show("Da xac nhan don hang thanh cong!", "Thanh cong", 
+                            MessageBox.Show("Đã xác nhận đơn hàng thành công!", "Thành công", 
                                 MessageBoxButton.OK, MessageBoxImage.Information);
                             LoadOrders(); // Refresh
                         }
@@ -360,7 +360,7 @@ namespace ShoppingOnline.Views
                     {
                         // Refresh the orders list to show updated carrier information
                         LoadOrders();
-                        MessageBox.Show("Da gan nguoi giao hang thanh cong!", "Thanh cong", 
+                        MessageBox.Show("Đã gán người giao hàng thành công!", "Thành công", 
                                       MessageBoxButton.OK, MessageBoxImage.Information);
                     }
                 }
@@ -376,9 +376,9 @@ namespace ShoppingOnline.Views
         {
             if (sender is Button button && button.Tag is int orderId)
             {
-                var result = MessageBox.Show("Ban co chac muon huy don hang nay?\n\n" +
-                                           "LUU Y: Don hang bi huy se KHONG duoc tinh vao tong gia tri don hang va thong ke.", 
-                    "Huy don hang", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+                var result = MessageBox.Show("Bạn có chắc muốn hủy đơn hàng này?\n\n" +
+                                           "LƯU Ý: Đơn hàng bị hủy sẽ KHÔNG được tính vào tổng giá trị đơn hàng và thống kê.", 
+                    "Hủy đơn hàng", MessageBoxButton.YesNo, MessageBoxImage.Warning);
                 
                 if (result == MessageBoxResult.Yes)
                 {
@@ -425,9 +425,9 @@ namespace ShoppingOnline.Views
                             
                             if (changes > 0)
                             {
-                                MessageBox.Show($"Da huy don hang thanh cong!\n\n" +
-                                              $"Don hang #{orderId} gia tri {order.TotalAmount:N0} VND da bi loai khoi tong gia tri don hang.", 
-                                              "Thanh cong", MessageBoxButton.OK, MessageBoxImage.Information);
+                                MessageBox.Show($"Đã hủy đơn hàng thành công!\n\n" +
+                                              $"Đơn hàng #{orderId} giá trị {order.TotalAmount:N0} VND đã bị loại khỏi tổng giá trị đơn hàng.", 
+                                              "Thành công", MessageBoxButton.OK, MessageBoxImage.Information);
                                 LoadOrders(); // Refresh orders and statistics
                             }
                             else

@@ -44,7 +44,7 @@ namespace ShoppingOnline
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Loi khi tai danh sach admin: {ex.Message}", "Loi", 
+                MessageBox.Show($"Lá»—i khi táº£i danh sÃ¡ch admin: {ex.Message}", "Lá»—i", 
                     MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
@@ -80,7 +80,7 @@ namespace ShoppingOnline
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Loi khi loc admin: {ex.Message}", "Loi", 
+                MessageBox.Show($"Lá»—i khi lá»c admin: {ex.Message}", "Lá»—i", 
                     MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
@@ -126,9 +126,9 @@ namespace ShoppingOnline
                 var admin = _allAdmins.FirstOrDefault(a => a.AdminId == adminId);
                 if (admin?.Account != null)
                 {
-                    var action = admin.Account.IsActive == true ? "khoa" : "mo khoa";
-                    var result = MessageBox.Show($"Ban co chac muon {action} tai khoan admin {admin.FullName}?", 
-                        "Xac nhan", MessageBoxButton.YesNo, MessageBoxImage.Question);
+                    var action = admin.Account.IsActive == true ? "khÃ³a" : "má»Ÿ khÃ³a";
+                    var result = MessageBox.Show($"Báº¡n cÃ³ cháº¯c muá»‘n {action} tÃ i khoáº£n admin {admin.FullName}?", 
+                        "XÃ¡c nháº­n", MessageBoxButton.YesNo, MessageBoxImage.Question);
                     
                     if (result == MessageBoxResult.Yes)
                     {
@@ -147,7 +147,7 @@ namespace ShoppingOnline
         private void BackToDashboard_Click(object sender, RoutedEventArgs e)
         {
             // Not needed anymore in single-window navigation
-            MessageBox.Show("Navigation ?ã ???c c?p nh?t! Vui lòng s? d?ng menu bên trái ?? chuy?n trang.", "Thông báo", 
+            MessageBox.Show("Navigation ?ï¿½ ???c c?p nh?t! Vui lï¿½ng s? d?ng menu bï¿½n trï¿½i ?? chuy?n trang.", "Thï¿½ng bï¿½o", 
                 MessageBoxButton.OK, MessageBoxImage.Information);
         }
 
@@ -159,13 +159,13 @@ namespace ShoppingOnline
                 var result = addCustomerWindow.ShowDialog();
                 if (result == true)
                 {
-                    MessageBox.Show("Thêm khách hàng thành công!", "Thành công", MessageBoxButton.OK, MessageBoxImage.Information);
-                    // N?u mu?n reload danh sách khách hàng, có th? g?i hàm load ? view khách hàng
+                    MessageBox.Show("Thï¿½m khï¿½ch hï¿½ng thï¿½nh cï¿½ng!", "Thï¿½nh cï¿½ng", MessageBoxButton.OK, MessageBoxImage.Information);
+                    // N?u mu?n reload danh sï¿½ch khï¿½ch hï¿½ng, cï¿½ th? g?i hï¿½m load ? view khï¿½ch hï¿½ng
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"L?i khi thêm khách hàng: {ex.Message}", "L?i", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show($"L?i khi thï¿½m khï¿½ch hï¿½ng: {ex.Message}", "L?i", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
