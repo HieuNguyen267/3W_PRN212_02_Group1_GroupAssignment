@@ -85,15 +85,9 @@ namespace ShoppingOnline
 
         private void NavigateToCategories()
         {
-            // Use placeholder since AdminCategoriesView doesn't exist yet
-            var categoriesView = new TextBlock 
-            { 
-                Text = "Quan ly Danh muc - Dang phat trien", 
-                FontSize = 24,
-                HorizontalAlignment = HorizontalAlignment.Center,
-                VerticalAlignment = VerticalAlignment.Center,
-                Margin = new Thickness(50)
-            };
+            // Use actual placeholder AdminCategoriesView 
+            var categoriesView = new AdminCategoriesView(); 
+            
             MainContentControl.Content = categoriesView;
             
             UpdatePageTitle("Quan ly Danh muc", "Danh sach danh muc san pham");

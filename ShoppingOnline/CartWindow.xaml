@@ -177,6 +177,8 @@
                                                        Foreground="{StaticResource DarkGray}" FontSize="12"/>
                                             <TextBlock Text="{Binding Product.Price, Converter={StaticResource PriceToMillionConverter}}" 
                                                        Style="{StaticResource ProductPriceStyle}"/>
+                                            <TextBlock Text="{Binding StockInfo}" 
+                                                       Foreground="{StaticResource DarkGray}" FontSize="11" Margin="0,5,0,0"/>
                                         </StackPanel>
 
                                         <!-- Quantity Controls -->
@@ -184,7 +186,8 @@
                                             <Button Content="-" Style="{StaticResource QuantityButtonStyle}" 
                                                     Click="DecreaseQuantity_Click"/>
                                             <TextBox Text="{Binding Quantity, UpdateSourceTrigger=PropertyChanged}" 
-                                                     Style="{StaticResource QuantityTextBoxStyle}" Margin="5,0"/>
+                                                     Style="{StaticResource QuantityTextBoxStyle}" Margin="5,0"
+                                                     LostFocus="QuantityTextBox_LostFocus"/>
                                             <Button Content="+" Style="{StaticResource QuantityButtonStyle}" 
                                                     Click="IncreaseQuantity_Click"/>
                                         </StackPanel>
