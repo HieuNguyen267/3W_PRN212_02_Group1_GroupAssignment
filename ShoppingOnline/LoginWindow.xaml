@@ -91,10 +91,10 @@
                 <StackPanel>
                     <TextBlock Text="Email:" Style="{StaticResource LabelStyle}"/>
                                          <TextBox x:Name="UsernameTextBox" Style="{StaticResource TextBoxStyle}" 
-                              Text="admin@cellphones.com"/>
+                              Text="nguyenduyhieu@gmail.com"/>
                     
                     <TextBlock Text="Mật khẩu:" Style="{StaticResource LabelStyle}"/>
-                    <PasswordBox x:Name="PasswordBox" Style="{StaticResource PasswordBoxStyle}"/>
+                    <PasswordBox x:Name="PasswordBox" Password="123456" Style="{StaticResource PasswordBoxStyle}"/>
                     
                     <!-- Remember Me -->
                     <CheckBox Content="Ghi nhớ đăng nhập" Margin="0,0,0,20" FontSize="12"/>

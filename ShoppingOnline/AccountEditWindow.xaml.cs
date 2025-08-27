@@ -1,4 +1,4 @@
-using BLL.Services;
+﻿using BLL.Services;
 using DAL.Entities;
 using System;
 using System.Windows;
@@ -70,13 +70,13 @@ namespace ShoppingOnline
                 }
                 else
                 {
-                    MessageBox.Show("Kh�ng th? c?p nh?t th�ng tin t�i kho?n. C� th? email ho?c t�n ??ng nh?p ?� t?n t?i!", 
-                        "L?i", MessageBoxButton.OK, MessageBoxImage.Error);
+                    MessageBox.Show("Không thể cập nhật thông tin tài khoảng. Có thể email hoặc tên đăng nhập bị lỗi!", 
+                        "Lỗi", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"L?i khi l?u th�ng tin: {ex.Message}", "L?i", 
+                MessageBox.Show($"Lỗi khi lưu thông tin: {ex.Message}", "Lỗi", 
                     MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
@@ -86,7 +86,7 @@ namespace ShoppingOnline
             // Validate username
             if (string.IsNullOrWhiteSpace(UsernameTextBox.Text))
             {
-                MessageBox.Show("Vui l�ng nh?p t�n ??ng nh?p!", "L?i validation", 
+                MessageBox.Show("Vui lòng nhấp tên đăng nhập!", "Lỗi xác thực", 
                     MessageBoxButton.OK, MessageBoxImage.Warning);
                 UsernameTextBox.Focus();
                 return false;
@@ -95,7 +95,7 @@ namespace ShoppingOnline
             // Validate email
             if (string.IsNullOrWhiteSpace(EmailTextBox.Text) || !IsValidEmail(EmailTextBox.Text))
             {
-                MessageBox.Show("Vui l�ng nh?p email h?p l?!", "L?i validation", 
+                MessageBox.Show("Vui lòng nh?p email h?p l?!", "Lỗi xác thực", 
                     MessageBoxButton.OK, MessageBoxImage.Warning);
                 EmailTextBox.Focus();
                 return false;
@@ -104,7 +104,7 @@ namespace ShoppingOnline
             // Validate account type
             if (AccountTypeComboBox.SelectedItem == null)
             {
-                MessageBox.Show("Vui l�ng ch?n lo?i t�i kho?n!", "L?i validation", 
+                MessageBox.Show("Vui lòng chọn loại tài khoảng!", "Lỗi xác thực", 
                     MessageBoxButton.OK, MessageBoxImage.Warning);
                 AccountTypeComboBox.Focus();
                 return false;
