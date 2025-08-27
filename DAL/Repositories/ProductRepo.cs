@@ -18,16 +18,12 @@ namespace DAL.Repositories
 
     public class ProductRepo : IProductRepo
     {
-        private readonly ShoppingOnlineContext _context;
-
-        public ProductRepo()
-        {
-            _context = new ShoppingOnlineContext();
-        }
+        public ProductRepo() { }
 
         public List<Product> GetAllProducts()
         {
-            return _context.Products
+            using var context = new ShoppingOnlineContext();
+            return context.Products
                 .Include(p => p.Category)
                 .Include(p => p.ProductImages)
                 .ToList();
@@ -35,7 +31,8 @@ namespace DAL.Repositories
 
         public List<Product> GetActiveProducts()
         {
-            return _context.Products
+            using var context = new ShoppingOnlineContext();
+            return context.Products
                 .Include(p => p.Category)
                 .Include(p => p.ProductImages)
                 .Where(p => p.IsActive == true)
@@ -44,7 +41,8 @@ namespace DAL.Repositories
 
         public Product? GetProductById(string productId)
         {
-            return _context.Products
+            using var context = new ShoppingOnlineContext();
+            return context.Products
                 .Include(p => p.Category)
                 .Include(p => p.ProductImages)
                 .FirstOrDefault(p => p.ProductId == productId);
@@ -52,7 +50,8 @@ namespace DAL.Repositories
 
         public List<Product> GetProductsByCategory(string categoryId)
         {
-            return _context.Products
+            using var context = new ShoppingOnlineContext();
+            return context.Products
                 .Include(p => p.Category)
                 .Include(p => p.ProductImages)
                 .Where(p => p.CategoryId == categoryId && p.IsActive == true)
