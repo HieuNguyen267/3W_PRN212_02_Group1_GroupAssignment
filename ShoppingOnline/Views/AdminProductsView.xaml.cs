@@ -220,8 +220,12 @@ namespace ShoppingOnline.Views
                     var result = win.ShowDialog();
                     if (result == true)
                     {
+                        // Reload products from database and refresh UI
                         LoadProducts();
+                        
+                        // Force refresh the DataGrid
                         ProductsDataGrid?.Items.Refresh();
+                        
                         MessageBox.Show("Đã cập nhật sản phẩm!", "Thành công", MessageBoxButton.OK, MessageBoxImage.Information);
                         
                         // Notify that admin operations are completed
