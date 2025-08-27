@@ -1,3 +1,6 @@
+using System;
+using System.Linq;
+using System.Collections.Generic;
 using DAL.Entities;
 using DAL.Repositories;
 
@@ -96,7 +99,7 @@ namespace BLL.Services
             }
         }
 
-        public List<Account> GetAllAccounts()
+    public List<Account> GetAllAccounts()
         {
             return _accountRepo.GetAllAccounts();
         }
@@ -116,7 +119,7 @@ namespace BLL.Services
             _accountRepo.DeleteAccount(accountId);
         }
 
-        public Customer? GetCustomerById(int customerId)
+    public Customer? GetCustomerById(int customerId)
         {
             return _accountRepo.GetCustomerById(customerId);
         }
@@ -124,6 +127,42 @@ namespace BLL.Services
         public void UpdateCustomer(Customer customer)
         {
             _accountRepo.UpdateCustomer(customer);
+        }
+        
+        // Registration
+        public RegisterResult Register(string fullName, string username, string email, string password, string? phone, string? address)
+        {
+            // Check existing username or email
+            if (_accountRepo.GetAccountByUsername(username) != null)
+            {
+                return new RegisterResult { IsSuccess = false, Message = "Tên đăng nhập đã tồn tại!" };
+            }
+            if (_accountRepo.GetAccountByEmail(email) != null)
+            {
+                return new RegisterResult { IsSuccess = false, Message = "Email đã được sử dụng!" };
+            }
+            // Create account
+            var account = new DAL.Entities.Account
+            {
+                Username = username,
+                Password = password,
+                Email = email,
+                AccountType = "Customer",
+                CreatedDate = DateTime.Now,
+                IsActive = true
+            };
+            _accountRepo.AddAccount(account);
+            // Create customer
+            var customer = new DAL.Entities.Customer
+            {
+                AccountId = account.AccountId,
+                FullName = fullName,
+                Phone = phone,
+                Address = address,
+                CreatedDate = DateTime.Now
+            };
+            _accountRepo.AddCustomer(customer);
+            return new RegisterResult { IsSuccess = true, Message = "Đăng ký thành công!" };
         }
     }
 
@@ -134,5 +173,12 @@ namespace BLL.Services
         public Customer? Customer { get; set; }
         public bool IsAdmin { get; set; } // Indicates if the logged-in user is an admin
         public Admin? Admin { get; set; } // Admin information, if applicable
+    }
+    
+    // Result of registration
+    public class RegisterResult
+    {
+        public bool IsSuccess { get; set; }
+        public string Message { get; set; } = string.Empty;
     }
 }

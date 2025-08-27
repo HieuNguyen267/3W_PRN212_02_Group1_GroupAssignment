@@ -84,8 +84,14 @@ namespace ShoppingOnline
 
         private void Register_Click(object sender, RoutedEventArgs e)
         {
-            MessageBox.Show("Tính năng đăng ký sẽ được phát triển sau!", "Thông báo", 
-                MessageBoxButton.OK, MessageBoxImage.Information);
+            // Open registration window
+            var registerWindow = new RegisterWindow();
+            var result = registerWindow.ShowDialog();
+            if (result == true)
+            {
+                MessageBox.Show("Đăng ký thành công! Vui lòng đăng nhập để tiếp tục.", "Thông báo", 
+                    MessageBoxButton.OK, MessageBoxImage.Information);
+            }
         }
 
         private void Close_Click(object sender, RoutedEventArgs e)
